@@ -334,6 +334,45 @@
     mount.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     speak('Full MRT map shown');
   }
+  function makeLegendInteractive(svg){
+    // The bottom black legend is part of the Illustrator SVG. These focused
+    // click zones sit over its transport icons without changing the artwork.
+    const items=[
+      {id:'bus-terminal',label:'Bus Terminal',spoken:'Bus terminal',x:698,y:948,width:62,height:38,colour:'#f4c542'},
+      {id:'airport',label:'Changi Airport',spoken:'Changi Airport',x:779,y:948,width:62,height:38,colour:'#67c7ef'},
+      {id:'cruise',label:'Cruise',spoken:'Cruise terminal',x:861,y:948,width:70,height:38,colour:'#55d6a5'}
+    ];
+    const ns='http://www.w3.org/2000/svg';
+    const layer=document.createElementNS(ns,'g');
+    layer.setAttribute('id','interactiveLegendTargets');
+    items.forEach(item=>{
+      const target=document.createElementNS(ns,'rect');
+      target.setAttribute('x',item.x);target.setAttribute('y',item.y);
+      target.setAttribute('width',item.width);target.setAttribute('height',item.height);
+      target.setAttribute('rx','5');target.setAttribute('fill','transparent');
+      target.setAttribute('stroke','transparent');target.setAttribute('stroke-width','2');
+      target.setAttribute('tabindex','0');target.setAttribute('role','button');
+      target.setAttribute('aria-label','Hear and highlight '+item.label);
+      target.setAttribute('data-legend-item',item.id);
+      target.style.cursor='pointer';
+      target.addEventListener('click',()=>activateLegendItem(item,target,layer));
+      target.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){event.preventDefault();activateLegendItem(item,target,layer);}
+      });
+      layer.appendChild(target);
+    });
+    svg.appendChild(layer);
+  }
+  function activateLegendItem(item,target,layer){
+    layer.querySelectorAll('[data-legend-item]').forEach(el=>{
+      el.setAttribute('stroke','transparent');el.setAttribute('fill','transparent');
+      el.style.filter='none';
+    });
+    target.setAttribute('fill',item.colour+'33');
+    target.setAttribute('stroke',item.colour);
+    target.style.filter='drop-shadow(0 0 5px '+item.colour+')';
+    speak(item.spoken+' highlighted in the legend.');
+  }
   function installMap(raw){
     const doc=new DOMParser().parseFromString(raw,'image/svg+xml');
     if(doc.querySelector('parsererror')||!doc.querySelector('svg'))throw new Error('Invalid SVG');
@@ -343,6 +382,7 @@
     const imported=document.importNode(svg,true);
     mount.replaceChildren(imported);
     tagMapLines(imported);
+    makeLegendInteractive(imported);
     const counts={};
     imported.querySelectorAll('[data-line]').forEach(el=>{const c=el.getAttribute('data-line');counts[c]=(counts[c]||0)+1});
     return counts;
