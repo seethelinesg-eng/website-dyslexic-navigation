@@ -32,6 +32,7 @@
     #lineControls button[aria-pressed=true]{outline:3px solid #172033;outline-offset:3px;box-shadow:0 0 0 6px #fff,0 0 0 9px currentColor}
     #mapMount .dimmed{display:none!important}
     #mapMount .focus-text-hidden{display:none!important}
+    #mapMount .focus-shape-hidden{display:none!important}
     #mapMount .selected-line{
       filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 11px var(--line-glow)) drop-shadow(0 0 19px var(--line-glow))!important;
       opacity:1!important;
@@ -330,6 +331,18 @@
       const keep=owners.includes(code)||childOwners.includes(code);
       el.classList.toggle('focus-text-hidden',!keep);
     });
+    // Also hide unclassified map artwork. White LRT segments and transport
+    // pictograms do not use one of the six MRT route colours, so the original
+    // colour-only filter would otherwise leave them visible. Keep the bottom
+    // legend intact so its interactive transport icons remain available.
+    mount.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
+      if(el.closest('#interactiveLegendTargets'))return;
+      if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
+      let box;
+      try{box=el.getBBox();}catch(_){return;}
+      const inLegend=box.y>=930 || (box.y+box.height)>=1015;
+      el.classList.toggle('focus-shape-hidden',!inLegend);
+    });
     // Hide interchange gradient boxes and unrelated LRT corner labels.
     mount.querySelectorAll('[data-gradient-route],[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
     speak(names[code]+' selected');
@@ -342,6 +355,7 @@
     mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));
     mount.querySelectorAll('[data-gradient-route]').forEach(el=>el.classList.remove('dimmed'));
     mount.querySelectorAll('text').forEach(el=>el.classList.remove('focus-text-hidden'));
+    mount.querySelectorAll('.focus-shape-hidden').forEach(el=>el.classList.remove('focus-shape-hidden'));
     mount.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     speak('Full MRT map shown');
   }
