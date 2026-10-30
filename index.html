@@ -33,9 +33,19 @@
     #lineControls button[aria-pressed=true]{outline:3px solid #172033;outline-offset:3px;box-shadow:0 0 0 6px #fff,0 0 0 9px currentColor}
     #mapMount .dimmed{display:none!important}
     #mapMount .selected-line{filter:drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 9px var(--line-glow))!important;opacity:1!important}
-    /* Change only the station-name colour when selected. Preserve the
-       Illustrator artwork's original font, size, weight and positioning. */
-    #mapMount .station-label-active{fill:var(--station-colour)!important;}
+    /* Highlight the selected station with a line-coloured marker behind
+       the original text. Keep its font, size, weight and positioning unchanged. */
+    #mapMount .station-label-active{
+      fill:#172033!important;
+      stroke:none!important;
+      paint-order:normal!important;
+      filter:drop-shadow(0 0 0 transparent);
+    }
+    #mapMount .station-label-highlight{
+      fill:#172033!important;
+      stroke:none!important;
+      paint-order:normal!important;
+    }
     #stationList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
     #stationList button{display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center;gap:12px;text-align:left;justify-content:initial;background:#f8f9fc;border:1px solid #dce2ec;border-radius:10px;color:#172033;min-height:56px;padding:12px 14px;line-height:1.35;font-size:1.05rem;white-space:normal;overflow-wrap:break-word}
     #stationList button:hover,#stationList button:focus-visible{background:#eef3fb;border-color:#7183a4}
@@ -202,6 +212,7 @@
       el.classList.remove('station-label-active');
       el.style.removeProperty('--station-colour');
     });
+    svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     const normalise=value=>value.replace(/\\s+/g,' ').trim().toLocaleLowerCase();
     const target=normalise(stationName);
     // Illustrator exports each character as a separate tspan. Match the
@@ -211,6 +222,21 @@
       el.classList.add('station-label-active');
       el.style.setProperty('--station-colour',routeColours[code].glow);
       el.setAttribute('aria-label',stationName+' station selected');
+      // Add a rounded colour marker behind the complete station label.
+      const ns='http://www.w3.org/2000/svg';
+      const bbox=el.getBBox();
+      const padX=3, padY=2;
+      const marker=document.createElementNS(ns,'rect');
+      marker.setAttribute('class','station-label-highlight');
+      marker.setAttribute('x',bbox.x-padX);
+      marker.setAttribute('y',bbox.y-padY);
+      marker.setAttribute('width',Math.max(1,bbox.width+padX*2));
+      marker.setAttribute('height',Math.max(1,bbox.height+padY*2));
+      marker.setAttribute('rx','3');
+      marker.setAttribute('fill',routeColours[code].glow);
+      marker.setAttribute('pointer-events','none');
+      el.parentNode.insertBefore(marker,el);
+      el.dataset.highlightMarker='true';
     });
     if(matches.length){
       matches[0].scrollIntoView?.({block:'nearest',inline:'nearest',behavior:'smooth'});
@@ -250,6 +276,7 @@
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed','false'));
     mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));\n    mount.querySelectorAll('[data-gradient-route]').forEach(el=>el.classList.remove('dimmed'));
     mount.querySelectorAll('.station-label-active').forEach(el=>{el.classList.remove('station-label-active');el.style.removeProperty('--station-colour')});
+    mount.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     speak('Full MRT map shown');
   }
   function installMap(raw){
