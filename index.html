@@ -175,7 +175,7 @@
         el.setAttribute('data-gradient-route','true');
       }
     });
-    const normalise=value=>String(value||'').replace(/\\s+/g,'').trim().toLocaleLowerCase();
+    const normalise=value=>String(value||'').replace(/\s+/g,'').trim().toLocaleLowerCase();
     const stationOwners=new Map();
     const codeOwners=new Map();
     for(const [code,list] of Object.entries(stations)){
@@ -203,7 +203,7 @@
       el.style.removeProperty('--station-colour');
     });
     svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
-    const normalise=value=>value.replace(/\\s+/g,' ').trim().toLocaleLowerCase();
+    const normalise=value=>value.replace(/\s+/g,' ').trim().toLocaleLowerCase();
     const target=normalise(stationName);
     // Illustrator exports each character as a separate tspan. Match the
     // complete parent <text> element so the whole station label is styled.
