@@ -170,7 +170,7 @@
         el.setAttribute('data-gradient-route','true');
       }
     });
-    const normalise=value=>String(value||'').replace(/\\s+/g,' ').trim().toLocaleLowerCase();
+    const normalise=value=>String(value||'').replace(/\\s+/g,'').trim().toLocaleLowerCase();
     const stationOwners=new Map();
     const codeOwners=new Map();
     for(const [code,list] of Object.entries(stations)){
@@ -183,7 +183,7 @@
     // text element per station. Tag both forms, including station-code labels.
     svg.querySelectorAll('text,tspan').forEach(el=>{
       const label=normalise(el.textContent);
-      const owner=stationOwners.get(label)||codeOwners.get(label.replace(/\\s+/g,''));
+      const owner=stationOwners.get(label)||codeOwners.get(label);
       if(owner){
         el.setAttribute('data-line',owner);
         el.setAttribute('data-station-label','true');
