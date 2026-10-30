@@ -33,19 +33,9 @@
     #lineControls button[aria-pressed=true]{outline:3px solid #172033;outline-offset:3px;box-shadow:0 0 0 6px #fff,0 0 0 9px currentColor}
     #mapMount .dimmed{display:none!important}
     #mapMount .selected-line{filter:drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 9px var(--line-glow))!important;opacity:1!important}
-    /* Highlight the selected station with a line-coloured marker behind
-       the original text. Keep its font, size, weight and positioning unchanged. */
-    #mapMount .station-label-active{
-      fill:#172033!important;
-      stroke:none!important;
-      paint-order:normal!important;
-      filter:drop-shadow(0 0 0 transparent);
-    }
-    #mapMount .station-label-highlight{
-      fill:#172033!important;
-      stroke:none!important;
-      paint-order:normal!important;
-    }
+    /* The highlight is a separate SVG shape behind the label.
+       Do not apply any font, size, weight, or text-colour changes. */
+    #mapMount .station-label-highlight{pointer-events:none;}
     #stationList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
     #stationList button{display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center;gap:12px;text-align:left;justify-content:initial;background:#f8f9fc;border:1px solid #dce2ec;border-radius:10px;color:#172033;min-height:56px;padding:12px 14px;line-height:1.35;font-size:1.05rem;white-space:normal;overflow-wrap:break-word}
     #stationList button:hover,#stationList button:focus-visible{background:#eef3fb;border-color:#7183a4}
