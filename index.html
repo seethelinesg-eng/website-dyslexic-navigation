@@ -187,15 +187,20 @@
     const stationOwners=new Map(),codeOwners=new Map();
     for(const [code,list] of Object.entries(stations)){
       for(const [stationCode,stationName] of list){
-        stationOwners.set(normalise(stationName),code);
-        codeOwners.set(normalise(stationCode),code);
+        if(!stationOwners.has(normalise(stationName)))stationOwners.set(normalise(stationName),new Set());
+        stationOwners.get(normalise(stationName)).add(code);
+        codeOwners.set(normalise(stationCode),new Set([code]));
       }
     }
     svg.querySelectorAll('text,tspan').forEach(el=>{
       const label=normalise(el.textContent);
-      const owner=stationOwners.get(label)||codeOwners.get(label);
-      if(owner){
-        el.setAttribute('data-line',owner);
+      const owners=stationOwners.get(label)||codeOwners.get(label);
+      if(owners){
+        // Interchange station labels can belong to several MRT lines.
+        // Keep every applicable line association instead of letting the last
+        // line in the station data overwrite the earlier one.
+        el.setAttribute('data-lines',[...owners].join(' '));
+        el.setAttribute('data-line',[...owners][0]);
         el.setAttribute('data-station-label','true');
       }
       // Keep the Punggol LRT label out of the way while a main MRT line is focused.
@@ -310,7 +315,8 @@
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     mount.querySelectorAll('[data-line]').forEach(el=>{
-      const match=el.getAttribute('data-line')===code;
+      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\\s+/);
+      const match=owners.includes(code);
       el.classList.toggle('dimmed',!match);el.classList.toggle('selected-line',match);
     });
     // Focus mode shows only the selected MRT route and its station labels.
