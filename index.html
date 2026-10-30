@@ -31,6 +31,7 @@
     #lineControls button[data-select-line="TEL"]{background:#513019}
     #lineControls button[aria-pressed=true]{outline:3px solid #172033;outline-offset:3px;box-shadow:0 0 0 6px #fff,0 0 0 9px currentColor}
     #mapMount .dimmed{display:none!important}
+    #mapMount .focus-text-hidden{display:none!important}
     #mapMount .selected-line{
       filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 11px var(--line-glow)) drop-shadow(0 0 19px var(--line-glow))!important;
       opacity:1!important;
@@ -319,7 +320,16 @@
       const match=owners.includes(code);
       el.classList.toggle('dimmed',!match);el.classList.toggle('selected-line',match);
     });
-    // Focus mode shows only the selected MRT route and its station labels.
+    // Hide every other SVG text label in focus mode, including white
+    // explanatory words on the map background. Keep only station labels
+    // assigned to the selected line (including shared interchange labels).
+    mount.querySelectorAll('text').forEach(el=>{
+      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\\s+/).filter(Boolean);
+      const childOwners=[...el.querySelectorAll('tspan[data-lines],tspan[data-line]')]
+        .flatMap(span=>(span.getAttribute('data-lines')||span.getAttribute('data-line')||'').split(/\\s+/));
+      const keep=owners.includes(code)||childOwners.includes(code);
+      el.classList.toggle('focus-text-hidden',!keep);
+    });
     // Hide interchange gradient boxes and unrelated LRT corner labels.
     mount.querySelectorAll('[data-gradient-route],[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
     speak(names[code]+' selected');
@@ -331,6 +341,7 @@
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed','false'));
     mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));
     mount.querySelectorAll('[data-gradient-route]').forEach(el=>el.classList.remove('dimmed'));
+    mount.querySelectorAll('text').forEach(el=>el.classList.remove('focus-text-hidden'));
     mount.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     speak('Full MRT map shown');
   }
