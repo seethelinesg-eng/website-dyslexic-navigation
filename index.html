@@ -16,16 +16,24 @@
     .intro{font-size:1.1rem;font-weight:700;margin:0 0 14px}
     .controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 18px}
     button{font:inherit;font-weight:700;border:2px solid #c8d1df;background:#fff;color:#172033;border-radius:12px;padding:12px 16px;min-height:48px;cursor:pointer}
-    button:hover,button:focus-visible{outline:3px solid #6b8cff;outline-offset:2px}
-    button[aria-pressed=true]{background:#172b55;color:#fff;border-color:#172b55;box-shadow:0 0 0 3px #cbd8ff}
+    button:hover,button:focus-visible{outline:3px solid #172033;outline-offset:3px}
+    #lineControls button{color:#fff;border-color:transparent;text-shadow:0 1px 2px #0005;box-shadow:0 2px 5px #17203320}
+    #lineControls button[data-select-line="NSL"]{background:#eb1d27}
+    #lineControls button[data-select-line="EWL"]{background:#279641}
+    #lineControls button[data-select-line="NEL"]{background:#7f2594}
+    #lineControls button[data-select-line="CCL"]{background:#f68712}
+    #lineControls button[data-select-line="DTL"]{background:#3153ad}
+    #lineControls button[data-select-line="TEL"]{background:#513019}
+    #lineControls button[aria-pressed=true]{outline:3px solid #172033;outline-offset:3px;box-shadow:0 0 0 6px #fff,0 0 0 9px currentColor}
+    #mapMount .dimmed{display:none!important}
+    #mapMount .selected-line{filter:drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 9px var(--line-glow))!important;opacity:1!important}
+    #backToMap{background:#172b55;color:#fff;border-color:#172b55}
     .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
     .toolbar button{font-size:.98rem}
     .status{font-weight:700;color:#243b69;min-height:1.5em;margin:8px 0 14px}
     .map-shell{background:#fff;border:1px solid #dce2ec;border-radius:18px;min-height:420px;padding:18px;box-shadow:0 8px 28px #15284b0b}
     #mapMount svg{width:100%;height:auto;max-height:78vh;display:block}
     #mapMount [data-line]{transition:opacity .22s ease,filter .22s ease}
-    #mapMount .dimmed{opacity:.13!important}
-    #mapMount .selected-line{filter:drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 9px var(--line-glow))!important;opacity:1!important}
     .help{color:#526078;line-height:1.6;font-size:.98rem;margin-top:16px}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
     @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
@@ -47,14 +55,14 @@
     <button type="button" data-select-line="TEL" aria-pressed="false">Thomson-East Coast Line</button>
   </div>
   <div class="toolbar">
-    <button type="button" id="showAll">Show full map</button>
+    <button type="button" id="backToMap">← Back to full MRT map</button>
     <button type="button" id="repeatAudio">Repeat announcement</button>
   </div>
   <p class="status" id="status" role="status" aria-live="polite">Loading the MRT map…</p>
   <section class="map-shell" aria-label="Interactive MRT map">
     <div id="mapMount"></div>
   </section>
-  <p class="help">Choose a line button to highlight that route. Select “Show full map” to return to the complete network. Audio uses your browser’s built-in text-to-speech voice.</p>
+  <p class="help">Choose a coloured line button to view only that MRT route. Use “Back to full MRT map” to bring the complete network back. Audio uses your browser’s built-in text-to-speech voice.</p>
 </main>
 <script>
 (() => {
@@ -116,7 +124,7 @@
     return counts;
   }
   document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
-  document.getElementById('showAll').addEventListener('click',showAll);
+  document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement)});
   fetch('./mrt-map.svg')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
