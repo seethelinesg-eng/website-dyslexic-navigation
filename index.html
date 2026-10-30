@@ -13,7 +13,6 @@
     *{box-sizing:border-box}
     body,button,input,select,textarea{font-family:"Atkinson Hyperlegible",Arial,sans-serif;font-kerning:normal;font-synthesis:none}
     h1,h2,.intro,button{font-weight:700}
-    #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible",Arial,sans-serif!important;font-synthesis:none;letter-spacing:0!important;font-kerning:normal!important;text-rendering:geometricPrecision}
     body{margin:0}
     header{padding:28px clamp(18px,4vw,56px);background:#fff;border-bottom:1px solid #dce2ec}
     h1{font-size:clamp(1.65rem,3vw,2.35rem);margin:0 0 8px;letter-spacing:.01em}
@@ -94,14 +93,14 @@
 <script>
 (() => {
   const names={NSL:'North-South Line',EWL:'East-West Line',NEL:'North-East Line',CCL:'Circle Line',DTL:'Downtown Line',TEL:'Thomson-East Coast Line'};
-  // These are the six route colours used in the uploaded map artwork.
+  // Colours sampled from the actual Illustrator SVG artwork.
   const routeColours={
-    NSL:{rgb:[235,29,39],glow:'#eb1d27'},
-    EWL:{rgb:[40,151,65],glow:'#279641'},
-    NEL:{rgb:[127,37,148],glow:'#7f2594'},
-    CCL:{rgb:[246,135,18],glow:'#f68712'},
-    DTL:{rgb:[49,83,173],glow:'#3153ad'},
-    TEL:{rgb:[81,48,25],glow:'#513019'}
+    NSL:{rgb:[234,36,41],glow:'#eb2027'},
+    EWL:{rgb:[0,148,71],glow:'#009447'},
+    NEL:{rgb:[142,51,147],glow:'#8e3393'},
+    CCL:{rgb:[247,148,29],glow:'#f7941d'},
+    DTL:{rgb:[34,90,169],glow:'#225aa9'},
+    TEL:{rgb:[88,57,26],glow:'#58391a'}
   };
   // Station names and codes are taken from the list supplied for this project.
   // Missing/interchange codes are intentionally not guessed or filled in.
@@ -149,43 +148,39 @@
     }).filter(Boolean);
   }
   function tagMapLines(svg){
-    // The Illustrator SVG uses dedicated solid-colour classes for each route.
-    // Tag those exact route and station-marker classes instead of guessing from
-    // computed colours (which incorrectly classified multi-colour gradients).
-    const routeClasses={
-      NSL:['cls-22','cls-55'],
-      EWL:['cls-26','cls-57','cls-80'],
-      NEL:['cls-23','cls-78'],
-      CCL:['cls-4','cls-68'],
-      DTL:['cls-9','cls-74'],
-      TEL:['cls-7','cls-62']
-    };
-    for(const [code,classes] of Object.entries(routeClasses)){
-      for(const cls of classes){
-        svg.querySelectorAll('.'+cls).forEach(el=>{
-          el.setAttribute('data-line',code);
-          el.style.setProperty('--line-glow',routeColours[code].glow);
-        });
+    // Class names in Illustrator exports are not reliable route identifiers:
+    // many coloured route segments use separate classes. Read the actual SVG
+    // stroke/fill colours so every segment of each route is tagged.
+    const shapes=svg.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse');
+    shapes.forEach(el=>{
+      const style=getComputedStyle(el);
+      const fill=rgbFromCss(style.fill);
+      const stroke=rgbFromCss(style.stroke);
+      let owner=null;
+      for(const [code,route] of Object.entries(routeColours)){
+        if(colourMatches(fill,route.rgb,38)||colourMatches(stroke,route.rgb,38)){
+          owner=code;break;
+        }
       }
-    }
-    // Multi-colour interchange connectors cannot safely belong to one route.
-    // Hide them in line-focus mode so no other route colour remains visible.
-    svg.querySelectorAll('[class]').forEach(el=>{
-      if([...el.classList].some(c=>/^cls-(?:1[0-7]|2[4-8]|3[0-9]|4[0-8])$/.test(c))){
+      if(owner){
+        el.setAttribute('data-line',owner);
+        el.style.setProperty('--line-glow',routeColours[owner].glow);
+      }else if((style.stroke||'').includes('url(')||(style.fill||'').includes('url(')){
+        // Interchange gradients combine multiple route colours. Hide them in
+        // focus mode rather than leaving fragments of other lines visible.
         el.setAttribute('data-gradient-route','true');
       }
     });
-    const normalise=value=>String(value||'').replace(/\s+/g,'').trim().toLocaleLowerCase();
-    const stationOwners=new Map();
-    const codeOwners=new Map();
+    // Keep station labels belonging to the selected route; preserve their
+    // original SVG typography and appearance.
+    const normalise=value=>String(value||'').replace(/\\s+/g,'').trim().toLocaleLowerCase();
+    const stationOwners=new Map(),codeOwners=new Map();
     for(const [code,list] of Object.entries(stations)){
       for(const [stationCode,stationName] of list){
         stationOwners.set(normalise(stationName),code);
         codeOwners.set(normalise(stationCode),code);
       }
     }
-    // Illustrator sometimes exports one label per tspan and sometimes one
-    // text element per station. Tag both forms, including station-code labels.
     svg.querySelectorAll('text,tspan').forEach(el=>{
       const label=normalise(el.textContent);
       const owner=stationOwners.get(label)||codeOwners.get(label);
