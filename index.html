@@ -328,7 +328,7 @@
       el.classList.toggle('dimmed',!match);el.classList.toggle('selected-line',match);
     });
     // Keep East-West Line station-name labels visually consistent. The station-code labels retain their original map styling.
-    mount.querySelectorAll('[data-station-label="true"]').forEach(el=>{el.style.fontSize=code==='EWL'?'13px':'';});
+    mount.querySelectorAll('[data-station-label="true"]').forEach(el=>{el.style.fontFamily='Atkinson Hyperlegible, Arial, sans-serif';el.style.fontSize=code==='EWL'?'8pt':'';});
     // Hide every other SVG text label in focus mode, including white
     // explanatory words on the map background. Keep only station labels
     // assigned to the selected line (including shared interchange labels).
