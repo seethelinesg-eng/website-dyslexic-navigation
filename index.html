@@ -27,6 +27,7 @@
     #lineControls button[aria-pressed=true]{outline:3px solid #172033;outline-offset:3px;box-shadow:0 0 0 6px #fff,0 0 0 9px currentColor}
     #mapMount .dimmed{display:none!important}
     #mapMount .selected-line{filter:drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 9px var(--line-glow))!important;opacity:1!important}
+    #mapMount .station-label-active{font-size:1.65em!important;font-weight:900!important;fill:var(--station-colour)!important;stroke:#fff!important;stroke-width:2px!important;paint-order:stroke fill;filter:drop-shadow(0 1px 2px #17203355);}
     #backToMap{background:#172b55;color:#fff;border-color:#172b55}
     #stationPanel{display:none;background:#fff;border:1px solid #dce2ec;border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 5px 20px #15284b0b}
     #stationPanel.visible{display:block}
@@ -144,6 +145,26 @@
       }
     });
   }
+  function highlightStation(stationName,code){
+    const svg=mount.querySelector('svg');
+    if(!svg)return;
+    svg.querySelectorAll('.station-label-active').forEach(el=>{
+      el.classList.remove('station-label-active');
+      el.style.removeProperty('--station-colour');
+    });
+    const target=stationName.trim().toLocaleLowerCase();
+    const matches=[...svg.querySelectorAll('text,tspan')].filter(el=>el.textContent.trim().toLocaleLowerCase()===target);
+    matches.forEach(el=>{
+      el.classList.add('station-label-active');
+      el.style.setProperty('--station-colour',routeColours[code].glow);
+      el.setAttribute('aria-label',stationName+' station selected');
+    });
+    if(matches.length){
+      matches[0].scrollIntoView?.({block:'nearest',inline:'nearest',behavior:'smooth'});
+    }else{
+      status.textContent=stationName+' selected. The map artwork does not expose this label as editable text, so it cannot be enlarged on the map yet.';
+    }
+  }
   function renderStations(code){
     stationHeading.textContent=names[code]+' — Stations';
     stationList.replaceChildren();
@@ -153,7 +174,7 @@
       button.innerHTML='<span class="station-code"></span><span></span>';
       button.children[0].textContent=stationCode;
       button.children[1].textContent=stationName;
-      button.addEventListener('click',()=>speak(stationName));
+      button.addEventListener('click',()=>{highlightStation(stationName,code);speak(stationName)});
       stationList.appendChild(button);
     });
     stationPanel.classList.add('visible');
@@ -175,6 +196,7 @@
     mount.classList.remove('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed','false'));
     mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));
+    mount.querySelectorAll('.station-label-active').forEach(el=>{el.classList.remove('station-label-active');el.style.removeProperty('--station-colour')});
     speak('Full MRT map shown');
   }
   function installMap(raw){
