@@ -291,9 +291,10 @@
     (stations[code]||[]).forEach(([stationCode,stationName])=>{
       const button=document.createElement('button');
       button.type='button';
-      button.innerHTML='<span class="station-code"></span><span></span>';
-      button.children[0].textContent=stationCode;
-      button.children[1].textContent=stationName;
+      button.className='station-number-button';
+      button.textContent=stationCode;
+      button.setAttribute('aria-label',stationName+' ('+stationCode+')');
+      button.title=stationName;
       button.addEventListener('click',()=>{highlightStation(stationName,code);speak(stationName)});
       stationList.appendChild(button);
     });
