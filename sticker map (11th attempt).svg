@@ -2336,4 +2336,12 @@
   <text x="82" y="594.33">Boon Lay</text>
   <text x="82" y="631.79">Lakeside</text>
 </g>
+
+  <g id="east-west-missing-station-labels" font-family="Atkinson Hyperlegible, Arial, sans-serif" font-size="13" font-weight="700" fill="#172033">
+    <text x="612" y="702.5">City Hall</text>
+    <text x="615" y="743.7">Raffles Place</text>
+    <text x="697" y="656.4">Bugis</text>
+    <text x="1090" y="532.1">Expo</text>
+    <text x="989" y="370">Tampines</text>
+  </g>
 </svg>
