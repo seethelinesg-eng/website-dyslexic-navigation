@@ -196,20 +196,19 @@
     const svg=mount.querySelector('svg');
     if(!svg)return;
     svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
-    const normalise=value=>String(value||'').replace(/\\s+/g,'').trim().toLocaleLowerCase();
+    const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
     const target=normalise(stationName);
     const ns='http://www.w3.org/2000/svg';
     let highlighted=0;
 
-    // In this Illustrator export, a station label is often split into many
-    // <tspan> letter fragments. Several station names can also share one
-    // parent <text>, with each station on a different y coordinate. Group
-    // fragments by their y coordinate, then match the complete station name.
+    // Illustrator sometimes splits one station name across multiple text rows
+    // (for example, "Chinese" and "Garden"). Search both individual rows and
+    // short consecutive row groups, then highlight the exact combined bounds.
     svg.querySelectorAll('text').forEach(textEl=>{
       const tspans=[...textEl.querySelectorAll(':scope > tspan')];
       if(!tspans.length){
         if(normalise(textEl.textContent)===target){
-          addHighlight(textEl,textEl.getBBox(),ns,code);
+          addHighlight(textEl,textEl.getBBox());
           highlighted++;
         }
         return;
@@ -222,23 +221,32 @@
         row.text+=tspan.textContent||'';
         row.elements.push(tspan);
       });
-      rows.forEach(row=>{
-        if(normalise(row.text)!==target)return;
-        let bounds=null;
-        row.elements.forEach(tspan=>{
-          const b=tspan.getBBox();
-          if(!bounds)bounds={x:b.x,y:b.y,width:b.width,height:b.height};
-          else{
-            const right=Math.max(bounds.x+bounds.width,b.x+b.width);
-            const bottom=Math.max(bounds.y+bounds.height,b.y+b.height);
-            bounds.x=Math.min(bounds.x,b.x);bounds.y=Math.min(bounds.y,b.y);
-            bounds.width=right-bounds.x;bounds.height=bottom-bounds.y;
+      const ordered=[...rows.values()];
+      for(let i=0;i<ordered.length;i++){
+        let combined='',elements=[];
+        for(let j=i;j<Math.min(ordered.length,i+3);j++){
+          combined+=ordered[j].text;
+          elements=elements.concat(ordered[j].elements);
+          if(normalise(combined)===target){
+            let bounds=null;
+            elements.forEach(tspan=>{
+              const b=tspan.getBBox();
+              if(!bounds)bounds={x:b.x,y:b.y,width:b.width,height:b.height};
+              else{
+                const right=Math.max(bounds.x+bounds.width,b.x+b.width);
+                const bottom=Math.max(bounds.y+bounds.height,b.y+b.height);
+                bounds.x=Math.min(bounds.x,b.x);bounds.y=Math.min(bounds.y,b.y);
+                bounds.width=right-bounds.x;bounds.height=bottom-bounds.y;
+              }
+            });
+            if(bounds){addHighlight(textEl,bounds);highlighted++;}
+            break;
           }
-        });
-        if(bounds){addHighlight(textEl,bounds,ns,code);highlighted++;}
-      });
+          if(normalise(combined).length>target.length+4)break;
+        }
+      }
     });
-    function addHighlight(textEl,bbox,ns,code){
+    function addHighlight(textEl,bbox){
       const marker=document.createElementNS(ns,'rect');
       const padX=3,padY=2;
       marker.setAttribute('class','station-label-highlight');
@@ -253,6 +261,8 @@
     }
     if(!highlighted){
       status.textContent=stationName+' selected and announced. I could not locate its label in the SVG artwork.';
+    }else{
+      status.textContent=stationName+' highlighted on the map.';
     }
   }
   function renderStations(code){
