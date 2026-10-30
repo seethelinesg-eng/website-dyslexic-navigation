@@ -257,6 +257,11 @@
       marker.setAttribute('rx','3');
       marker.setAttribute('fill',routeColours[code].glow);
       marker.setAttribute('pointer-events','none');
+      // getBBox() is measured in the text element's local coordinates.
+      // The rectangle is a sibling, so it must receive the same transform
+      // or it will appear detached from the station name on the map.
+      const textTransform=textEl.getAttribute('transform');
+      if(textTransform)marker.setAttribute('transform',textTransform);
       textEl.parentNode.insertBefore(marker,textEl);
     }
     if(!highlighted){
