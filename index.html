@@ -205,7 +205,14 @@
     if(!svg)return;
     svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
-    const target=normalise(stationName);
+    // The SVG artwork has one TEL label typo: "Brighter Hill" is used
+    // where the station list correctly says "Bright Hill". Accept both
+    // spellings so the official station name still highlights its map label.
+    const labelAliases={
+      'Bright Hill':['Bright Hill','Brighter Hill']
+    };
+    const targets=(labelAliases[stationName]||[stationName]).map(normalise);
+    const matchesTarget=value=>targets.includes(normalise(value));
     const ns='http://www.w3.org/2000/svg';
     let highlighted=0;
 
@@ -215,7 +222,7 @@
     svg.querySelectorAll('text').forEach(textEl=>{
       const tspans=[...textEl.querySelectorAll(':scope > tspan')];
       if(!tspans.length){
-        if(normalise(textEl.textContent)===target){
+        if(matchesTarget(textEl.textContent)){
           addHighlight(textEl,textEl.getBBox());
           highlighted++;
         }
@@ -235,7 +242,7 @@
         for(let j=i;j<Math.min(ordered.length,i+3);j++){
           combined+=ordered[j].text;
           elements=elements.concat(ordered[j].elements);
-          if(normalise(combined)===target){
+          if(matchesTarget(combined)){
             let bounds=null;
             elements.forEach(tspan=>{
               const b=tspan.getBBox();
@@ -250,7 +257,7 @@
             if(bounds){addHighlight(textEl,bounds);highlighted++;}
             break;
           }
-          if(normalise(combined).length>target.length+4)break;
+          if(Math.min(...targets.map(target=>target.length))>0 && Math.min(...targets.map(target=>target.length))<normalise(combined).length-4)break;
         }
       }
     });
