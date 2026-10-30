@@ -257,7 +257,8 @@
     stationPanel.classList.remove('visible');
     mount.classList.remove('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed','false'));
-    mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));\n    mount.querySelectorAll('[data-gradient-route]').forEach(el=>el.classList.remove('dimmed'));
+    mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));
+    mount.querySelectorAll('[data-gradient-route]').forEach(el=>el.classList.remove('dimmed'));
     mount.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     speak('Full MRT map shown');
   }
