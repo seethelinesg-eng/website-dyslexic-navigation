@@ -133,7 +133,7 @@
     return rgbFromCss(direct)||rgbFromCss(inline&&inline[1]);
   }
   function gradientColours(svg,value){
-    const match=String(value||'').match(/url\(#([^)]*)\)/);
+    const match=String(value||'').match(/url\([\"']?#([^\"')]+)[\"']?\)/);
     if(!match)return [];
     const gradient=svg.querySelector('#'+CSS.escape(match[1]));
     if(!gradient)return [];
