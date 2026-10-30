@@ -31,7 +31,15 @@
     #lineControls button[data-select-line="TEL"]{background:#513019}
     #lineControls button[aria-pressed=true]{outline:3px solid #172033;outline-offset:3px;box-shadow:0 0 0 6px #fff,0 0 0 9px currentColor}
     #mapMount .dimmed{display:none!important}
-    #mapMount .selected-line{filter:drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 9px var(--line-glow))!important;opacity:1!important}
+    #mapMount .selected-line{
+      filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 11px var(--line-glow)) drop-shadow(0 0 19px var(--line-glow))!important;
+      opacity:1!important;
+      animation:routeGlow 1.8s ease-in-out infinite alternate;
+    }
+    @keyframes routeGlow{
+      from{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 8px var(--line-glow)) drop-shadow(0 0 14px var(--line-glow))}
+      to{filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px var(--line-glow)) drop-shadow(0 0 14px var(--line-glow)) drop-shadow(0 0 24px var(--line-glow))}
+    }
     /* The highlight is a separate SVG shape behind the label.
        Do not apply any font, size, weight, or text-colour changes. */
     #mapMount .station-label-highlight{pointer-events:none;}
