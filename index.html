@@ -198,6 +198,10 @@
         el.setAttribute('data-line',owner);
         el.setAttribute('data-station-label','true');
       }
+      // Keep the Punggol LRT label out of the way while a main MRT line is focused.
+      if(label==='punggollrt'||label==='punggolcove'){
+        el.setAttribute('data-unrelated-label','true');
+      }
     });
   }
   function highlightStation(stationName,code){
@@ -309,6 +313,9 @@
       const match=el.getAttribute('data-line')===code;
       el.classList.toggle('dimmed',!match);el.classList.toggle('selected-line',match);
     });
+    // Focus mode shows only the selected MRT route and its station labels.
+    // Hide interchange gradient boxes and unrelated LRT corner labels.
+    mount.querySelectorAll('[data-gradient-route],[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
     speak(names[code]+' selected');
   }
   function showAll(){
