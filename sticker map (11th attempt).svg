@@ -2338,8 +2338,8 @@
 </g>
 
   <g id="east-west-missing-station-labels">
-    <text class="cls-237" transform="translate(607.58 707.05) scale(1.03 1)">City Hall</text>
-    <text class="cls-237" transform="translate(614.75 746.07) scale(1.03 1)">Raffles Place</text>
+    <text data-lines="NSL EWL" class="cls-237" transform="translate(607.58 707.05 scale(1.03 1)">City Hall</text>
+    <text data-lines="NSL EWL" class="cls-237" transform="translate(614.75 746.07 scale(1.03 1)">Raffles Place</text>
     <text class="cls-239" transform="translate(704.77 660.36) scale(1.03 1)">Bugis</text>
   </g>
 </svg>
