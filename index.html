@@ -129,7 +129,7 @@
   }
   function authoredColour(el,kind){
     const direct=el.getAttribute(kind);
-    const inline=(el.getAttribute('style')||'').match(new RegExp(kind+'\s*:\s*([^;]+)','i'));
+    const inline=(el.getAttribute('style')||'').match(new RegExp(kind+'\\s*:\\s*([^;]+)','i'));
     return rgbFromCss(direct)||rgbFromCss(inline&&inline[1]);
   }
   function gradientColours(svg,value){
