@@ -198,10 +198,6 @@
   function highlightStation(stationName,code){
     const svg=mount.querySelector('svg');
     if(!svg)return;
-    svg.querySelectorAll('.station-label-active').forEach(el=>{
-      el.classList.remove('station-label-active');
-      el.style.removeProperty('--station-colour');
-    });
     svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     const normalise=value=>value.replace(/\s+/g,' ').trim().toLocaleLowerCase();
     const target=normalise(stationName);
@@ -209,14 +205,12 @@
     // complete parent <text> element so the whole station label is styled.
     const matches=[...svg.querySelectorAll('text')].filter(el=>normalise(el.textContent)===target);
     matches.forEach(el=>{
-      el.classList.add('station-label-active');
-      el.style.setProperty('--station-colour',routeColours[code].glow);
-      el.setAttribute('aria-label',stationName+' station selected');
-      // Add a rounded colour marker behind the complete station label.
+      // Only insert a background rectangle. Do not add classes, styles,
+      // attributes, strokes, or font changes to the original SVG text.
       const ns='http://www.w3.org/2000/svg';
       const bbox=el.getBBox();
-      const padX=3, padY=2;
       const marker=document.createElementNS(ns,'rect');
+      const padX=3, padY=2;
       marker.setAttribute('class','station-label-highlight');
       marker.setAttribute('x',bbox.x-padX);
       marker.setAttribute('y',bbox.y-padY);
@@ -226,7 +220,6 @@
       marker.setAttribute('fill',routeColours[code].glow);
       marker.setAttribute('pointer-events','none');
       el.parentNode.insertBefore(marker,el);
-      el.dataset.highlightMarker='true';
     });
     if(matches.length){
       matches[0].scrollIntoView?.({block:'nearest',inline:'nearest',behavior:'smooth'});
@@ -265,7 +258,6 @@
     mount.classList.remove('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed','false'));
     mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));\n    mount.querySelectorAll('[data-gradient-route]').forEach(el=>el.classList.remove('dimmed'));
-    mount.querySelectorAll('.station-label-active').forEach(el=>{el.classList.remove('station-label-active');el.style.removeProperty('--station-colour')});
     mount.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     speak('Full MRT map shown');
   }
