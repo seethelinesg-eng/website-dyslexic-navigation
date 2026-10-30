@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Singapore MRT — Accessible Map</title>
+  <style>
+    :root{font-family:Arial,Helvetica,sans-serif;color:#172033;background:#f5f7fb}
+    *{box-sizing:border-box}
+    body{margin:0}
+    header{padding:28px clamp(18px,4vw,56px);background:#fff;border-bottom:1px solid #dce2ec}
+    h1{font-size:clamp(1.65rem,3vw,2.35rem);margin:0 0 8px;letter-spacing:.01em}
+    header p{margin:0;max-width:760px;line-height:1.6;color:#46536a;font-size:1.05rem}
+    main{max-width:1240px;margin:auto;padding:26px clamp(16px,3vw,36px) 48px}
+    .intro{font-size:1.1rem;font-weight:700;margin:0 0 14px}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 18px}
+    button{font:inherit;font-weight:700;border:2px solid #c8d1df;background:#fff;color:#172033;border-radius:12px;padding:12px 16px;min-height:48px;cursor:pointer}
+    button:hover,button:focus-visible{outline:3px solid #6b8cff;outline-offset:2px}
+    button[aria-pressed=true]{background:#172b55;color:#fff;border-color:#172b55;box-shadow:0 0 0 3px #cbd8ff}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+    .toolbar button{font-size:.98rem}
+    .status{font-weight:700;color:#243b69;min-height:1.5em;margin:8px 0 14px}
+    .map-shell{background:#fff;border:1px solid #dce2ec;border-radius:18px;min-height:420px;padding:18px;box-shadow:0 8px 28px #15284b0b}
+    .map-placeholder{min-height:380px;display:grid;place-items:center;text-align:center;padding:28px;border:2px dashed #c5cede;border-radius:12px;color:#46536a;line-height:1.6}
+    .map-placeholder strong{display:block;color:#172033;font-size:1.25rem;margin-bottom:8px}
+    #mapMount svg{width:100%;height:auto;max-height:78vh;display:block}
+    #mapMount [data-line],#mapMount [data-station]{transition:opacity .2s ease,filter .2s ease;cursor:pointer}
+    #mapMount .dimmed{opacity:.12!important}
+    #mapMount .selected-line{filter:drop-shadow(0 0 5px #ffcf45) drop-shadow(0 0 10px #ffcf45);opacity:1!important}
+    #mapMount [data-station]:focus{outline:3px solid #2463eb}
+    .help{color:#526078;line-height:1.6;font-size:.98rem;margin-top:16px}
+    input[type=file]{max-width:100%;font:inherit}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+<header>
+  <h1>Singapore MRT Accessible Map</h1>
+  <p>Explore one MRT line at a time. Select a line to hear its name and highlight it, then select a station to hear the station name.</p>
+</header>
+<main>
+  <p class="intro">1. Choose an MRT line</p>
+  <div class="controls" id="lineControls" aria-label="MRT lines">
+    <button type="button" data-select-line="NSL" aria-pressed="false">North-South Line</button>
+    <button type="button" data-select-line="EWL" aria-pressed="false">East-West Line</button>
+    <button type="button" data-select-line="NEL" aria-pressed="false">North-East Line</button>
+    <button type="button" data-select-line="CCL" aria-pressed="false">Circle Line</button>
+    <button type="button" data-select-line="DTL" aria-pressed="false">Downtown Line</button>
+    <button type="button" data-select-line="TEL" aria-pressed="false">Thomson-East Coast Line</button>
+  </div>
+  <div class="toolbar">
+    <button type="button" id="showAll">Show full map</button>
+    <button type="button" id="repeatAudio">Repeat announcement</button>
+    <label>Upload map artwork (SVG): <input id="mapFile" type="file" accept=".svg,image/svg+xml"></label>
+  </div>
+  <p class="intro">2. Select a station on the map</p>
+  <p class="status" id="status" role="status" aria-live="polite">No line selected. Choose a line above to begin.</p>
+  <section class="map-shell" aria-label="Interactive MRT map">
+    <div id="mapMount">
+      <div class="map-placeholder">
+        <div><strong>Your MRT map will appear here</strong>Upload an SVG export of your map artwork. For line highlighting, label each line group with <code>data-line="CCL"</code> (use NSL, EWL, NEL, CCL, DTL or TEL). Label station shapes or text with <code>data-station="Station Name"</code> and the same <code>data-line</code>.</div>
+      </div>
+    </div>
+  </section>
+  <p class="help">Audio uses your browser’s built-in text-to-speech voice. You can use the “Show full map” button at any time. For the most reliable station selection, the uploaded SVG should have each station labelled with its station name.</p>
+</main>
+<script>
+(() => {
+  const names={NSL:'North-South Line',EWL:'East-West Line',NEL:'North-East Line',CCL:'Circle Line',DTL:'Downtown Line',TEL:'Thomson-East Coast Line'};
+  const status=document.getElementById('status'), mount=document.getElementById('mapMount');
+  let selected=null,lastAnnouncement='';
+  function speak(text){lastAnnouncement=text;status.textContent=text;if('speechSynthesis' in window){speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.rate=.88;utterance.pitch=1;speechSynthesis.speak(utterance)}}
+  function selectLine(code){
+    if(!names[code])return;selected=code;
+    document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
+    mount.querySelectorAll('[data-line]').forEach(el=>{
+      const match=el.getAttribute('data-line')===code;
+      el.classList.toggle('dimmed',!match);el.classList.toggle('selected-line',match);
+    });
+    speak(names[code]);
+  }
+  function showAll(){
+    selected=null;
+    document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed','false'));
+    mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));
+    speak('Full MRT map shown');
+  }
+  document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
+  document.getElementById('showAll').addEventListener('click',showAll);
+  document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement)});
+  mount.addEventListener('click',e=>{
+    const station=e.target.closest('[data-station]');
+    if(!station)return;
+    const line=station.getAttribute('data-line');
+    if(selected&&line&&line!==selected){speak('This station is not on the selected line.');return}
+    const stationName=station.getAttribute('data-station');
+    speak(stationName);
+  });
+  mount.addEventListener('keydown',e=>{
+    if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-station]')){e.preventDefault();speak(e.target.getAttribute('data-station'))}
+  });
+  document.getElementById('mapFile').addEventListener('change',async e=>{
+    const file=e.target.files&&e.target.files[0];if(!file)return;
+    const raw=await file.text();
+    if(!raw.trim().startsWith('<svg')&&!raw.includes('<svg')){speak('Please upload a valid SVG map file.');return}
+    const parser=new DOMParser(),doc=parser.parseFromString(raw,'image/svg+xml');
+    if(doc.querySelector('parsererror')||!doc.querySelector('svg')){speak('The SVG file could not be read.');return}
+    const svg=doc.querySelector('svg');
+    svg.removeAttribute('width');svg.removeAttribute('height');svg.setAttribute('role','img');svg.setAttribute('aria-label','Interactive Singapore MRT map');
+    mount.replaceChildren(document.importNode(svg,true));
+    mount.querySelectorAll('[data-station]').forEach(el=>{el.setAttribute('tabindex','0');el.setAttribute('role','button');el.setAttribute('aria-label',el.getAttribute('data-station'))});
+    showAll();
+    status.textContent='Map uploaded. Choose an MRT line, then select a station.';
+  });
+})();
+</script>
+</body>
+</html>
