@@ -345,6 +345,13 @@
       if(el.closest('#interactiveLegendTargets'))return;
       // Preserve the pale white Singapore island silhouette in every line-focus view.
       if(el.classList.contains('island-background')){el.classList.remove('focus-shape-hidden');return;}
+      // The TEL artwork contains unrelated grey guide/connector strokes.
+      // Hide those in brown-line focus without affecting the brown route itself.
+      if(code==='TEL'){
+        const stroke=rgbFromCss(getComputedStyle(el).stroke);
+        const isGreyStroke=stroke&&Math.max(...stroke)-Math.min(...stroke)<28&&Math.max(...stroke)>55&&Math.max(...stroke)<190;
+        if(isGreyStroke){el.classList.add('focus-shape-hidden');return;}
+      }
       if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
       let box;
       try{box=el.getBBox();}catch(_){return;}
