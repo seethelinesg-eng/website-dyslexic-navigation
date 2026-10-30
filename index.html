@@ -101,6 +101,21 @@
   mount.addEventListener('keydown',e=>{
     if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-station]')){e.preventDefault();speak(e.target.getAttribute('data-station'))}
   });
+  // Load the SVG stored beside this page automatically.
+  fetch('./mrt-map.svg')
+    .then(response=>{if(!response.ok)throw new Error('Map file not found');return response.text()})
+    .then(raw=>{
+      const doc=new DOMParser().parseFromString(raw,'image/svg+xml');
+      if(doc.querySelector('parsererror')||!doc.querySelector('svg'))throw new Error('Invalid SVG');
+      const svg=doc.querySelector('svg');
+      svg.removeAttribute('width');svg.removeAttribute('height');
+      svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map');
+      mount.replaceChildren(document.importNode(svg,true));
+      mount.querySelectorAll('[data-station]').forEach(el=>{el.setAttribute('tabindex','0');el.setAttribute('role','button');el.setAttribute('aria-label',el.getAttribute('data-station'))});
+      status.textContent='MRT map loaded. Choose a line to begin.';
+    })
+    .catch(()=>{status.textContent='Could not load mrt-map.svg. Check that it is in the same repository folder as index.html.'});
+
   document.getElementById('mapFile').addEventListener('change',async e=>{
     const file=e.target.files&&e.target.files[0];if(!file)return;
     const raw=await file.text();
