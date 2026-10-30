@@ -22,15 +22,11 @@
     .toolbar button{font-size:.98rem}
     .status{font-weight:700;color:#243b69;min-height:1.5em;margin:8px 0 14px}
     .map-shell{background:#fff;border:1px solid #dce2ec;border-radius:18px;min-height:420px;padding:18px;box-shadow:0 8px 28px #15284b0b}
-    .map-placeholder{min-height:380px;display:grid;place-items:center;text-align:center;padding:28px;border:2px dashed #c5cede;border-radius:12px;color:#46536a;line-height:1.6}
-    .map-placeholder strong{display:block;color:#172033;font-size:1.25rem;margin-bottom:8px}
     #mapMount svg{width:100%;height:auto;max-height:78vh;display:block}
-    #mapMount [data-line],#mapMount [data-station]{transition:opacity .2s ease,filter .2s ease;cursor:pointer}
-    #mapMount .dimmed{opacity:.12!important}
-    #mapMount .selected-line{filter:drop-shadow(0 0 5px #ffcf45) drop-shadow(0 0 10px #ffcf45);opacity:1!important}
-    #mapMount [data-station]:focus{outline:3px solid #2463eb}
+    #mapMount [data-line]{transition:opacity .22s ease,filter .22s ease}
+    #mapMount .dimmed{opacity:.13!important}
+    #mapMount .selected-line{filter:drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 9px var(--line-glow))!important;opacity:1!important}
     .help{color:#526078;line-height:1.6;font-size:.98rem;margin-top:16px}
-    input[type=file]{max-width:100%;font:inherit}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
     @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
   </style>
@@ -38,7 +34,7 @@
 <body>
 <header>
   <h1>Singapore MRT Accessible Map</h1>
-  <p>Explore one MRT line at a time. Select a line to hear its name and highlight it, then select a station to hear the station name.</p>
+  <p>Explore one MRT line at a time. Select a line to hear its name and make it glow, while the other lines fade into the background.</p>
 </header>
 <main>
   <p class="intro">1. Choose an MRT line</p>
@@ -53,25 +49,44 @@
   <div class="toolbar">
     <button type="button" id="showAll">Show full map</button>
     <button type="button" id="repeatAudio">Repeat announcement</button>
-    <label>Upload map artwork (SVG): <input id="mapFile" type="file" accept=".svg,image/svg+xml"></label>
   </div>
-  <p class="intro">2. Select a station on the map</p>
-  <p class="status" id="status" role="status" aria-live="polite">No line selected. Choose a line above to begin.</p>
+  <p class="status" id="status" role="status" aria-live="polite">Loading the MRT map…</p>
   <section class="map-shell" aria-label="Interactive MRT map">
-    <div id="mapMount">
-      <div class="map-placeholder">
-        <div><strong>Your MRT map will appear here</strong>Upload an SVG export of your map artwork. For line highlighting, label each line group with <code>data-line="CCL"</code> (use NSL, EWL, NEL, CCL, DTL or TEL). Label station shapes or text with <code>data-station="Station Name"</code> and the same <code>data-line</code>.</div>
-      </div>
-    </div>
+    <div id="mapMount"></div>
   </section>
-  <p class="help">Audio uses your browser’s built-in text-to-speech voice. You can use the “Show full map” button at any time. For the most reliable station selection, the uploaded SVG should have each station labelled with its station name.</p>
+  <p class="help">Choose a line button to highlight that route. Select “Show full map” to return to the complete network. Audio uses your browser’s built-in text-to-speech voice.</p>
 </main>
 <script>
 (() => {
   const names={NSL:'North-South Line',EWL:'East-West Line',NEL:'North-East Line',CCL:'Circle Line',DTL:'Downtown Line',TEL:'Thomson-East Coast Line'};
-  const status=document.getElementById('status'), mount=document.getElementById('mapMount');
+  // These are the six route colours used in the uploaded map artwork.
+  const routeColours={
+    NSL:{rgb:[235,29,39],glow:'#eb1d27'},
+    EWL:{rgb:[40,151,65],glow:'#279641'},
+    NEL:{rgb:[127,37,148],glow:'#7f2594'},
+    CCL:{rgb:[246,135,18],glow:'#f68712'},
+    DTL:{rgb:[49,83,173],glow:'#3153ad'},
+    TEL:{rgb:[81,48,25],glow:'#513019'}
+  };
+  const status=document.getElementById('status'),mount=document.getElementById('mapMount');
   let selected=null,lastAnnouncement='';
-  function speak(text){lastAnnouncement=text;status.textContent=text;if('speechSynthesis' in window){speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.rate=.88;utterance.pitch=1;speechSynthesis.speak(utterance)}}
+  function speak(text){lastAnnouncement=text;status.textContent=text;if('speechSynthesis'in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.88;speechSynthesis.speak(u)}}
+  function rgbFromCss(value){const m=value&&value.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);return m?[Number(m[1]),Number(m[2]),Number(m[3])]:null}
+  function sameColour(a,b){return !!a&&a.every((v,i)=>Math.abs(v-b[i])<=2)}
+  function tagMapLines(svg){
+    const all=svg.querySelectorAll('*');
+    all.forEach(el=>{
+      const style=getComputedStyle(el);
+      const fill=rgbFromCss(style.fill),stroke=rgbFromCss(style.stroke);
+      for(const [code,info] of Object.entries(routeColours)){
+        if(sameColour(fill,info.rgb)||sameColour(stroke,info.rgb)){
+          el.setAttribute('data-line',code);
+          el.style.setProperty('--line-glow',info.glow);
+          break;
+        }
+      }
+    });
+  }
   function selectLine(code){
     if(!names[code])return;selected=code;
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
@@ -79,7 +94,7 @@
       const match=el.getAttribute('data-line')===code;
       el.classList.toggle('dimmed',!match);el.classList.toggle('selected-line',match);
     });
-    speak(names[code]);
+    speak(names[code]+' selected');
   }
   function showAll(){
     selected=null;
@@ -87,48 +102,30 @@
     mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));
     speak('Full MRT map shown');
   }
+  function installMap(raw){
+    const doc=new DOMParser().parseFromString(raw,'image/svg+xml');
+    if(doc.querySelector('parsererror')||!doc.querySelector('svg'))throw new Error('Invalid SVG');
+    const svg=doc.querySelector('svg');
+    svg.removeAttribute('width');svg.removeAttribute('height');
+    svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map');
+    const imported=document.importNode(svg,true);
+    mount.replaceChildren(imported);
+    tagMapLines(imported);
+    const counts={};
+    imported.querySelectorAll('[data-line]').forEach(el=>{const c=el.getAttribute('data-line');counts[c]=(counts[c]||0)+1});
+    return counts;
+  }
   document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
   document.getElementById('showAll').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement)});
-  mount.addEventListener('click',e=>{
-    const station=e.target.closest('[data-station]');
-    if(!station)return;
-    const line=station.getAttribute('data-line');
-    if(selected&&line&&line!==selected){speak('This station is not on the selected line.');return}
-    const stationName=station.getAttribute('data-station');
-    speak(stationName);
-  });
-  mount.addEventListener('keydown',e=>{
-    if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-station]')){e.preventDefault();speak(e.target.getAttribute('data-station'))}
-  });
-  // Load the SVG stored beside this page automatically.
   fetch('./mrt-map.svg')
-    .then(response=>{if(!response.ok)throw new Error('Map file not found');return response.text()})
+    .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
-      const doc=new DOMParser().parseFromString(raw,'image/svg+xml');
-      if(doc.querySelector('parsererror')||!doc.querySelector('svg'))throw new Error('Invalid SVG');
-      const svg=doc.querySelector('svg');
-      svg.removeAttribute('width');svg.removeAttribute('height');
-      svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map');
-      mount.replaceChildren(document.importNode(svg,true));
-      mount.querySelectorAll('[data-station]').forEach(el=>{el.setAttribute('tabindex','0');el.setAttribute('role','button');el.setAttribute('aria-label',el.getAttribute('data-station'))});
-      status.textContent='MRT map loaded. Choose a line to begin.';
+      const counts=installMap(raw);
+      const missing=Object.keys(names).filter(code=>!counts[code]);
+      status.textContent=missing.length?'Map loaded, but line colours need checking: '+missing.join(', '):'MRT map ready. Choose a line to make it glow.';
     })
     .catch(()=>{status.textContent='Could not load mrt-map.svg. Check that it is in the same repository folder as index.html.'});
-
-  document.getElementById('mapFile').addEventListener('change',async e=>{
-    const file=e.target.files&&e.target.files[0];if(!file)return;
-    const raw=await file.text();
-    if(!raw.trim().startsWith('<svg')&&!raw.includes('<svg')){speak('Please upload a valid SVG map file.');return}
-    const parser=new DOMParser(),doc=parser.parseFromString(raw,'image/svg+xml');
-    if(doc.querySelector('parsererror')||!doc.querySelector('svg')){speak('The SVG file could not be read.');return}
-    const svg=doc.querySelector('svg');
-    svg.removeAttribute('width');svg.removeAttribute('height');svg.setAttribute('role','img');svg.setAttribute('aria-label','Interactive Singapore MRT map');
-    mount.replaceChildren(document.importNode(svg,true));
-    mount.querySelectorAll('[data-station]').forEach(el=>{el.setAttribute('tabindex','0');el.setAttribute('role','button');el.setAttribute('aria-label',el.getAttribute('data-station'))});
-    showAll();
-    status.textContent='Map uploaded. Choose an MRT line, then select a station.';
-  });
 })();
 </script>
 </body>
