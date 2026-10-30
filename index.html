@@ -144,32 +144,49 @@
     }).filter(Boolean);
   }
   function tagMapLines(svg){
-    const lineColours={
-      NSL:[[235,32,39],[235,29,39]],
-      EWL:[[9,153,72],[39,150,65]],
-      NEL:[[142,51,147],[127,37,148]],
-      CCL:[[247,148,29],[246,135,18]],
-      DTL:[[34,90,169],[49,83,173]],
-      TEL:[[88,57,26],[81,48,25]]
+    // The Illustrator SVG uses dedicated solid-colour classes for each route.
+    // Tag those exact route and station-marker classes instead of guessing from
+    // computed colours (which incorrectly classified multi-colour gradients).
+    const routeClasses={
+      NSL:['cls-22','cls-55'],
+      EWL:['cls-26','cls-57','cls-80'],
+      NEL:['cls-23','cls-78'],
+      CCL:['cls-4','cls-68'],
+      DTL:['cls-9','cls-74'],
+      TEL:['cls-7','cls-62']
     };
-    svg.querySelectorAll('*').forEach(el=>{
-      const computed=getComputedStyle(el);
-      const fillValue=el.getAttribute('fill')||computed.fill;
-      const strokeValue=el.getAttribute('stroke')||computed.stroke;
-      const colours=[
-        authoredColour(el,'fill'),rgbFromCss(computed.fill),
-        authoredColour(el,'stroke'),rgbFromCss(computed.stroke),
-        ...gradientColours(svg,strokeValue),...gradientColours(svg,fillValue)
-      ].filter(Boolean);
-      let detected=null;
-      for(const [code,variants] of Object.entries(lineColours)){
-        if(colours.some(c=>variants.some(v=>colourMatches(c,v)))){
-          detected=code;break;
-        }
+    for(const [code,classes] of Object.entries(routeClasses)){
+      for(const cls of classes){
+        svg.querySelectorAll('.'+cls).forEach(el=>{
+          el.setAttribute('data-line',code);
+          el.style.setProperty('--line-glow',routeColours[code].glow);
+        });
       }
-      if(detected){
-        el.setAttribute('data-line',detected);
-        el.style.setProperty('--line-glow',routeColours[detected].glow);
+    }
+    // Multi-colour interchange connectors cannot safely belong to one route.
+    // Hide them in line-focus mode so no other route colour remains visible.
+    svg.querySelectorAll('[class]').forEach(el=>{
+      if([...el.classList].some(c=>/^cls-(?:1[0-7]|2[4-8]|3[0-9]|4[0-8])$/.test(c))){
+        el.setAttribute('data-gradient-route','true');
+      }
+    });
+    const normalise=value=>String(value||'').replace(/\\s+/g,' ').trim().toLocaleLowerCase();
+    const stationOwners=new Map();
+    const codeOwners=new Map();
+    for(const [code,list] of Object.entries(stations)){
+      for(const [stationCode,stationName] of list){
+        stationOwners.set(normalise(stationName),code);
+        codeOwners.set(normalise(stationCode),code);
+      }
+    }
+    // Illustrator sometimes exports one label per tspan and sometimes one
+    // text element per station. Tag both forms, including station-code labels.
+    svg.querySelectorAll('text,tspan').forEach(el=>{
+      const label=normalise(el.textContent);
+      const owner=stationOwners.get(label)||codeOwners.get(label.replace(/\\s+/g,''));
+      if(owner){
+        el.setAttribute('data-line',owner);
+        el.setAttribute('data-station-label','true');
       }
     });
   }
@@ -226,7 +243,7 @@
     stationPanel.classList.remove('visible');
     mount.classList.remove('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed','false'));
-    mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));
+    mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));\n    mount.querySelectorAll('[data-gradient-route]').forEach(el=>el.classList.remove('dimmed'));
     mount.querySelectorAll('.station-label-active').forEach(el=>{el.classList.remove('station-label-active');el.style.removeProperty('--station-colour')});
     speak('Full MRT map shown');
   }
