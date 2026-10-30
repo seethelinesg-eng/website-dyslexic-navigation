@@ -54,6 +54,8 @@
     .status{font-weight:700;color:#243b69;min-height:1.5em;margin:8px 0 14px}
     .map-shell{background:#fff;border:1px solid #dce2ec;border-radius:18px;min-height:420px;padding:18px;box-shadow:0 8px 28px #15284b0b}
     #mapMount svg{width:100%;height:auto;max-height:78vh;display:block}
+    /* Apply Atkinson Hyperlegible to map labels while preserving their original sizes, weights and positions. */
+    #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible",Arial,sans-serif!important;}
     #mapMount [data-line]{transition:opacity .22s ease,filter .22s ease}
     .help{color:#526078;line-height:1.6;font-size:.98rem;margin-top:16px}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -173,7 +175,7 @@
     });
     // Keep station labels belonging to the selected route; preserve their
     // original SVG typography and appearance.
-    const normalise=value=>String(value||'').replace(/\\s+/g,'').trim().toLocaleLowerCase();
+    const normalise=value=>String(value||'').replace(/\s+/g,'').trim().toLocaleLowerCase();
     const stationOwners=new Map(),codeOwners=new Map();
     for(const [code,list] of Object.entries(stations)){
       for(const [stationCode,stationName] of list){
