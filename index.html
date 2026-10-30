@@ -33,6 +33,7 @@
     #mapMount .dimmed{display:none!important}
     #mapMount .focus-text-hidden{display:none!important}
     #mapMount .focus-shape-hidden{display:none!important}
+    #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
     #mapMount .selected-line{
       filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 11px var(--line-glow)) drop-shadow(0 0 19px var(--line-glow))!important;
       opacity:1!important;
@@ -338,7 +339,7 @@
     mount.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
       if(el.closest('#interactiveLegendTargets'))return;
       // Preserve the pale white Singapore island silhouette in every line-focus view.
-      if(el.classList.contains('cls-260')){el.classList.remove('focus-shape-hidden');return;}
+      if(el.classList.contains('island-background')){el.classList.remove('focus-shape-hidden');return;}
       if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
       let box;
       try{box=el.getBBox();}catch(_){return;}
