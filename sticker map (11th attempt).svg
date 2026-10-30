@@ -2039,23 +2039,14 @@
     <text class="cls-88" transform="translate(419.7665 1044.8076) scale(.9584 1)"><tspan x="0" y="0">TEL</tspan></text>
   </g>
   <text class="cls-84" transform="translate(446.6161 1044.8711) scale(1.0307 1)"><tspan class="cls-248" x="0" y="0">Thom</tspan><tspan class="cls-270" x="23.15" y="0">s</tspan><tspan class="cls-247" x="27.74" y="0">on E</tspan><tspan class="cls-268" x="46.33" y="0">a</tspan><tspan class="cls-300" x="51.22" y="0">s</tspan><tspan class="cls-250" x="55.78" y="0">t</tspan><tspan class="cls-310" x="59.18" y="0">-</tspan><tspan class="cls-270" x="62.86" y="0">C</tspan><tspan class="cls-247" x="68.7" y="0">o</tspan><tspan class="cls-277" x="73.84" y="0">a</tspan><tspan class="cls-301" x="78.73" y="0">s</tspan><tspan class="cls-248" x="83.29" y="0">t </tspan><tspan class="cls-280" x="89.8" y="0">L</tspan><tspan class="cls-248" x="94.69" y="0">ine</tspan></text>
-  <text class="cls-94" transform="translate(567.67 932.27) scale(1.05 1)"><tspan class="cls-186" x="0" y="0">L</tspan><tspan class="cls-158" x="4.46" y="0">R</tspan><tspan class="cls-157" x="9.51" y="0">T</tspan><tspan class="cls-97" x="14.09" y="0"> </tspan></text>
-  <line class="cls-60" x1="552.07" y1="937.82" x2="593.84" y2="937.82"/>
-  <g>
-    <rect class="cls-49" x="564.01" y="952.37" width="23.21" height="14.88" rx="5.91" ry="5.91"/>
-    <text class="cls-84" transform="translate(570.71 961.78) scale(.91 1)"><tspan class="cls-298" x="0" y="0">B</tspan><tspan class="cls-327" x="5.67" y="0">P</tspan></text>
-  </g>
-  <g>
-    <rect class="cls-49" x="563.86" y="990.4" width="24.37" height="14.88" rx="5.91" ry="5.91"/>
-    <text class="cls-84" transform="translate(569.26 999.81) scale(.96 1)"><tspan class="cls-314" x="0" y="0">S</tspan><tspan class="cls-328" x="5.36" y="0">T</tspan><tspan class="cls-305" x="10.5" y="0">C</tspan></text>
-  </g>
-  <g>
-    <rect class="cls-49" x="565.74" y="1033.62" width="24.37" height="14.88" rx="5.91" ry="5.91"/>
-    <text class="cls-84" transform="translate(570.14 1043.0332) scale(.9584 1)"><tspan class="cls-304" x="0" y="0">P</tspan><tspan class="cls-328" x="5.62" y="0">T</tspan><tspan class="cls-305" x="10.76" y="0">C</tspan></text>
-  </g>
-  <text class="cls-84" transform="translate(597.68 960.66) scale(1.03 1)"><tspan class="cls-247" x="0" y="0">Bu</tspan><tspan class="cls-250" x="10.74" y="0">k</tspan><tspan class="cls-247" x="15.55" y="0">it </tspan><tspan class="cls-274" x="24.94" y="0">P</tspan><tspan class="cls-247" x="30.42" y="0">anjang L</tspan><tspan class="cls-269" x="66.47" y="0">R</tspan><tspan class="cls-290" x="72.12" y="0">T</tspan></text>
-  <text class="cls-84" transform="translate(598.5023 1001.3906) scale(1.0307 1)"><tspan class="cls-247" x="0" y="0">Seng</tspan><tspan class="cls-266" x="20.85" y="0">k</tspan><tspan class="cls-249" x="25.64" y="0">ang L</tspan><tspan class="cls-269" x="48.98" y="0">R</tspan><tspan class="cls-252" x="54.62" y="0">T</tspan></text>
-  <text class="cls-84" transform="translate(599.8685 1042.2656) scale(1.0307 1)"><tspan class="cls-247" x="0" y="0">Punggol L</tspan><tspan class="cls-278" x="42.39" y="0">R</tspan><tspan class="cls-252" x="48.04" y="0">T</tspan></text>
+  
+  
+  
+  
+  
+  
+  
+  
   <line class="cls-64" x1="688.84" y1="914.8" x2="688.84" y2="1063.5"/>
   <text class="cls-94" transform="translate(741.05 932.27) scale(1.05 1)"><tspan class="cls-190" x="0" y="0">O</tspan><tspan class="cls-169" x="6.65" y="0">the</tspan><tspan class="cls-154" x="20.29" y="0">r</tspan><tspan class="cls-165" x="23.67" y="0"> </tspan><tspan class="cls-221" x="26.7" y="0">T</tspan><tspan class="cls-205" x="31.89" y="0">r</tspan><tspan class="cls-190" x="35.66" y="0">a</tspan><tspan class="cls-169" x="40.75" y="0">ns</tspan><tspan class="cls-108" x="50.45" y="0">p</tspan><tspan class="cls-169" x="55.76" y="0">o</tspan><tspan class="cls-176" x="60.9" y="0">r</tspan><tspan class="cls-169" x="64.64" y="0">t </tspan><tspan class="cls-191" x="71.14" y="0">Mo</tspan><tspan class="cls-169" x="84.09" y="0">de </tspan></text>
   <line class="cls-60" x1="709.15" y1="939.23" x2="874.73" y2="939.23"/>
@@ -2125,7 +2116,7 @@
     <path class="cls-236" d="M719.52,976.91c-.04.06-.8,1.26-2.28,1.26s-2.25-1.2-2.28-1.26v-2.48h4.57v2.48Z"/>
     <path class="cls-236" d="M732.38,976.91c-.04.06-.8,1.26-2.28,1.26s-2.25-1.2-2.28-1.26v-2.48h4.57v2.48Z"/>
   </g>
-  <path class="cls-236" d="M803.43,965.46l-9.44,2.35v-1.41l9.44-5.87v-3.29c-.1-1.76,1-2.96,1.8-2.96.79,0,1.86,1.21,1.76,2.96.05,1.08.11,2.17.16,3.25l9.32,5.87v1.45l-9.48-2.43-.32,6.19,2.87,3.09-.12.74-3.51-1.37v.82c.03.41-.33.73-.67.7-.32-.03-.6-.35-.54-.74-.03-.27-.05-.55-.08-.82l-3.39,1.41-.12-.82,2.91-2.78-.57-6.34Z"/>
+  
   <text class="cls-84" transform="translate(706.42 992.37) scale(1.03 1)"><tspan class="cls-247" x="0" y="0">Bus I</tspan><tspan class="cls-279" x="22.26" y="0">n</tspan><tspan class="cls-247" x="27.3" y="0">t / </tspan><tspan class="cls-253" x=".48" y="9.6">T</tspan><tspan class="cls-249" x="5.18" y="9.6">e</tspan><tspan class="cls-303" x="10.22" y="9.6">r</tspan><tspan class="cls-274" x="13.84" y="9.6">m</tspan><tspan class="cls-247" x="21.36" y="9.6">inal</tspan></text>
   <text class="cls-84" transform="translate(789.61 992.37) scale(1.03 1)"><tspan class="cls-247"><tspan x="0" y="0">Changi </tspan></tspan><tspan class="cls-247" x="-.46" y="9.6">Ai</tspan><tspan class="cls-303" x="8.32" y="9.6">r</tspan><tspan class="cls-264" x="11.94" y="9.6">p</tspan><tspan class="cls-247" x="17.26" y="9.6">o</tspan><tspan class="cls-293" x="22.39" y="9.6">r</tspan><tspan class="cls-247" x="26.13" y="9.6">t</tspan></text>
   <text class="cls-84" transform="translate(875.63 991.95) scale(1.03 1)"><tspan class="cls-247" x="0" y="0">Fe</tspan><tspan class="cls-303" x="10.14" y="0">r</tspan><tspan class="cls-308" x="13.76" y="0">r</tspan><tspan class="cls-272" x="17.39" y="0">y</tspan><tspan class="cls-253" x="-7.42" y="9.6">T</tspan><tspan class="cls-249" x="-2.73" y="9.6">e</tspan><tspan class="cls-303" x="2.31" y="9.6">r</tspan><tspan class="cls-274" x="5.94" y="9.6">m</tspan><tspan class="cls-247" x="13.45" y="9.6">inal</tspan></text>
