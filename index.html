@@ -304,7 +304,12 @@
       const button=document.createElement('button');
       button.type='button';
       button.className='station-number-button';
-      button.textContent=stationCode;
+      const codeLabel=document.createElement('span');
+      codeLabel.className='station-code';
+      codeLabel.textContent=stationCode;
+      const nameLabel=document.createElement('span');
+      nameLabel.textContent=stationName;
+      button.append(codeLabel,nameLabel);
       button.setAttribute('aria-label',stationName+' ('+stationCode+')');
       button.title=stationName;
       button.addEventListener('click',()=>{highlightStation(stationName,code);speak(stationName)});
