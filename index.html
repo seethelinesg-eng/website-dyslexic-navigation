@@ -337,6 +337,8 @@
     // legend intact so its interactive transport icons remain available.
     mount.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
       if(el.closest('#interactiveLegendTargets'))return;
+      // Preserve the pale white Singapore island silhouette in every line-focus view.
+      if(el.classList.contains('cls-260')){el.classList.remove('focus-shape-hidden');return;}
       if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
       let box;
       try{box=el.getBBox();}catch(_){return;}
