@@ -80,13 +80,27 @@
   let selected=null,lastAnnouncement='';
   function speak(text){lastAnnouncement=text;status.textContent=text;if('speechSynthesis'in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.88;speechSynthesis.speak(u)}}
   function rgbFromCss(value){const m=value&&value.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);return m?[Number(m[1]),Number(m[2]),Number(m[3])]:null}
-  function sameColour(a,b){return !!a&&a.every((v,i)=>Math.abs(v-b[i])<=2)}
+  function sameColour(a,b){return !!a&&a.every((v,i)=>Math.abs(v-b[i])<=4)}
+  // The PDF-to-SVG export contains several slightly different purple shades,
+  // so detect the NEL by its purple hue rather than one exact RGB value.
+  function isNelPurple(rgb){
+    if(!rgb)return false;
+    const [r,g,b]=rgb;
+    return r>=85&&r<=165&&g>=12&&g<=85&&b>=105&&b<=195&&b>r*1.02&&r>g*1.45;
+  }
   function tagMapLines(svg){
     const all=svg.querySelectorAll('*');
     all.forEach(el=>{
       const style=getComputedStyle(el);
       const fill=rgbFromCss(style.fill),stroke=rgbFromCss(style.stroke);
+      const purple=isNelPurple(fill)||isNelPurple(stroke);
+      if(purple){
+        el.setAttribute('data-line','NEL');
+        el.style.setProperty('--line-glow',routeColours.NEL.glow);
+        return;
+      }
       for(const [code,info] of Object.entries(routeColours)){
+        if(code==='NEL')continue;
         if(sameColour(fill,info.rgb)||sameColour(stroke,info.rgb)){
           el.setAttribute('data-line',code);
           el.style.setProperty('--line-glow',info.glow);
