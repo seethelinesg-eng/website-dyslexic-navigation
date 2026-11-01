@@ -78,7 +78,7 @@
     .welcome-kicker{margin:0 0 10px;color:#526078;font-size:.85rem;font-weight:700;letter-spacing:.08em}
     #welcomeTitle{font-size:clamp(2rem,6vw,3rem);margin:0 0 10px;color:#172033}
     .welcome-lead{font-size:clamp(1.05rem,3vw,1.25rem);line-height:1.55;color:#46536a;margin:0 auto 24px;max-width:540px}
-    .start-button{background:#172b55;color:#fff;border:2px solid #172b55;border-radius:14px;padding:16px 30px;min-width:220px;min-height:60px;font-size:1.2rem;letter-spacing:.04em;box-shadow:0 3px 8px #17203320}
+    .start-button{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#172b55;color:#fff;border:2px solid #172b55;border-radius:14px;padding:16px 30px;min-width:220px;min-height:60px;font-size:1.2rem;letter-spacing:.04em;box-shadow:0 3px 8px #17203320}
     .start-button:hover,.start-button:focus-visible{background:#243b69;outline:3px solid #172033;outline-offset:4px}
     .start-hint{color:#526078;font-size:.95rem;margin:12px 0 30px}
     .instructions{max-width:590px;margin:0 auto;text-align:left}
@@ -100,7 +100,7 @@
       <p class="welcome-kicker">SINGAPORE MRT • INTERACTIVE MAP</p>
       <h1 id="welcomeTitle">SeeTheLine SG</h1>
       <p class="welcome-lead">Explore Singapore's MRT network, one line at a time.</p>
-      <button type="button" id="startMap" class="start-button">START <span aria-hidden="true">→</span></button>
+      <a id="startMap" class="start-button" href="./map.html">START <span aria-hidden="true">→</span></a>
       <p class="start-hint">Press START to open the map.</p>
       <div class="instructions" aria-labelledby="instructionsTitle">
         <h2 id="instructionsTitle">How to use the map</h2>
@@ -468,7 +468,8 @@
     imported.querySelectorAll('[data-line]').forEach(el=>{const c=el.getAttribute('data-line');counts[c]=(counts[c]||0)+1});
     return counts;
   }
-  document.getElementById('startMap').addEventListener('click',()=>{document.getElementById('welcomeScreen').style.display='none';document.getElementById('mapApp').style.display='block';document.getElementById('lineControls').querySelector('button').focus();});
+  const startButton=document.getElementById('startMap');
+  if(startButton)startButton.addEventListener('click',()=>{window.location.href='./map.html';});
   document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement)});
