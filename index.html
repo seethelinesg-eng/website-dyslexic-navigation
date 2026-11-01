@@ -475,6 +475,10 @@
     svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map');
     const imported=document.importNode(svg,true);
     mount.replaceChildren(imported);
+    // Force the requested accessible typeface on every imported SVG label.
+    imported.querySelectorAll('text,tspan').forEach(label=>{
+      label.style.setProperty('font-family','"Atkinson Hyperlegible",Arial,sans-serif','important');
+    });
     tagMapLines(imported);
     makeLegendInteractive(imported);
     const counts={};
@@ -486,15 +490,18 @@
   document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement)});
-  fetch('./mrt-map.svg')
+  fetch('./mrt-map.svg?v=20261101')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
+      status.textContent='MRT map downloaded. Preparing the map…';
       fullMapRaw=raw;
       const counts=installMap(raw);
       const missing=Object.keys(names).filter(code=>!counts[code]);
       status.textContent=missing.length?'Map loaded, but line colours need checking: '+missing.join(', '):'MRT map ready. Choose a line to make it glow.';
     })
-    .catch(()=>{status.textContent='Could not load the new MRT map SVG. Check that it is in the same repository folder as index.html.'});
+    .catch(error=>{
+      status.textContent='The MRT map could not be displayed: '+(error&&error.message?error.message:'loading error')+'. Please refresh once the update is published.';
+    });
 })();
 </script>
 </body>
