@@ -380,7 +380,7 @@
       return;
     }
     mount.querySelectorAll('[data-line]').forEach(el=>{
-      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\\s+/);
+      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/);
       const match=owners.includes(code);
       el.classList.toggle('dimmed',!match);el.classList.toggle('selected-line',match);
     });
@@ -388,9 +388,9 @@
     // explanatory words on the map background. Keep only station labels
     // assigned to the selected line (including shared interchange labels).
     mount.querySelectorAll('text').forEach(el=>{
-      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\\s+/).filter(Boolean);
+      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       const childOwners=[...el.querySelectorAll('tspan[data-lines],tspan[data-line]')]
-        .flatMap(span=>(span.getAttribute('data-lines')||span.getAttribute('data-line')||'').split(/\\s+/));
+        .flatMap(span=>(span.getAttribute('data-lines')||span.getAttribute('data-line')||'').split(/\s+/));
       const keep=owners.includes(code)||childOwners.includes(code);
       el.classList.toggle('focus-text-hidden',!keep);
     });
