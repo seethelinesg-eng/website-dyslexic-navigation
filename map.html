@@ -146,6 +146,14 @@
   </div>
 <script>
 (() => {
+  // Explicitly bind every page element used by the script. In particular,
+  // window.status is a built-in browser string, not the status paragraph.
+  const status=document.getElementById('status');
+  const mount=document.getElementById('mapMount');
+  const stationPanel=document.getElementById('stationPanel');
+  const stationHeading=document.getElementById('stationHeading');
+  const stationList=document.getElementById('stationList');
+  const lineControls=document.getElementById('lineControls');
   const names={NSL:'North-South Line',EWL:'East-West Line',NEL:'North-East Line',CCL:'Circle Line',DTL:'Downtown Line',TEL:'Thomson-East Coast Line'};
   // Colours sampled from the actual Illustrator SVG artwork.
   const routeColours={
@@ -176,16 +184,16 @@
       return;
     }
     const pronunciationMap=[
-      [/\\bSungei Bedok\\b/gi,'Sungei Bedok'],
-      [/\\bYio Chu Kang\\b/gi,'Yio Chu Kang'],
-      [/\\bBukit Panjang\\b/gi,'Bukit Panjang'],
-      [/\\bTampines East\\b/gi,'Tampines East'],
-      [/\\bUpper Changi\\b/gi,'Upper Changi'],
-      [/\\bTampines\\b/gi,'Tampines'],
-      [/\\bBedok\\b/gi,'Bedok'],
-      [/\\bPromenade\\b/gi,'Promenade'],
-      [/\\bKatong\\b/gi,'Katong'],
-      [/\\bToa Payoh\\b/gi,'Toa Payoh']
+      [/\bSungei Bedok\b/gi,'Sungei Bedok'],
+      [/\bYio Chu Kang\b/gi,'Yio Chu Kang'],
+      [/\bBukit Panjang\b/gi,'Bukit Panjang'],
+      [/\bTampines East\b/gi,'Tampines East'],
+      [/\bUpper Changi\b/gi,'Upper Changi'],
+      [/\bTampines\b/gi,'Tampines'],
+      [/\bBedok\b/gi,'Bedok'],
+      [/\bPromenade\b/gi,'Promenade'],
+      [/\bKatong\b/gi,'Katong'],
+      [/\bToa Payoh\b/gi,'Toa Payoh']
     ];
     let speechText=text;
     pronunciationMap.forEach(([pattern,reading])=>{speechText=speechText.replace(pattern,reading)});
@@ -202,7 +210,8 @@
     if(voice)utterance.voice=voice;
     window.speechSynthesis.cancel();
     // Safari can drop an utterance queued immediately after cancel().
-    window.setTimeout(()=>window.speechSynthesis.speak(utterance),100);
+    window.speechSynthesis.resume();
+    window.speechSynthesis.speak(utterance);
   }
   function rgbFromCss(value){
     if(!value)return null;
