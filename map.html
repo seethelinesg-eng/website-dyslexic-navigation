@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <title>SeeTheLine SG — Interactive MRT Map</title>
+  <style>
+    :root{font-family:"Atkinson Hyperlegible",Arial,sans-serif;color:#172033;background:#f5f7fb}
+    *{box-sizing:border-box}
+    body,button,input,select,textarea{font-family:"Atkinson Hyperlegible",Arial,sans-serif;font-kerning:normal;font-synthesis:none}
+    h1,h2,.intro,button{font-weight:700}
+    body{margin:0}
+    header{padding:28px clamp(18px,4vw,56px);background:#fff;border-bottom:1px solid #dce2ec}
+    h1{font-size:clamp(1.65rem,3vw,2.35rem);margin:0 0 8px;letter-spacing:.01em}
+    header p{margin:0;max-width:760px;line-height:1.6;color:#46536a;font-size:1.05rem}
+    main{max-width:1240px;margin:auto;padding:26px clamp(16px,3vw,36px) 48px}
+    .intro{font-size:1.1rem;font-weight:700;margin:0 0 14px}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 18px}
+    button{font:inherit;font-weight:700;border:2px solid #c8d1df;background:#fff;color:#172033;border-radius:12px;padding:12px 16px;min-height:48px;cursor:pointer}
+    button:hover,button:focus-visible{outline:3px solid #172033;outline-offset:3px}
+    #lineControls button{color:#fff;border-color:transparent;text-shadow:0 1px 2px #0005;box-shadow:0 2px 5px #17203320}
+    #lineControls button[data-select-line="NSL"]{background:#eb1d27}
+    #lineControls button[data-select-line="EWL"]{background:#279641}
+    #lineControls button[data-select-line="NEL"]{background:#7f2594}
+    #lineControls button[data-select-line="CCL"]{background:#f68712}
+    #lineControls button[data-select-line="DTL"]{background:#3153ad}
+    #lineControls button[data-select-line="TEL"]{background:#513019}
+    #lineControls button[aria-pressed=true]{outline:3px solid #172033;outline-offset:3px;box-shadow:0 0 0 6px #fff,0 0 0 9px currentColor}
+    #mapMount .dimmed{display:none!important}
+    #mapMount .focus-text-hidden{display:none!important}
+    #mapMount .focus-shape-hidden{display:none!important}
+    #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
+    #mapMount .selected-line{
+      filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 11px var(--line-glow)) drop-shadow(0 0 19px var(--line-glow))!important;
+      opacity:1!important;
+      animation:routeGlow 1.8s ease-in-out infinite alternate;
+    }
+    @keyframes routeGlow{
+      from{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 8px var(--line-glow)) drop-shadow(0 0 14px var(--line-glow))}
+      to{filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px var(--line-glow)) drop-shadow(0 0 14px var(--line-glow)) drop-shadow(0 0 24px var(--line-glow))}
+    }
+    /* The highlight is a separate SVG shape behind the label.
+       Do not apply any font, size, weight, or text-colour changes. */
+    #mapMount .station-label-highlight{pointer-events:none;}
+    #stationList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
+    #stationList button{display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center;gap:12px;text-align:left;justify-content:initial;background:#f8f9fc;border:1px solid #dce2ec;border-radius:10px;color:#172033;min-height:56px;padding:12px 14px;line-height:1.35;font-size:1.05rem;white-space:normal;overflow-wrap:break-word}
+    #stationList button:hover,#stationList button:focus-visible{background:#eef3fb;border-color:#7183a4}
+    #stationList .station-code{font-size:.88rem;color:#526078;min-width:0;font-weight:700;letter-spacing:.02em}
+    #stationList button span:last-child{min-width:0;font-weight:700}
+    @media(max-width:600px){#stationList{grid-template-columns:1fr;gap:8px}}
+
+    #backToMap{background:#172b55;color:#fff;border-color:#172b55}
+    #stationPanel{display:none;background:#fff;border:1px solid #dce2ec;border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 5px 20px #15284b0b}
+    #stationPanel.visible{display:block}
+    #stationPanel h2{font-size:1.2rem;margin:0 0 6px}
+    #stationPanel p{margin:0 0 14px;color:#526078;line-height:1.5}
+    #mapMount.zoomed svg{transform:scale(1.12);transform-origin:center center;transition:transform .25s ease}
+
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+    .toolbar button{font-size:.98rem}
+    .status{font-weight:700;color:#243b69;min-height:1.5em;margin:8px 0 14px}
+    .map-shell{background:#fff;border:1px solid #dce2ec;border-radius:18px;min-height:420px;padding:18px;box-shadow:0 8px 28px #15284b0b}
+    #mapMount svg{width:100%;height:auto;max-height:78vh;display:block}
+    /* Apply Atkinson Hyperlegible to map labels while preserving their original sizes, weights and positions. */
+    #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible",Arial,sans-serif!important;}
+    #mapMount [data-line]{transition:opacity .22s ease,filter .22s ease}
+    .help{color:#526078;line-height:1.6;font-size:.98rem;margin-top:16px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+    #welcomeScreen{min-height:100vh;padding:clamp(22px,5vw,56px) 16px;display:grid;place-items:center;background:#f5f7fb}
+    .welcome-card{width:min(100%,780px);background:#fff;border:1px solid #dce2ec;border-radius:22px;box-shadow:0 8px 28px #15284b0b;padding:clamp(22px,5vw,48px);text-align:center}
+    .route-stripe{display:flex;height:7px;border-radius:20px;overflow:hidden;margin:0 auto 24px;max-width:300px}
+    .route-stripe span{flex:1}.route-stripe span:nth-child(1){background:#eb1d27}.route-stripe span:nth-child(2){background:#279641}.route-stripe span:nth-child(3){background:#7f2594}.route-stripe span:nth-child(4){background:#f68712}.route-stripe span:nth-child(5){background:#3153ad}.route-stripe span:nth-child(6){background:#513019}
+    .welcome-kicker{margin:0 0 10px;color:#526078;font-size:.85rem;font-weight:700;letter-spacing:.08em}
+    #welcomeTitle{font-size:clamp(2rem,6vw,3rem);margin:0 0 10px;color:#172033}
+    .welcome-lead{font-size:clamp(1.05rem,3vw,1.25rem);line-height:1.55;color:#46536a;margin:0 auto 24px;max-width:540px}
+    .start-button{background:#172b55;color:#fff;border:2px solid #172b55;border-radius:14px;padding:16px 30px;min-width:220px;min-height:60px;font-size:1.2rem;letter-spacing:.04em;box-shadow:0 3px 8px #17203320}
+    .start-button:hover,.start-button:focus-visible{background:#243b69;outline:3px solid #172033;outline-offset:4px}
+    .start-hint{color:#526078;font-size:.95rem;margin:12px 0 30px}
+    .instructions{max-width:590px;margin:0 auto;text-align:left}
+    .instructions h2{font-size:1.35rem;margin:0 0 16px;text-align:center;color:#172033}
+    .instructions ol{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+    .instructions li{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:center;gap:14px;background:#f8f9fc;border:1px solid #dce2ec;border-radius:13px;padding:14px 16px}
+    .instruction-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;font-size:1.45rem;font-weight:700}
+    .line-icon{background:#e8efff;color:#3153ad}.sound-icon{background:#f2e8fa;color:#7f2594}.glow-icon{background:#e5f5eb;color:#279641}.map-icon{background:#fff0df;color:#b85e00}
+    .instructions li strong{display:block;font-size:1.05rem;line-height:1.4}
+    .instructions li p{margin:4px 0 0;color:#46536a;line-height:1.5;font-size:1rem}
+    #mapApp{display:block}
+    @media(max-width:520px){.welcome-card{border-radius:16px}.instructions li{padding:12px;gap:10px}.instruction-icon{width:40px;height:40px}}
+  </style>
+</head>
+<body>
+  <section id="welcomeScreen" aria-labelledby="welcomeTitle" style="display:none">
+    <div class="welcome-card">
+      <div class="route-stripe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="welcome-kicker">SINGAPORE MRT • INTERACTIVE MAP</p>
+      <h1 id="welcomeTitle">SeeTheLine SG</h1>
+      <p class="welcome-lead">Explore Singapore's MRT network, one line at a time.</p>
+      <button type="button" id="startMap" class="start-button">START <span aria-hidden="true">→</span></button>
+      <p class="start-hint">Press START to open the map.</p>
+      <div class="instructions" aria-labelledby="instructionsTitle">
+        <h2 id="instructionsTitle">How to use the map</h2>
+        <ol>
+          <li><span class="instruction-icon line-icon" aria-hidden="true">●</span><div><strong>Choose an MRT line</strong><p>Click a coloured line button to focus on that route.</p></div></li>
+          <li><span class="instruction-icon sound-icon" aria-hidden="true">♫</span><div><strong>Choose a station</strong><p>Click a station name. You will hear the station announced aloud.</p></div></li>
+          <li><span class="instruction-icon glow-icon" aria-hidden="true">✦</span><div><strong>Follow the glowing line</strong><p>The selected route will glow to help you follow it.</p></div></li>
+          <li><span class="instruction-icon map-icon" aria-hidden="true">↗</span><div><strong>See the whole network again</strong><p>Click “Back to full MRT map” to return to all lines.</p></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+  <div id="mapApp">
+<header>
+  <h1>SeeTheLine SG</h1>
+  <p>Explore one MRT line at a time. Select a line to hear its name and show only that route. All other coloured MRT lines disappear until you return to the full map.</p>
+</header>
+<main>
+  <p class="intro">1. Choose an MRT line</p>
+  <div class="controls" id="lineControls" aria-label="MRT lines">
+    <button type="button" data-select-line="NSL" aria-pressed="false">North-South Line</button>
+    <button type="button" data-select-line="EWL" aria-pressed="false">East-West Line</button>
+    <button type="button" data-select-line="NEL" aria-pressed="false">North-East Line</button>
+    <button type="button" data-select-line="CCL" aria-pressed="false">Circle Line</button>
+    <button type="button" data-select-line="DTL" aria-pressed="false">Downtown Line</button>
+    <button type="button" data-select-line="TEL" aria-pressed="false">Thomson-East Coast Line</button>
+  </div>
+  <div class="toolbar">
+    <button type="button" id="backToMap">← Back to full MRT map</button>
+    <button type="button" id="repeatAudio">Repeat announcement</button>
+  </div>
+  <p class="status" id="status" role="status" aria-live="polite">Loading the MRT map…</p>
+  <section id="stationPanel" aria-live="polite" aria-label="Stations on selected line">
+    <h2 id="stationHeading">Stations</h2>
+    <p>Choose a station name to hear it spoken aloud.</p>
+    <div id="stationList"></div>
+  </section>
+  <section class="map-shell" aria-label="Interactive MRT map">
+    <div id="mapMount"></div>
+  </section>
+  <p class="help">Choose a coloured line button to show only that route and reveal its station list. All other coloured lines will disappear. Select any station to hear its name. Use “Back to full MRT map” to return to the complete network.</p>
+</main>
+  </div>
+<script>
+(() => {
+  const names={NSL:'North-South Line',EWL:'East-West Line',NEL:'North-East Line',CCL:'Circle Line',DTL:'Downtown Line',TEL:'Thomson-East Coast Line'};
+  // Colours sampled from the actual Illustrator SVG artwork.
+  const routeColours={
+    NSL:{rgb:[234,36,41],glow:'#eb2027'},
+    EWL:{rgb:[0,148,71],glow:'#009447'},
+    NEL:{rgb:[142,51,147],glow:'#8e3393'},
+    CCL:{rgb:[247,148,29],glow:'#f7941d'},
+    DTL:{rgb:[34,90,169],glow:'#225aa9'},
+    TEL:{rgb:[88,57,26],glow:'#58391a'}
+  };
+  // Station names and codes are taken from the list supplied for this project.
+  // Missing/interchange codes are intentionally not guessed or filled in.
+  const stations={
+    NSL:[['NS1','Jurong East'],['NS2','Bukit Batok'],['NS3','Bukit Gombak'],['NS4','Choa Chu Kang'],['NS5','Yew Tee'],['NS7','Kranji'],['NS8','Marsiling'],['NS9','Woodlands'],['NS10','Admiralty'],['NS11','Sembawang'],['NS12','Canberra'],['NS13','Yishun'],['NS14','Khatib'],['NS15','Yio Chu Kang'],['NS16','Ang Mo Kio'],['NS17','Bishan'],['NS18','Braddell'],['NS19','Toa Payoh'],['NS20','Novena'],['NS21','Newton'],['NS22','Orchard'],['NS23','Somerset'],['NS24','Dhoby Ghaut'],['NS25','City Hall'],['NS26','Raffles Place'],['NS27','Marina Bay'],['NS28','Marina South Pier']],
+    EWL:[['EW1','Pasir Ris'],['EW2','Tampines'],['EW3','Simei'],['EW4','Tanah Merah'],['EW5','Bedok'],['EW6','Kembangan'],['EW7','Eunos'],['EW8','Paya Lebar'],['EW9','Aljunied'],['EW10','Kallang'],['EW11','Lavender'],['EW12','Bugis'],['EW13','City Hall'],['EW14','Raffles Place'],['EW15','Tanjong Pagar'],['EW16','Outram Park'],['EW17','Tiong Bahru'],['EW18','Redhill'],['EW19','Queenstown'],['EW20','Commonwealth'],['EW21','Buona Vista'],['EW22','Dover'],['EW23','Clementi'],['EW24','Jurong East'],['EW25','Chinese Garden'],['EW26','Lakeside'],['EW27','Boon Lay'],['EW28','Pioneer'],['EW29','Joo Koon'],['EW30','Gul Circle'],['EW31','Tuas Crescent'],['EW32','Tuas West Road'],['EW33','Tuas Link'],['CG1','Expo'],['CG2','Changi Airport']],
+    NEL:[['NE1','HarbourFront'],['NE3','Outram Park'],['NE4','Chinatown'],['NE5','Clarke Quay'],['NE6','Dhoby Ghaut'],['NE7','Little India'],['NE8','Farrer Park'],['NE9','Boon Keng'],['NE10','Potong Pasir'],['NE11','Woodleigh'],['NE12','Serangoon'],['NE13','Kovan'],['NE14','Hougang'],['NE15','Buangkok'],['NE16','Sengkang'],['NE17','Punggol'],['NE18','Punggol Coast']],
+    CCL:[['CC1','Dhoby Ghaut'],['CC2','Bras Basah'],['CC3','Esplanade'],['CC4','Promenade'],['CC5','Nicoll Highway'],['CC6','Stadium'],['CC7','Mountbatten'],['CC8','Dakota'],['CC9','Paya Lebar'],['CC10','MacPherson'],['CC11','Tai Seng'],['CC12','Bartley'],['CC13','Serangoon'],['CC14','Lorong Chuan'],['CC15','Bishan'],['CC16','Marymount'],['CC17','Caldecott'],['CC19','Botanic Gardens'],['CC20','Farrer Road'],['CC21','Holland Village'],['CC22','Buona Vista'],['CC23','one-north'],['CC24','Kent Ridge'],['CC25','Haw Par Villa'],['CC26','Pasir Panjang'],['CC27','Labrador Park'],['CC28','Telok Blangah'],['CC29','HarbourFront'],['CC30','Keppel'],['CC31','Cantonment'],['CC32','Prince Edward Road'],['CE1','Bayfront'],['CE2','Marina Bay']],
+    DTL:[['DT1','Bukit Panjang'],['DT2','Cashew'],['DT3','Hillview'],['DT4','Hume'],['DT5','Beauty World'],['DT6','King Albert Park'],['DT7','Sixth Avenue'],['DT8','Botanic Gardens'],['DT9','Tan Kah Kee'],['DT10','Stevens'],['DT11','Newton'],['DT12','Little India'],['DT13','Rochor'],['DT14','Bugis'],['DT15','Promenade'],['DT16','Bayfront'],['DT17','Downtown'],['DT18','Telok Ayer'],['DT19','Chinatown'],['DT20','Fort Canning'],['DT21','Bencoolen'],['DT22','Jalan Besar'],['DT23','Bendemeer'],['DT24','Geylang Bahru'],['DT25','Mattar'],['DT26','MacPherson'],['DT27','Ubi'],['DT28','Kaki Bukit'],['DT29','Bedok North'],['DT30','Bedok Reservoir'],['DT31','Tampines West'],['DT32','Tampines'],['DT33','Tampines East'],['DT34','Upper Changi'],['DT35','Expo'],['DT36','Xilin']],
+    TEL:[['TE1','Woodlands North'],['TE2','Woodlands'],['TE3','Woodlands South'],['TE4','Springleaf'],['TE5','Lentor'],['TE6','Mayflower'],['TE7','Bright Hill'],['TE8','Upper Thomson'],['TE9','Caldecott'],['TE11','Stevens'],['TE12','Napier'],['TE13','Orchard Boulevard'],['TE14','Orchard'],['TE15','Great World'],['TE16','Havelock'],['TE17','Outram Park'],['TE18','Maxwell'],['TE19','Shenton Way'],['TE20','Marina Bay'],['TE22','Gardens by the Bay'],['TE23','Tanjong Rhu'],['TE24','Katong Park'],['TE25','Tanjong Katong'],['TE26','Marine Parade'],['TE27','Marine Terrace'],['TE28','Siglap'],['TE29','Bayshore'],['TE30','Bedok South'],['TE31','Sungei Bedok']]
+  };
+  const status=document.getElementById('status'),mount=document.getElementById('mapMount');
+  const stationPanel=document.getElementById('stationPanel'),stationHeading=document.getElementById('stationHeading'),stationList=document.getElementById('stationList');
+  let selected=null,lastAnnouncement='';
+  function speak(text){lastAnnouncement=text;status.textContent=text;if('speechSynthesis'in window){speechSynthesis.cancel();const pronunciationMap=[[[/\bSungei Bedok\b/gi,'soong-eye buh-DOHK'],/\bYio Chu Kang\b/gi,'yee-oh choo kahng'],[/\bBukit Panjang\b/gi,'BUUK-it PAHN-jahng'],[/\bTampines East\b/gi,'tam puh NEES EAST'],[/\bUpper Changi\b/gi,'UP-er CHAHN-gee'],[/\bTampines\b/gi,'tam puh NEES'],[/\bBedok\b/gi,'buh-DOK'],[/\bPromenade\b/gi,'pro-muh-NAAD'],[/\bKatong\b/gi,'kah-toh-ng'],[/\bToa Payoh\b/gi,'taw PAH-yoh']];let speechText=text;pronunciationMap.forEach(([pattern,reading])=>{speechText=speechText.replace(pattern,reading)});const u=new SpeechSynthesisUtterance(speechText);u.lang='en-SG';u.rate=.88;const voices=speechSynthesis.getVoices();const singaporeVoice=voices.find(v=>/^en-SG$/i.test(v.lang))||voices.find(v=>/^en[-_]SG/i.test(v.lang));const englishVoice=voices.find(v=>/^en[-_]/i.test(v.lang));if(singaporeVoice)u.voice=singaporeVoice;else if(englishVoice)u.voice=englishVoice;speechSynthesis.speak(u)}}
+  function rgbFromCss(value){
+    if(!value)return null;
+    const v=String(value).trim();
+    const hex=v.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if(hex){
+      const h=hex[1].length===3?hex[1].split('').map(x=>x+x).join(''):hex[1];
+      return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16));
+    }
+    const m=v.match(/rgba?\(\s*([\d.]+)(%)?\s*,\s*([\d.]+)(%)?\s*,\s*([\d.]+)(%)?/i);
+    if(!m)return null;
+    return [1,3,5].map(i=>Math.round(Number(m[i])*(m[i+1]?2.55:1)));
+  }
+  function colourMatches(a,b,tolerance=34){
+    return !!a&&a.every((v,i)=>Math.abs(v-b[i])<=tolerance);
+  }
+  function authoredColour(el,kind){
+    const direct=el.getAttribute(kind);
+    const inline=(el.getAttribute('style')||'').match(new RegExp(kind+'\\s*:\\s*([^;]+)','i'));
+    return rgbFromCss(direct)||rgbFromCss(inline&&inline[1]);
+  }
+  function gradientColours(svg,value){
+    const match=String(value||'').match(/url\([\"']?#([^\"')]+)[\"']?\)/);
+    if(!match)return [];
+    const gradient=svg.querySelector('#'+CSS.escape(match[1]));
+    if(!gradient)return [];
+    return [...gradient.querySelectorAll('stop')].map(stop=>{
+      const style=stop.getAttribute('style')||'';
+      const inline=style.match(/stop-color\s*:\s*([^;]+)/i);
+      return rgbFromCss(stop.getAttribute('stop-color'))||rgbFromCss(inline&&inline[1]);
+    }).filter(Boolean);
+  }
+  function tagMapLines(svg){
+    // Class names in Illustrator exports are not reliable route identifiers:
+    // many coloured route segments use separate classes. Read the actual SVG
+    // stroke/fill colours so every segment of each route is tagged.
+    const shapes=svg.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse');
+    shapes.forEach(el=>{
+      const style=getComputedStyle(el);
+      const fill=rgbFromCss(style.fill);
+      const stroke=rgbFromCss(style.stroke);
+      let owner=null;
+      for(const [code,route] of Object.entries(routeColours)){
+        if(colourMatches(fill,route.rgb,38)||colourMatches(stroke,route.rgb,38)){
+          owner=code;break;
+        }
+      }
+      if(owner){
+        el.setAttribute('data-line',owner);
+        el.style.setProperty('--line-glow',routeColours[owner].glow);
+      }else if((style.stroke||'').includes('url(')||(style.fill||'').includes('url(')){
+        // Interchange gradients combine multiple route colours. Hide them in
+        // focus mode rather than leaving fragments of other lines visible.
+        el.setAttribute('data-gradient-route','true');
+      }
+    });
+    // Keep station labels belonging to the selected route; preserve their
+    // original SVG typography and appearance.
+    const normalise=value=>String(value||'').replace(/\s+/g,'').trim().toLocaleLowerCase();
+    const stationOwners=new Map(),codeOwners=new Map();
+    for(const [code,list] of Object.entries(stations)){
+      for(const [stationCode,stationName] of list){
+        if(!stationOwners.has(normalise(stationName)))stationOwners.set(normalise(stationName),new Set());
+        stationOwners.get(normalise(stationName)).add(code);
+        codeOwners.set(normalise(stationCode),new Set([code]));
+      }
+    }
+    svg.querySelectorAll('text,tspan').forEach(el=>{
+      const label=normalise(el.textContent);
+      const owners=stationOwners.get(label)||codeOwners.get(label);
+      if(owners){
+        // Interchange station labels can belong to several MRT lines.
+        // Keep every applicable line association instead of letting the last
+        // line in the station data overwrite the earlier one.
+        el.setAttribute('data-lines',[...owners].join(' '));
+        el.setAttribute('data-line',[...owners][0]);
+        el.setAttribute('data-station-label','true');
+      }
+      // Keep the Punggol LRT label out of the way while a main MRT line is focused.
+      if(label==='punggollrt'||label==='punggolcove'){
+        el.setAttribute('data-unrelated-label','true');
+      }
+    });
+  }
+  function highlightStation(stationName,code){
+    const svg=mount.querySelector('svg');
+    if(!svg)return;
+    svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
+    const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
+    // The SVG artwork has one TEL label typo: "Brighter Hill" is used
+    // where the station list correctly says "Bright Hill". Accept both
+    // spellings so the official station name still highlights its map label.
+    const labelAliases={
+      'Bright Hill':['Bright Hill','Brighter Hill']
+    };
+    const targets=(labelAliases[stationName]||[stationName]).map(normalise);
+    const matchesTarget=value=>targets.includes(normalise(value));
+    const ns='http://www.w3.org/2000/svg';
+    let highlighted=0;
+
+    // Illustrator sometimes splits one station name across multiple text rows
+    // (for example, "Chinese" and "Garden"). Search both individual rows and
+    // short consecutive row groups, then highlight the exact combined bounds.
+    svg.querySelectorAll('text').forEach(textEl=>{
+      const tspans=[...textEl.querySelectorAll(':scope > tspan')];
+      if(!tspans.length){
+        if(matchesTarget(textEl.textContent)){
+          addHighlight(textEl,textEl.getBBox());
+          highlighted++;
+        }
+        return;
+      }
+      const rows=new Map();
+      tspans.forEach(tspan=>{
+        const y=tspan.getAttribute('y')||'0';
+        if(!rows.has(y))rows.set(y,{text:'',elements:[]});
+        const row=rows.get(y);
+        row.text+=tspan.textContent||'';
+        row.elements.push(tspan);
+      });
+      const ordered=[...rows.values()];
+      for(let i=0;i<ordered.length;i++){
+        let combined='',elements=[];
+        for(let j=i;j<Math.min(ordered.length,i+3);j++){
+          combined+=ordered[j].text;
+          elements=elements.concat(ordered[j].elements);
+          if(matchesTarget(combined)){
+            let bounds=null;
+            elements.forEach(tspan=>{
+              const b=tspan.getBBox();
+              if(!bounds)bounds={x:b.x,y:b.y,width:b.width,height:b.height};
+              else{
+                const right=Math.max(bounds.x+bounds.width,b.x+b.width);
+                const bottom=Math.max(bounds.y+bounds.height,b.y+b.height);
+                bounds.x=Math.min(bounds.x,b.x);bounds.y=Math.min(bounds.y,b.y);
+                bounds.width=right-bounds.x;bounds.height=bottom-bounds.y;
+              }
+            });
+            if(bounds){addHighlight(textEl,bounds);highlighted++;}
+            break;
+          }
+          if(Math.min(...targets.map(target=>target.length))>0 && Math.min(...targets.map(target=>target.length))<normalise(combined).length-4)break;
+        }
+      }
+    });
+    function addHighlight(textEl,bbox){
+      const marker=document.createElementNS(ns,'rect');
+      const padX=3,padY=2;
+      marker.setAttribute('class','station-label-highlight');
+      marker.setAttribute('x',bbox.x-padX);
+      marker.setAttribute('y',bbox.y-padY);
+      marker.setAttribute('width',Math.max(1,bbox.width+padX*2));
+      marker.setAttribute('height',Math.max(1,bbox.height+padY*2));
+      marker.setAttribute('rx','3');
+      marker.setAttribute('fill',routeColours[code].glow);
+      marker.setAttribute('pointer-events','none');
+      // getBBox() is measured in the text element's local coordinates.
+      // The rectangle is a sibling, so it must receive the same transform
+      // or it will appear detached from the station name on the map.
+      const textTransform=textEl.getAttribute('transform');
+      if(textTransform)marker.setAttribute('transform',textTransform);
+      textEl.parentNode.insertBefore(marker,textEl);
+    }
+    if(!highlighted){
+      status.textContent=stationName+' selected and announced. I could not locate its label in the SVG artwork.';
+    }else{
+      status.textContent=stationName+' highlighted on the map.';
+    }
+  }
+  function renderStations(code){
+    stationHeading.textContent=names[code]+' — Stations';
+    stationList.replaceChildren();
+    (stations[code]||[]).forEach(([stationCode,stationName])=>{
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='station-number-button';
+      const codeLabel=document.createElement('span');
+      codeLabel.className='station-code';
+      codeLabel.textContent=stationCode;
+      const nameLabel=document.createElement('span');
+      nameLabel.textContent=stationName;
+      button.append(codeLabel,nameLabel);
+      button.setAttribute('aria-label',stationName+' ('+stationCode+')');
+      button.title=stationName;
+      button.addEventListener('click',()=>{highlightStation(stationName,code);speak(stationName)});
+      stationList.appendChild(button);
+    });
+    stationPanel.classList.add('visible');
+  }
+  function selectLine(code){
+    if(!names[code])return;selected=code;
+    renderStations(code);
+    mount.classList.add('zoomed');
+    document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
+    mount.querySelectorAll('[data-line]').forEach(el=>{
+      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\\s+/);
+      const match=owners.includes(code);
+      el.classList.toggle('dimmed',!match);el.classList.toggle('selected-line',match);
+    });
+    // Hide every other SVG text label in focus mode, including white
+    // explanatory words on the map background. Keep only station labels
+    // assigned to the selected line (including shared interchange labels).
+    mount.querySelectorAll('text').forEach(el=>{
+      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\\s+/).filter(Boolean);
+      const childOwners=[...el.querySelectorAll('tspan[data-lines],tspan[data-line]')]
+        .flatMap(span=>(span.getAttribute('data-lines')||span.getAttribute('data-line')||'').split(/\\s+/));
+      const keep=owners.includes(code)||childOwners.includes(code);
+      el.classList.toggle('focus-text-hidden',!keep);
+    });
+    // Also hide unclassified map artwork. White LRT segments and transport
+    // pictograms do not use one of the six MRT route colours, so the original
+    // colour-only filter would otherwise leave them visible. Keep the bottom
+    // legend intact so its interactive transport icons remain available.
+    mount.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
+      if(el.closest('#interactiveLegendTargets'))return;
+      // Preserve the pale white Singapore island silhouette in every line-focus view.
+      if(el.classList.contains('island-background')){el.classList.remove('focus-shape-hidden');return;}
+      // The TEL artwork contains unrelated grey guide/connector strokes.
+      // Hide those in brown-line focus without affecting the brown route itself.
+      if(code==='TEL'){
+        const stroke=rgbFromCss(getComputedStyle(el).stroke);
+        const isGreyStroke=stroke&&Math.max(...stroke)-Math.min(...stroke)<28&&Math.max(...stroke)>55&&Math.max(...stroke)<190;
+        if(isGreyStroke){el.classList.add('focus-shape-hidden');return;}
+      }
+      if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
+      let box;
+      try{box=el.getBBox();}catch(_){return;}
+      const inLegend=box.y>=930 || (box.y+box.height)>=1015;
+      el.classList.toggle('focus-shape-hidden',!inLegend);
+    });
+    // Hide interchange gradient boxes and unrelated LRT corner labels.
+    mount.querySelectorAll('[data-gradient-route],[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
+    speak(names[code]+' selected');
+  }
+  function showAll(){
+    selected=null;
+    stationPanel.classList.remove('visible');
+    mount.classList.remove('zoomed');
+    document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed','false'));
+    mount.querySelectorAll('[data-line]').forEach(el=>el.classList.remove('dimmed','selected-line'));
+    mount.querySelectorAll('[data-gradient-route]').forEach(el=>el.classList.remove('dimmed'));
+    mount.querySelectorAll('text').forEach(el=>el.classList.remove('focus-text-hidden'));
+    mount.querySelectorAll('.focus-shape-hidden').forEach(el=>el.classList.remove('focus-shape-hidden'));
+    mount.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
+    speak('Full MRT map shown');
+  }
+  function makeLegendInteractive(svg){
+    // The bottom black legend is part of the Illustrator SVG. These focused
+    // click zones sit over its transport icons without changing the artwork.
+    const items=[
+      {id:'bus-terminal',label:'Bus Terminal',spoken:'Bus terminal',x:698,y:948,width:62,height:38,colour:'#f4c542'},
+      {id:'airport',label:'Changi Airport',spoken:'Changi Airport',x:779,y:948,width:62,height:38,colour:'#67c7ef'},
+      {id:'cruise',label:'Cruise',spoken:'Cruise terminal',x:861,y:948,width:70,height:38,colour:'#55d6a5'}
+    ];
+    const ns='http://www.w3.org/2000/svg';
+    const layer=document.createElementNS(ns,'g');
+    layer.setAttribute('id','interactiveLegendTargets');
+    items.forEach(item=>{
+      const target=document.createElementNS(ns,'rect');
+      target.setAttribute('x',item.x);target.setAttribute('y',item.y);
+      target.setAttribute('width',item.width);target.setAttribute('height',item.height);
+      target.setAttribute('rx','5');target.setAttribute('fill','transparent');
+      target.setAttribute('stroke','transparent');target.setAttribute('stroke-width','2');
+      target.setAttribute('tabindex','0');target.setAttribute('role','button');
+      target.setAttribute('aria-label','Hear and highlight '+item.label);
+      target.setAttribute('data-legend-item',item.id);
+      target.style.cursor='pointer';
+      target.addEventListener('click',()=>activateLegendItem(item,target,layer));
+      target.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){event.preventDefault();activateLegendItem(item,target,layer);}
+      });
+      layer.appendChild(target);
+    });
+    svg.appendChild(layer);
+  }
+  function activateLegendItem(item,target,layer){
+    layer.querySelectorAll('[data-legend-item]').forEach(el=>{
+      el.setAttribute('stroke','transparent');el.setAttribute('fill','transparent');
+      el.style.filter='none';
+    });
+    target.setAttribute('fill',item.colour+'33');
+    target.setAttribute('stroke',item.colour);
+    target.style.filter='drop-shadow(0 0 5px '+item.colour+')';
+    speak(item.spoken+' highlighted in the legend.');
+  }
+  function installMap(raw){
+    const doc=new DOMParser().parseFromString(raw,'image/svg+xml');
+    if(doc.querySelector('parsererror')||!doc.querySelector('svg'))throw new Error('Invalid SVG');
+    const svg=doc.querySelector('svg');
+    svg.removeAttribute('width');svg.removeAttribute('height');
+    svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map');
+    const imported=document.importNode(svg,true);
+    mount.replaceChildren(imported);
+    tagMapLines(imported);
+    makeLegendInteractive(imported);
+    const counts={};
+    imported.querySelectorAll('[data-line]').forEach(el=>{const c=el.getAttribute('data-line');counts[c]=(counts[c]||0)+1});
+    return counts;
+  }
+  const startButton=document.getElementById('startMap');
+  if(startButton)startButton.addEventListener('click',()=>{window.location.href='./map.html';});
+  document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
+  document.getElementById('backToMap').addEventListener('click',showAll);
+  document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement)});
+  fetch('./sticker%20map%20(11th%20attempt).svg')
+    .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
+    .then(raw=>{
+      const counts=installMap(raw);
+      const missing=Object.keys(names).filter(code=>!counts[code]);
+      status.textContent=missing.length?'Map loaded, but line colours need checking: '+missing.join(', '):'MRT map ready. Choose a line to make it glow.';
+    })
+    .catch(()=>{status.textContent='Could not load the new MRT map SVG. Check that it is in the same repository folder as index.html.'});
+})();
+</script>
+</body>
+</html>
