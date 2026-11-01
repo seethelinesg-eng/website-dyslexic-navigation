@@ -71,9 +71,48 @@
     .help{color:#526078;line-height:1.6;font-size:.98rem;margin-top:16px}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
     @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+    #welcomeScreen{min-height:100vh;padding:clamp(22px,5vw,56px) 16px;display:grid;place-items:center;background:#f5f7fb}
+    .welcome-card{width:min(100%,780px);background:#fff;border:1px solid #dce2ec;border-radius:22px;box-shadow:0 8px 28px #15284b0b;padding:clamp(22px,5vw,48px);text-align:center}
+    .route-stripe{display:flex;height:7px;border-radius:20px;overflow:hidden;margin:0 auto 24px;max-width:300px}
+    .route-stripe span{flex:1}.route-stripe span:nth-child(1){background:#eb1d27}.route-stripe span:nth-child(2){background:#279641}.route-stripe span:nth-child(3){background:#7f2594}.route-stripe span:nth-child(4){background:#f68712}.route-stripe span:nth-child(5){background:#3153ad}.route-stripe span:nth-child(6){background:#513019}
+    .welcome-kicker{margin:0 0 10px;color:#526078;font-size:.85rem;font-weight:700;letter-spacing:.08em}
+    #welcomeTitle{font-size:clamp(2rem,6vw,3rem);margin:0 0 10px;color:#172033}
+    .welcome-lead{font-size:clamp(1.05rem,3vw,1.25rem);line-height:1.55;color:#46536a;margin:0 auto 24px;max-width:540px}
+    .start-button{background:#172b55;color:#fff;border:2px solid #172b55;border-radius:14px;padding:16px 30px;min-width:220px;min-height:60px;font-size:1.2rem;letter-spacing:.04em;box-shadow:0 3px 8px #17203320}
+    .start-button:hover,.start-button:focus-visible{background:#243b69;outline:3px solid #172033;outline-offset:4px}
+    .start-hint{color:#526078;font-size:.95rem;margin:12px 0 30px}
+    .instructions{max-width:590px;margin:0 auto;text-align:left}
+    .instructions h2{font-size:1.35rem;margin:0 0 16px;text-align:center;color:#172033}
+    .instructions ol{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+    .instructions li{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:center;gap:14px;background:#f8f9fc;border:1px solid #dce2ec;border-radius:13px;padding:14px 16px}
+    .instruction-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;font-size:1.45rem;font-weight:700}
+    .line-icon{background:#e8efff;color:#3153ad}.sound-icon{background:#f2e8fa;color:#7f2594}.glow-icon{background:#e5f5eb;color:#279641}.map-icon{background:#fff0df;color:#b85e00}
+    .instructions li strong{display:block;font-size:1.05rem;line-height:1.4}
+    .instructions li p{margin:4px 0 0;color:#46536a;line-height:1.5;font-size:1rem}
+    #mapApp{display:none}
+    @media(max-width:520px){.welcome-card{border-radius:16px}.instructions li{padding:12px;gap:10px}.instruction-icon{width:40px;height:40px}}
   </style>
 </head>
-<body>
+<body>\n  <section id="welcomeScreen" aria-labelledby="welcomeTitle">
+    <div class="welcome-card">
+      <div class="route-stripe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="welcome-kicker">SINGAPORE MRT • INTERACTIVE MAP</p>
+      <h1 id="welcomeTitle">SeeTheLine SG</h1>
+      <p class="welcome-lead">Explore Singapore's MRT network, one line at a time.</p>
+      <button type="button" id="startMap" class="start-button">START <span aria-hidden="true">→</span></button>
+      <p class="start-hint">Press START to open the map.</p>
+      <div class="instructions" aria-labelledby="instructionsTitle">
+        <h2 id="instructionsTitle">How to use the map</h2>
+        <ol>
+          <li><span class="instruction-icon line-icon" aria-hidden="true">●</span><div><strong>Choose an MRT line</strong><p>Click a coloured line button to focus on that route.</p></div></li>
+          <li><span class="instruction-icon sound-icon" aria-hidden="true">♫</span><div><strong>Choose a station</strong><p>Click a station name. You will hear the station announced aloud.</p></div></li>
+          <li><span class="instruction-icon glow-icon" aria-hidden="true">✦</span><div><strong>Follow the glowing line</strong><p>The selected route will glow to help you follow it.</p></div></li>
+          <li><span class="instruction-icon map-icon" aria-hidden="true">↗</span><div><strong>See the whole network again</strong><p>Click “Back to full MRT map” to return to all lines.</p></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+  <div id="mapApp">
 <header>
   <h1>SeeTheLine SG</h1>
   <p>Explore one MRT line at a time. Select a line to hear its name and show only that route. All other coloured MRT lines disappear until you return to the full map.</p>
@@ -103,7 +142,7 @@
   </section>
   <p class="help">Choose a coloured line button to show only that route and reveal its station list. All other coloured lines will disappear. Select any station to hear its name. Use “Back to full MRT map” to return to the complete network.</p>
 </main>
-<script>
+  </div>\n<script>
 (() => {
   const names={NSL:'North-South Line',EWL:'East-West Line',NEL:'North-East Line',CCL:'Circle Line',DTL:'Downtown Line',TEL:'Thomson-East Coast Line'};
   // Colours sampled from the actual Illustrator SVG artwork.
@@ -427,7 +466,7 @@
     imported.querySelectorAll('[data-line]').forEach(el=>{const c=el.getAttribute('data-line');counts[c]=(counts[c]||0)+1});
     return counts;
   }
-  document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
+  document.getElementById('startMap').addEventListener('click',()=>{document.getElementById('welcomeScreen').style.display='none';document.getElementById('mapApp').style.display='block';document.getElementById('lineControls').querySelector('button').focus();});\n  document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement)});
   fetch('./sticker%20map%20(11th%20attempt).svg')
