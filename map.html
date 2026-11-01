@@ -54,6 +54,7 @@
     @media(max-width:600px){#stationList{grid-template-columns:1fr;gap:8px}}
 
     #backToMap{background:#172b55;color:#fff;border-color:#172b55}
+    #backHome{background:#fff;color:#172b55;border-color:#172b55}
     #stationPanel{display:none;background:#fff;border:1px solid #dce2ec;border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 5px 20px #15284b0b}
     #stationPanel.visible{display:block}
     #stationPanel h2{font-size:1.2rem;margin:0 0 6px}
@@ -129,6 +130,7 @@
     <button type="button" data-select-line="TEL" aria-pressed="false">Thomson-East Coast Line</button>
   </div>
   <div class="toolbar">
+    <button type="button" id="backHome">← Back to home</button>
     <button type="button" id="backToMap">← Back to full MRT map</button>
     <button type="button" id="repeatAudio">Repeat announcement</button>
   </div>
@@ -531,6 +533,7 @@
   const startButton=document.getElementById('startMap');
   if(startButton)startButton.addEventListener('click',()=>{window.location.href='./map.html';});
   document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
+  document.getElementById('backHome').addEventListener('click',()=>{window.location.href='./index.html';});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement);else status.textContent='Choose a station first, then use Repeat announcement.'});
   fetch('./mrt-map.svg?v=20261101')
