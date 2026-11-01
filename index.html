@@ -93,7 +93,8 @@
     @media(max-width:520px){.welcome-card{border-radius:16px}.instructions li{padding:12px;gap:10px}.instruction-icon{width:40px;height:40px}}
   </style>
 </head>
-<body>\n  <section id="welcomeScreen" aria-labelledby="welcomeTitle">
+<body>
+  <section id="welcomeScreen" aria-labelledby="welcomeTitle">
     <div class="welcome-card">
       <div class="route-stripe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
       <p class="welcome-kicker">SINGAPORE MRT • INTERACTIVE MAP</p>
@@ -142,7 +143,8 @@
   </section>
   <p class="help">Choose a coloured line button to show only that route and reveal its station list. All other coloured lines will disappear. Select any station to hear its name. Use “Back to full MRT map” to return to the complete network.</p>
 </main>
-  </div>\n<script>
+  </div>
+<script>
 (() => {
   const names={NSL:'North-South Line',EWL:'East-West Line',NEL:'North-East Line',CCL:'Circle Line',DTL:'Downtown Line',TEL:'Thomson-East Coast Line'};
   // Colours sampled from the actual Illustrator SVG artwork.
@@ -466,7 +468,8 @@
     imported.querySelectorAll('[data-line]').forEach(el=>{const c=el.getAttribute('data-line');counts[c]=(counts[c]||0)+1});
     return counts;
   }
-  document.getElementById('startMap').addEventListener('click',()=>{document.getElementById('welcomeScreen').style.display='none';document.getElementById('mapApp').style.display='block';document.getElementById('lineControls').querySelector('button').focus();});\n  document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
+  document.getElementById('startMap').addEventListener('click',()=>{document.getElementById('welcomeScreen').style.display='none';document.getElementById('mapApp').style.display='block';document.getElementById('lineControls').querySelector('button').focus();});
+  document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement)});
   fetch('./sticker%20map%20(11th%20attempt).svg')
