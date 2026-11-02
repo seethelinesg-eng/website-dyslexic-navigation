@@ -285,6 +285,21 @@
       const label=normalise(el.textContent);
       if([...unavailableLabels].some(value=>normalise(value)===label))el.style.display='none';
     });
+    // Illustrator splits many station names into several adjacent <text>
+    // elements (for example, "Woodlands" may be split into "Wo" + "odlands").
+    // Match the combined text of each label group first, then tag every text
+    // fragment inside that group so focus mode does not hide the station name.
+    svg.querySelectorAll('g').forEach(group=>{
+      const label=normalise(group.textContent);
+      const owners=stationOwners.get(label)||codeOwners.get(label);
+      if(owners){
+        group.querySelectorAll('text,tspan').forEach(el=>{
+          el.setAttribute('data-lines',[...owners].join(' '));
+          el.setAttribute('data-line',[...owners][0]);
+          el.setAttribute('data-station-label','true');
+        });
+      }
+    });
     svg.querySelectorAll('text,tspan').forEach(el=>{
       const label=normalise(el.textContent);
       const owners=stationOwners.get(label)||codeOwners.get(label);
