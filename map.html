@@ -45,8 +45,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #backToMap{background:var(--ink);color:#fff;border-color:var(--ink)}
 #repeatAudio{background:#f4eee4;border-color:var(--rule)}
 .status{font-weight:700;color:#34332f;line-height:1.5;margin:0;padding:13px 15px;border-left:5px solid var(--accent);background:#e9e2d6;min-height:48px}
-#stationPanel{display:none;background:#fffdf8;border:2px solid var(--ink);border-top:8px solid var(--accent);padding:clamp(18px,2.5vw,30px);margin:0 0 28px;box-shadow:8px 8px 0 #19191912}
-#stationPanel.visible{display:block}
+#stationPanel{display:block;background:#fffdf8;border:2px solid var(--ink);border-top:8px solid var(--accent);padding:clamp(18px,2.5vw,30px);margin:0 0 28px;box-shadow:8px 8px 0 #19191912}
 .station-panel-heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:15px}
 #stationPanel h2{font-size:1.35rem;letter-spacing:-.035em;margin:0}
 #stationPanel .panel-kicker{margin:0 0 5px}
@@ -89,7 +88,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
           <div><p class="panel-kicker">02 / Choose a station</p><h2 id="stationHeading">Stations</h2></div>
           <p>Tap a station button to hear its name spoken aloud.</p>
         </div>
-        <div id="stationList"></div>
+        <div id="stationList"><p class="panel-copy">Choose an MRT line below to see its station buttons here.</p></div>
       </section>
       <div class="workspace">
         <aside class="map-sidebar" aria-label="Map controls">
