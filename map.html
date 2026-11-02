@@ -395,32 +395,7 @@
             combined+=spans[end].textContent||'';
             group.push(spans[end]);
             if(matchesTarget(combined)){
-              // A temporary text wrapper is not needed: the parent-coordinate
-              // bounds are calculated directly from each tspan's screen box.
-              const parent=el;
-              const matrix=parent.getScreenCTM();
-              if(!matrix)break;
-              const inverse=matrix.inverse();
-              let bounds=null;
-              group.forEach(span=>{
-                const box=span.getBBox(),m=span.getScreenCTM();
-                if(!m)return;
-                const pts=[
-                  new DOMPoint(box.x,box.y).matrixTransform(m),
-                  new DOMPoint(box.x+box.width,box.y+box.height).matrixTransform(m)
-                ].map(p=>p.matrixTransform(inverse));
-                const q={x:Math.min(pts[0].x,pts[1].x),y:Math.min(pts[0].y,pts[1].y),right:Math.max(pts[0].x,pts[1].x),bottom:Math.max(pts[0].y,pts[1].y)};
-                if(!bounds)bounds=q;else{bounds.x=Math.min(bounds.x,q.x);bounds.y=Math.min(bounds.y,q.y);bounds.right=Math.max(bounds.right,q.right);bounds.bottom=Math.max(bounds.bottom,q.bottom);}
-              });
-              if(bounds){
-                const marker=document.createElementNS(ns,'rect');
-                marker.setAttribute('class','station-label-highlight');
-                marker.setAttribute('x',bounds.x-3);marker.setAttribute('y',bounds.y-2);
-                marker.setAttribute('width',bounds.right-bounds.x+6);marker.setAttribute('height',bounds.bottom-bounds.y+4);
-                marker.setAttribute('rx','3');marker.setAttribute('fill',routeColours[code].glow);
-                marker.setAttribute('pointer-events','none');
-                el.insertBefore(marker,el.firstChild);highlighted++;
-              }
+              if(addHighlight([el]))highlighted++;
               break;
             }
           }
