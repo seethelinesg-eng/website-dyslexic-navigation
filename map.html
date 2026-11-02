@@ -311,9 +311,15 @@
         el.setAttribute('data-line',[...owners][0]);
         el.setAttribute('data-station-label','true');
       }
-      // Keep the Punggol LRT label out of the way while a main MRT line is focused.
-      if(label==='punggollrt'||label==='punggolcove'){
+      // Keep the Punggol LRT label out of the way, but retain Punggol Cove
+      // as part of the purple North-East Line map artwork.
+      if(label==='punggollrt'){
         el.setAttribute('data-unrelated-label','true');
+      }
+      if(label==='punggolcove'){
+        el.setAttribute('data-lines','NEL');
+        el.setAttribute('data-line','NEL');
+        el.setAttribute('data-station-label','true');
       }
     });
   }
