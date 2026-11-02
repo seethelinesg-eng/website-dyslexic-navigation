@@ -464,7 +464,7 @@
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261102-punggolcove-fix');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261102-punggolcove-fix2');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -489,6 +489,27 @@
       const keep=owners.includes(code)||childOwners.includes(code);
       el.classList.toggle('focus-text-hidden',!keep);
     });
+    // Punggol Cove is split across four adjacent SVG text elements. Restore
+    // the complete label after focus filtering so no earlier classification
+    // or inherited dimming can make it disappear on the North-East Line.
+    if(code==='NEL'){
+      const normaliseLabel=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
+      mount.querySelectorAll('g').forEach(group=>{
+        if(normaliseLabel(group.textContent)!=='punggolcove')return;
+        group.classList.remove('dimmed','focus-text-hidden');
+        group.style.setProperty('display','inline','important');
+        group.style.setProperty('visibility','visible','important');
+        group.style.setProperty('opacity','1','important');
+        group.querySelectorAll('text,tspan').forEach(part=>{
+          part.classList.remove('dimmed','focus-text-hidden');
+          part.style.setProperty('display','inline','important');
+          part.style.setProperty('visibility','visible','important');
+          part.style.setProperty('opacity','1','important');
+          part.setAttribute('data-lines','NEL');
+          part.setAttribute('data-line','NEL');
+        });
+      });
+    }
     // Also hide unclassified map artwork. White LRT segments and transport
     // pictograms do not use one of the six MRT route colours, so the original
     // colour-only filter would otherwise leave them visible. Keep the bottom
@@ -586,7 +607,7 @@
   document.getElementById('backHome').addEventListener('click',()=>{window.location.href='./index.html';});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement);else status.textContent='Choose a station first, then use Repeat announcement.'});
-  fetch('./mrt-map.svg?v=20261102-punggolcove-fix')
+  fetch('./mrt-map.svg?v=20261102-punggolcove-fix2')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
