@@ -714,11 +714,11 @@
       <text class="st32" transform="translate(490.23 682.76) scale(1.03 1)"><tspan x="0" y="0" xml:space="preserve">     Q</tspan></text>
       <text class="st24" transform="translate(513.84 682.76) scale(1.03 1)"><tspan x="0" y="0">uay</tspan></text>
     </g>
-    <g class="st33">
-      <text class="st29" transform="translate(863.06 144.93) scale(1.03 1)"><tspan x="0" y="0">Pu</tspan></text>
-      <text class="st24" transform="translate(874.41 144.93) scale(1.03 1)"><tspan x="0" y="0">nggol</tspan></text>
-      <text class="st29" transform="translate(898.89 144.93) scale(1.03 1)"><tspan x="0" y="0" xml:space="preserve"> Co</tspan></text>
-      <text class="st25" transform="translate(913.81 144.93) scale(1.03 1)"><tspan x="0" y="0">ve</tspan></text>
+    <g id="punggol-cove-label" class="st33" data-line="NEL" data-lines="NEL" data-station-label="true">
+      <text class="st29" data-line="NEL" data-lines="NEL" transform="translate(863.06 144.93) scale(1.03 1)"><tspan x="0" y="0">Pu</tspan></text>
+      <text class="st24" data-line="NEL" data-lines="NEL" transform="translate(874.41 144.93) scale(1.03 1)"><tspan x="0" y="0">nggol</tspan></text>
+      <text class="st29" data-line="NEL" data-lines="NEL" transform="translate(898.89 144.93) scale(1.03 1)"><tspan x="0" y="0" xml:space="preserve"> Co</tspan></text>
+      <text class="st25" data-line="NEL" data-lines="NEL" transform="translate(913.81 144.93) scale(1.03 1)"><tspan x="0" y="0">ve</tspan></text>
     </g>
     <g class="st33">
       <text class="st29" transform="translate(869.24 201.12) scale(1.03 1)"><tspan x="0" y="0">Pu</tspan></text>
