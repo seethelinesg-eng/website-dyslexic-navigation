@@ -292,11 +292,17 @@
     svg.querySelectorAll('g').forEach(group=>{
       const label=normalise(group.textContent);
       const owners=stationOwners.get(label)||codeOwners.get(label);
-      if(owners){
+      // Punggol Cove is printed as four separate Illustrator text objects.
+      // Tag the entire label group explicitly so every fragment survives NEL focus mode.
+      const isPunggolCove=label==='punggolcove';
+      if(owners||isPunggolCove){
+        const lineOwners=isPunggolCove?['NEL']:[...owners];
         group.querySelectorAll('text,tspan').forEach(el=>{
-          el.setAttribute('data-lines',[...owners].join(' '));
-          el.setAttribute('data-line',[...owners][0]);
+          el.setAttribute('data-lines',lineOwners.join(' '));
+          el.setAttribute('data-line',lineOwners[0]);
           el.setAttribute('data-station-label','true');
+          el.classList.remove('focus-text-hidden','dimmed');
+          el.style.removeProperty('display');
         });
       }
     });
@@ -458,7 +464,7 @@
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261102-kranji-marsiling');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261102-punggolcove-fix');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -580,7 +586,7 @@
   document.getElementById('backHome').addEventListener('click',()=>{window.location.href='./index.html';});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement);else status.textContent='Choose a station first, then use Repeat announcement.'});
-  fetch('./mrt-map.svg?v=20261102-kranji-marsiling')
+  fetch('./mrt-map.svg?v=20261102-punggolcove-fix')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
