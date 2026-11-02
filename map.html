@@ -333,7 +333,7 @@
     const svg=mount.querySelector('svg');
     if(!svg)return;
     svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
-    const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
+    const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
     // Accept the Illustrator spelling used for this TEL station label.
     const labelAliases={'Bright Hill':['Bright Hill','Brighter Hill']};
     const targets=(labelAliases[stationName]||[stationName]).map(normalise);
@@ -464,7 +464,7 @@
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261102-punggolcove-fix2');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261102-punggolcove-fix3');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
