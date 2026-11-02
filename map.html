@@ -9,89 +9,84 @@
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&display=swap" rel="stylesheet">
   <title>SeeTheLine SG — Interactive MRT Map</title>
   <style>
-    :root{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif;color:#172033;background:#f5f7fb}
-    *{box-sizing:border-box}
-    body,button,input,select,textarea{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif;font-kerning:normal;font-synthesis:none}
-    h1,h2,.intro,button{font-weight:700}
-    body{margin:0}
-    header{padding:28px clamp(18px,4vw,56px);background:#fff;border-bottom:1px solid #dce2ec}
-    h1{font-size:clamp(1.65rem,3vw,2.35rem);margin:0 0 8px;letter-spacing:.01em}
-    header p{margin:0;max-width:760px;line-height:1.6;color:#46536a;font-size:1.05rem}
-    main{max-width:1240px;margin:auto;padding:26px clamp(16px,3vw,36px) 48px}
-    .intro{font-size:1.1rem;font-weight:700;margin:0 0 14px}
-    .controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 18px}
-    button{font:inherit;font-weight:700;border:2px solid #c8d1df;background:#fff;color:#172033;border-radius:12px;padding:12px 16px;min-height:48px;cursor:pointer}
-    button:hover,button:focus-visible{outline:3px solid #172033;outline-offset:3px}
-    #lineControls button{color:#fff;border-color:transparent;text-shadow:0 1px 2px #0005;box-shadow:0 2px 5px #17203320}
-    #lineControls button[data-select-line="NSL"]{background:#eb1d27}
-    #lineControls button[data-select-line="EWL"]{background:#279641}
-    #lineControls button[data-select-line="NEL"]{background:#7f2594}
-    #lineControls button[data-select-line="CCL"]{background:#f68712}
-    #lineControls button[data-select-line="DTL"]{background:#3153ad}
-    #lineControls button[data-select-line="TEL"]{background:#513019}
-    #lineControls button[aria-pressed=true]{outline:3px solid #172033;outline-offset:3px;box-shadow:0 0 0 6px #fff,0 0 0 9px currentColor}
-    #mapMount .dimmed{display:none!important}
-    #mapMount .focus-text-hidden{display:none!important}
-    #mapMount .focus-shape-hidden{display:none!important}
-    #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
-    #mapMount .selected-line{
-      filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 11px var(--line-glow)) drop-shadow(0 0 19px var(--line-glow))!important;
-      opacity:1!important;
-      animation:routeGlow 1.8s ease-in-out infinite alternate;
-    }
-    @keyframes routeGlow{
-      from{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 8px var(--line-glow)) drop-shadow(0 0 14px var(--line-glow))}
-      to{filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px var(--line-glow)) drop-shadow(0 0 14px var(--line-glow)) drop-shadow(0 0 24px var(--line-glow))}
-    }
-    /* The highlight is a separate SVG shape behind the label.
-       Do not apply any font, size, weight, or text-colour changes. */
-    #mapMount .station-label-highlight{pointer-events:none;}
-    #stationList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
-    #stationList button{display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center;gap:12px;text-align:left;justify-content:initial;background:#f8f9fc;border:1px solid #dce2ec;border-radius:10px;color:#172033;min-height:56px;padding:12px 14px;line-height:1.35;font-size:1.05rem;white-space:normal;overflow-wrap:break-word}
-    #stationList button:hover,#stationList button:focus-visible{background:#eef3fb;border-color:#7183a4}
-    #stationList .station-code{font-size:.88rem;color:#526078;min-width:0;font-weight:700;letter-spacing:.02em}
-    #stationList button span:last-child{min-width:0;font-weight:700}
-    @media(max-width:600px){#stationList{grid-template-columns:1fr;gap:8px}}
+:root{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif;color:#171717;background:#f4f0e7;--ink:#171717;--paper:#f4f0e7;--white:#fffdf8;--accent:#f06b45;--muted:#68665f;--rule:#d8d1c5}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body,button,input,select,textarea{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif;font-kerning:normal;font-synthesis:none}
+body{margin:0;background:var(--paper);color:var(--ink)}
+h1,h2,.intro,button{font-weight:700}
+header{position:relative;overflow:hidden;padding:clamp(34px,6vw,76px) clamp(20px,6vw,88px) clamp(34px,5vw,62px);background:var(--ink);color:var(--white);border:0}
+header:after{content:"";position:absolute;right:-6vw;top:-11vw;width:34vw;height:34vw;min-width:220px;min-height:220px;border:clamp(18px,3vw,38px) solid #f06b45;border-radius:50%;opacity:.95;pointer-events:none}
+header h1{position:relative;z-index:1;font-size:clamp(2.4rem,7vw,6rem);line-height:.98;letter-spacing:-.055em;margin:0 0 18px;max-width:850px}
+header p{position:relative;z-index:1;margin:0;max-width:680px;line-height:1.65;color:#e5dfd4;font-size:clamp(1rem,1.5vw,1.18rem)}
+main{max-width:1500px;margin:auto;padding:clamp(24px,4vw,56px) clamp(16px,4vw,64px) 72px}
+.intro{font-size:clamp(1.35rem,2.4vw,2rem);letter-spacing:-.035em;margin:0 0 18px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 26px}
+button{font:inherit;font-weight:700;border:2px solid var(--ink);background:var(--white);color:var(--ink);border-radius:4px;padding:13px 18px;min-height:50px;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+button:hover{transform:translateY(-2px);box-shadow:4px 4px 0 var(--ink)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+#lineControls button{color:#fff;border-color:transparent;text-shadow:0 1px 2px #0005;box-shadow:none;border-radius:3px}
+#lineControls button:hover{transform:translateY(-3px);box-shadow:4px 4px 0 var(--ink)}
+#lineControls button[data-select-line="NSL"]{background:#eb1d27}
+#lineControls button[data-select-line="EWL"]{background:#279641}
+#lineControls button[data-select-line="NEL"]{background:#7f2594}
+#lineControls button[data-select-line="CCL"]{background:#f68712}
+#lineControls button[data-select-line="DTL"]{background:#3153ad}
+#lineControls button[data-select-line="TEL"]{background:#513019}
+#lineControls button[aria-pressed=true]{outline:3px solid var(--ink);outline-offset:3px;box-shadow:0 0 0 5px var(--paper),0 0 0 8px var(--ink)}
+#mapMount .dimmed{display:none!important}
+#mapMount .focus-text-hidden{display:none!important}
+#mapMount .focus-shape-hidden{display:none!important}
+#mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
+#mapMount .selected-line{filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 11px var(--line-glow)) drop-shadow(0 0 19px var(--line-glow))!important;opacity:1!important;animation:routeGlow 1.8s ease-in-out infinite alternate}
+@keyframes routeGlow{from{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 8px var(--line-glow)) drop-shadow(0 0 14px var(--line-glow))}to{filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px var(--line-glow)) drop-shadow(0 0 14px var(--line-glow)) drop-shadow(0 0 24px var(--line-glow))}}
+#mapMount .station-label-highlight{pointer-events:none}
+#stationList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 12px}
+#stationList button{display:grid;grid-template-columns:58px minmax(0,1fr);align-items:center;gap:12px;text-align:left;background:var(--white);border:1px solid var(--rule);border-radius:3px;color:var(--ink);min-height:58px;padding:12px 14px;line-height:1.35;font-size:1.05rem;white-space:normal;overflow-wrap:break-word}
+#stationList button:hover,#stationList button:focus-visible{background:#fff0e9;border-color:var(--accent)}
+#stationList .station-code{font-size:.88rem;color:var(--muted);min-width:0;font-weight:700;letter-spacing:.02em}
+#stationList button span:last-child{min-width:0;font-weight:700}
+@media(max-width:600px){#stationList{grid-template-columns:1fr;gap:8px}}
+#backToMap{background:var(--ink);color:#fff;border-color:var(--ink)}
+#backHome{background:var(--white);color:var(--ink);border-color:var(--ink)}
+#stationPanel{display:none;background:var(--white);border:1px solid var(--rule);border-top:6px solid var(--accent);border-radius:3px;padding:clamp(16px,3vw,28px);margin:24px 0;box-shadow:8px 8px 0 #1717170c}
+#stationPanel.visible{display:block}
+#stationPanel h2{font-size:clamp(1.25rem,2vw,1.7rem);letter-spacing:-.025em;margin:0 0 6px}
+#stationPanel p{margin:0 0 16px;color:var(--muted);line-height:1.5}
+#mapMount.zoomed svg{transform:scale(1.12);transform-origin:center center;transition:transform .25s ease}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:22px 0}
+.toolbar button{font-size:.98rem}
+.status{font-weight:700;color:#34332f;min-height:1.5em;margin:12px 0 16px;padding:12px 15px;border-left:5px solid var(--accent);background:#ebe5da}
+.map-shell{background:var(--white);border:1px solid var(--rule);border-radius:3px;min-height:420px;padding:clamp(10px,2vw,24px);box-shadow:10px 10px 0 #17171712}
+#mapMount svg{width:100%;height:auto;max-height:82vh;display:block}
+#mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
+#mapMount [data-line]{transition:opacity .22s ease,filter .22s ease}
+.help{color:var(--muted);line-height:1.65;font-size:.98rem;margin-top:24px;max-width:900px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}}
+#welcomeScreen{min-height:100vh;padding:clamp(18px,4vw,56px);display:grid;place-items:center;background:var(--paper)}
+.welcome-card{position:relative;overflow:hidden;width:min(100%,1180px);background:var(--white);border:1px solid var(--ink);border-radius:3px;box-shadow:14px 14px 0 var(--ink);padding:clamp(24px,5vw,72px);text-align:left}
+.welcome-card:after{content:"";position:absolute;right:-100px;top:-115px;width:clamp(230px,34vw,440px);height:clamp(230px,34vw,440px);border:clamp(24px,4vw,52px) solid var(--accent);border-radius:50%;pointer-events:none}
+.route-stripe{position:relative;z-index:1;display:flex;height:10px;border-radius:0;overflow:hidden;margin:0 0 38px;max-width:420px}
+.route-stripe span{flex:1}.route-stripe span:nth-child(1){background:#eb1d27}.route-stripe span:nth-child(2){background:#279641}.route-stripe span:nth-child(3){background:#7f2594}.route-stripe span:nth-child(4){background:#f68712}.route-stripe span:nth-child(5){background:#3153ad}.route-stripe span:nth-child(6){background:#513019}
+.welcome-kicker{position:relative;z-index:1;margin:0 0 14px;color:var(--accent);font-size:.85rem;font-weight:700;letter-spacing:.12em}
+#welcomeTitle{position:relative;z-index:1;font-size:clamp(3rem,9vw,7.8rem);line-height:.9;letter-spacing:-.065em;margin:0 0 22px;color:var(--ink);max-width:780px}
+.welcome-lead{position:relative;z-index:1;font-size:clamp(1.15rem,2.2vw,1.55rem);line-height:1.5;color:#4f4c45;margin:0 0 28px;max-width:590px}
+.start-button{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:var(--accent);color:#171717;border:2px solid var(--ink);border-radius:3px;padding:17px 30px;min-width:210px;min-height:62px;font-size:1.2rem;letter-spacing:.04em;box-shadow:5px 5px 0 var(--ink)}
+.start-button:hover,.start-button:focus-visible{background:#ff815e;outline:3px solid var(--ink);outline-offset:5px;transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.start-hint{position:relative;z-index:1;color:var(--muted);font-size:.95rem;margin:16px 0 42px}
+.instructions{position:relative;z-index:1;max-width:100%;margin:0;text-align:left;border-top:1px solid var(--rule);padding-top:24px}
+.instructions h2{font-size:clamp(1.4rem,2.5vw,2rem);letter-spacing:-.035em;margin:0 0 18px;text-align:left;color:var(--ink)}
+.instructions ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.instructions li{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:center;gap:14px;background:#f3eee5;border:1px solid var(--rule);border-radius:3px;padding:16px}
+.instruction-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:3px;font-size:1.45rem;font-weight:700}
+.line-icon{background:#e8efff;color:#3153ad}.sound-icon{background:#f2e8fa;color:#7f2594}.glow-icon{background:#e5f5eb;color:#279641}.map-icon{background:#fff0df;color:#b85e00}
+.instructions li strong{display:block;font-size:1.05rem;line-height:1.4}
+.instructions li p{margin:4px 0 0;color:#4f4c45;line-height:1.5;font-size:1rem}
+#mapApp{display:block}
+@media(max-width:700px){.welcome-card{box-shadow:7px 7px 0 var(--ink)}.instructions ol{grid-template-columns:1fr}.welcome-card:after{right:-150px;top:-150px;opacity:.65}header:after{right:-150px;top:-150px}}
+@media(max-width:520px){.instructions li{padding:12px;gap:10px}.instruction-icon{width:40px;height:40px}header{padding-top:38px}main{padding-bottom:44px}}
 
-    #backToMap{background:#172b55;color:#fff;border-color:#172b55}
-    #backHome{background:#fff;color:#172b55;border-color:#172b55}
-    #stationPanel{display:none;background:#fff;border:1px solid #dce2ec;border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 5px 20px #15284b0b}
-    #stationPanel.visible{display:block}
-    #stationPanel h2{font-size:1.2rem;margin:0 0 6px}
-    #stationPanel p{margin:0 0 14px;color:#526078;line-height:1.5}
-    #mapMount.zoomed svg{transform:scale(1.12);transform-origin:center center;transition:transform .25s ease}
-
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
-    .toolbar button{font-size:.98rem}
-    .status{font-weight:700;color:#243b69;min-height:1.5em;margin:8px 0 14px}
-    .map-shell{background:#fff;border:1px solid #dce2ec;border-radius:18px;min-height:420px;padding:18px;box-shadow:0 8px 28px #15284b0b}
-    #mapMount svg{width:100%;height:auto;max-height:78vh;display:block}
-    /* Apply Atkinson Hyperlegible to map labels while preserving their original sizes, weights and positions. */
-    #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important;}
-    #mapMount [data-line]{transition:opacity .22s ease,filter .22s ease}
-    .help{color:#526078;line-height:1.6;font-size:.98rem;margin-top:16px}
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
-    #welcomeScreen{min-height:100vh;padding:clamp(22px,5vw,56px) 16px;display:grid;place-items:center;background:#f5f7fb}
-    .welcome-card{width:min(100%,780px);background:#fff;border:1px solid #dce2ec;border-radius:22px;box-shadow:0 8px 28px #15284b0b;padding:clamp(22px,5vw,48px);text-align:center}
-    .route-stripe{display:flex;height:7px;border-radius:20px;overflow:hidden;margin:0 auto 24px;max-width:300px}
-    .route-stripe span{flex:1}.route-stripe span:nth-child(1){background:#eb1d27}.route-stripe span:nth-child(2){background:#279641}.route-stripe span:nth-child(3){background:#7f2594}.route-stripe span:nth-child(4){background:#f68712}.route-stripe span:nth-child(5){background:#3153ad}.route-stripe span:nth-child(6){background:#513019}
-    .welcome-kicker{margin:0 0 10px;color:#526078;font-size:.85rem;font-weight:700;letter-spacing:.08em}
-    #welcomeTitle{font-size:clamp(2rem,6vw,3rem);margin:0 0 10px;color:#172033}
-    .welcome-lead{font-size:clamp(1.05rem,3vw,1.25rem);line-height:1.55;color:#46536a;margin:0 auto 24px;max-width:540px}
-    .start-button{background:#172b55;color:#fff;border:2px solid #172b55;border-radius:14px;padding:16px 30px;min-width:220px;min-height:60px;font-size:1.2rem;letter-spacing:.04em;box-shadow:0 3px 8px #17203320}
-    .start-button:hover,.start-button:focus-visible{background:#243b69;outline:3px solid #172033;outline-offset:4px}
-    .start-hint{color:#526078;font-size:.95rem;margin:12px 0 30px}
-    .instructions{max-width:590px;margin:0 auto;text-align:left}
-    .instructions h2{font-size:1.35rem;margin:0 0 16px;text-align:center;color:#172033}
-    .instructions ol{list-style:none;margin:0;padding:0;display:grid;gap:12px}
-    .instructions li{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:center;gap:14px;background:#f8f9fc;border:1px solid #dce2ec;border-radius:13px;padding:14px 16px}
-    .instruction-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;font-size:1.45rem;font-weight:700}
-    .line-icon{background:#e8efff;color:#3153ad}.sound-icon{background:#f2e8fa;color:#7f2594}.glow-icon{background:#e5f5eb;color:#279641}.map-icon{background:#fff0df;color:#b85e00}
-    .instructions li strong{display:block;font-size:1.05rem;line-height:1.4}
-    .instructions li p{margin:4px 0 0;color:#46536a;line-height:1.5;font-size:1rem}
-    #mapApp{display:block}
-    @media(max-width:520px){.welcome-card{border-radius:16px}.instructions li{padding:12px;gap:10px}.instruction-icon{width:40px;height:40px}}
   </style>
 </head>
 <body>
