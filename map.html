@@ -45,14 +45,14 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #backToMap{background:var(--ink);color:#fff;border-color:var(--ink)}
 #repeatAudio{background:#f4eee4;border-color:var(--rule)}
 .status{font-weight:700;color:#34332f;line-height:1.5;margin:0;padding:13px 15px;border-left:5px solid var(--accent);background:#e9e2d6;min-height:48px}
-#stationPanel{display:none;background:var(--white);border:1px solid var(--rule);border-top:5px solid var(--accent);padding:20px;margin:0 0 22px;box-shadow:5px 5px 0 #1919190c}
+#stationPanel{display:none;background:#fffdf8;border:2px solid var(--ink);border-top:8px solid var(--accent);padding:clamp(18px,2.5vw,30px);margin:0 0 28px;box-shadow:8px 8px 0 #19191912}
 #stationPanel.visible{display:block}
 .station-panel-heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:15px}
 #stationPanel h2{font-size:1.35rem;letter-spacing:-.035em;margin:0}
 #stationPanel .panel-kicker{margin:0 0 5px}
 #stationPanel .station-panel-heading>p{font-size:.92rem;line-height:1.45;color:var(--muted);margin:0 0 2px}
-#stationList{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:9px;max-height:310px;overflow:auto;padding:2px}
-#stationList button{display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center;gap:9px;text-align:left;background:#f7f3eb;border:1px solid var(--rule);color:var(--ink);min-height:46px;padding:9px 10px;line-height:1.35;font-size:.96rem;white-space:normal;overflow-wrap:break-word}
+#stationList{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-height:360px;overflow:auto;padding:3px}
+#stationList button{display:grid;grid-template-columns:58px minmax(0,1fr);align-items:center;gap:10px;text-align:left;background:#f7f3eb;border:1px solid #c9c0b2;color:var(--ink);min-height:54px;padding:12px 13px;line-height:1.35;font-size:1rem;white-space:normal;overflow-wrap:break-word}
 #stationList button:hover,#stationList button:focus-visible{background:#fff0e9;border-color:var(--accent)}
 #stationList .station-code{font-size:.8rem;color:var(--muted);font-weight:700;letter-spacing:.02em}
 #stationList button span:last-child{font-weight:700;min-width:0}
@@ -84,6 +84,13 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   </section>
   <div id="mapApp">
     <main>
+      <section id="stationPanel" aria-live="polite" aria-label="Stations on selected line">
+        <div class="station-panel-heading">
+          <div><p class="panel-kicker">02 / Choose a station</p><h2 id="stationHeading">Stations</h2></div>
+          <p>Tap a station button to hear its name spoken aloud.</p>
+        </div>
+        <div id="stationList"></div>
+      </section>
       <div class="workspace">
         <aside class="map-sidebar" aria-label="Map controls">
           <section class="panel">
@@ -107,13 +114,6 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
           <p class="status" id="status" role="status" aria-live="polite">Loading the MRT map…</p>
         </aside>
         <section class="map-column" aria-label="Interactive MRT map">
-          <section id="stationPanel" aria-live="polite" aria-label="Stations on selected line">
-            <div class="station-panel-heading">
-              <div><p class="panel-kicker">02 / Choose a station</p><h2 id="stationHeading">Stations</h2></div>
-              <p>Tap a station button to hear its name spoken aloud.</p>
-            </div>
-            <div id="stationList"></div>
-          </section>
           <div class="map-heading"><h2>Singapore MRT network</h2><span>Interactive map</span></div>
           <div class="map-shell"><div id="mapMount"></div></div>
           <p class="help">Choose a coloured line button to show only that route and reveal its station list. Select a station to hear its name.</p>
