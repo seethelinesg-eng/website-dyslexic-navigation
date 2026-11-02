@@ -182,8 +182,17 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       status.textContent='Audio could not play ('+(event.error||'speech error')+'). Check that your device is not muted and try the station again.';
     };
     const voices=window.speechSynthesis.getVoices();
-    const voice=voices.find(v=>/^en[-_]SG$/i.test(v.lang))||voices.find(v=>/^en[-_]GB/i.test(v.lang))||voices.find(v=>/^en/i.test(v.lang));
-    if(voice)utterance.voice=voice;
+    // Prefer a Singapore English voice when the device provides one.
+    // If unavailable, use the closest available English regional voice.
+    const voice=voices.find(v=>/^en[-_]SG$/i.test(v.lang))
+      ||voices.find(v=>/^en[-_]MY$/i.test(v.lang))
+      ||voices.find(v=>/^en[-_]AU$/i.test(v.lang))
+      ||voices.find(v=>/^en[-_]GB/i.test(v.lang))
+      ||voices.find(v=>/^en/i.test(v.lang));
+    if(voice){
+      utterance.voice=voice;
+      utterance.lang=voice.lang||'en-SG';
+    }
     window.speechSynthesis.cancel();
     // Safari can drop an utterance queued immediately after cancel().
     window.speechSynthesis.resume();
