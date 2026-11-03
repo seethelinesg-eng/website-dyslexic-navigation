@@ -20,7 +20,7 @@ body,button{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Ari
 .page-intro h1{font-size:clamp(2.6rem,6vw,5.6rem);line-height:.94;letter-spacing:-.065em;max-width:850px;margin:0 0 16px;position:relative;z-index:1}
 .page-intro p{font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.6;color:#555149;max-width:690px;margin:0;position:relative;z-index:1}
 main{max-width:1680px;margin:auto;padding:clamp(22px,3vw,44px) clamp(16px,4vw,64px) 76px}
-.workspace{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:clamp(18px,2.4vw,34px);align-items:start}
+.route-selector-panel{margin-bottom:18px}.controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.controls button{min-width:0;text-align:center;padding:12px 8px;font-size:.94rem;line-height:1.25}.map-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.map-actions .toolbar{display:flex;flex-wrap:wrap;gap:8px}.map-actions .toolbar button{min-height:44px}.map-actions .status{flex:1;min-width:180px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);gap:clamp(18px,2.4vw,34px);align-items:start}
 .map-sidebar{display:flex;flex-direction:column;gap:16px;min-width:0}
 .panel{background:var(--white);border:1px solid var(--rule);padding:22px;box-shadow:5px 5px 0 #1919190c}
 .panel-kicker{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:#a34b34;font-weight:700;margin:0 0 9px}
@@ -45,7 +45,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #backToMap{background:var(--ink);color:#fff;border-color:var(--ink)}
 #repeatAudio{background:#f4eee4;border-color:var(--rule)}
 .status{font-weight:700;color:#34332f;line-height:1.5;margin:0;padding:13px 15px;border-left:5px solid var(--accent);background:#e9e2d6;min-height:48px}
-#stationPanel{display:block;background:#fffdf8;border:2px solid var(--ink);border-top:8px solid var(--accent);padding:clamp(18px,2.5vw,30px);margin:0 0 28px;box-shadow:8px 8px 0 #19191912}
+#stationPanel{display:block;background:#fffdf8;border:2px solid var(--ink);border-top:8px solid var(--accent);padding:clamp(18px,2.5vw,30px);margin:0;box-shadow:8px 8px 0 #19191912;min-width:0}
 .station-panel-heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:15px}
 #stationPanel h2{font-size:1.35rem;letter-spacing:-.035em;margin:0}
 #stationPanel .panel-kicker{margin:0 0 5px}
@@ -83,16 +83,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   </section>
   <div id="mapApp">
     <main>
-      <section id="stationPanel" aria-live="polite" aria-label="Stations on selected line">
-        <div class="station-panel-heading">
-          <div><p class="panel-kicker">02 / Choose a station</p><h2 id="stationHeading">Stations</h2></div>
-          <p>Tap a station button to hear its name spoken aloud.</p>
-        </div>
-        <div id="stationList"><p class="panel-copy">Choose an MRT line below to see its station buttons here.</p></div>
-      </section>
-      <div class="workspace">
-        <aside class="map-sidebar" aria-label="Map controls">
-          <section class="panel">
+      <section class="panel route-selector-panel">
             <p class="panel-kicker">01 / Select a route</p>
             <h2>Choose an MRT line</h2>
             <p class="panel-copy">Select one line to highlight it on the map.</p>
@@ -105,17 +96,26 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
               <button type="button" data-select-line="TEL" aria-pressed="false">Thomson-East Coast Line</button>
             </div>
           </section>
-          <div class="toolbar">
-            <button type="button" id="backHome">← Back to home</button>
-            <button type="button" id="backToMap">← Back to full MRT map</button>
-            <button type="button" id="repeatAudio">Repeat announcement</button>
+      <div class="map-actions">
+      <div class="toolbar">
+        <button type="button" id="backHome">← Back to home</button>
+        <button type="button" id="backToMap">← Back to full MRT map</button>
+        <button type="button" id="repeatAudio">Repeat announcement</button>
+      </div>
+      <p class="status" id="status" role="status" aria-live="polite">Loading the MRT map…</p>
+      </div>
+      <div class="workspace">
+      <section class="map-column" aria-label="Interactive MRT map">
+        <div class="map-heading"><h2>Singapore MRT network</h2><span>Interactive map</span></div>
+        <div class="map-shell"><div id="mapMount"></div></div>
+        <p class="help">Choose a coloured line button to show only that route and reveal its station list. Select a station to hear its name.</p>
+      </section>
+        <section id="stationPanel" aria-live="polite" aria-label="Stations on selected line">
+          <div class="station-panel-heading">
+            <div><p class="panel-kicker">02 / Choose a station</p><h2 id="stationHeading">Stations</h2></div>
+            <p>Tap a station button to hear its name spoken aloud.</p>
           </div>
-          <p class="status" id="status" role="status" aria-live="polite">Loading the MRT map…</p>
-        </aside>
-        <section class="map-column" aria-label="Interactive MRT map">
-          <div class="map-heading"><h2>Singapore MRT network</h2><span>Interactive map</span></div>
-          <div class="map-shell"><div id="mapMount"></div></div>
-          <p class="help">Choose a coloured line button to show only that route and reveal its station list. Select a station to hear its name.</p>
+          <div id="stationList"><p class="panel-copy">Choose an MRT line below to see its station buttons here.</p></div>
         </section>
       </div>
     </main>
