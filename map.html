@@ -423,8 +423,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   function renderStations(code){
     stationHeading.textContent=names[code]+' — Stations';
     stationList.replaceChildren();
-    // Sort station buttons alphabetically by station name for easier scanning.
-    [...(stations[code]||[])].sort((a,b)=>a[1].localeCompare(b[1],'en',{sensitivity:'base'})).forEach(([stationCode,stationName])=>{
+    // Keep the station data in route order, following each station's MRT code number.
+    (stations[code]||[]).forEach(([stationCode,stationName])=>{
       const button=document.createElement('button');
       button.type='button';
       button.className='station-number-button';
