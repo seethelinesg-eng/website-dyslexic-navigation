@@ -364,30 +364,18 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     const svg=mount.querySelector('svg');
     if(!svg)return;
     svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
-    const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
-    // Accept the Illustrator spelling used for this TEL station label.
+    const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
     const labelAliases={'Bright Hill':['Bright Hill','Brighter Hill']};
     const targets=(labelAliases[stationName]||[stationName]).map(normalise);
     const matchesTarget=value=>targets.includes(normalise(value));
-    const ns='http://www.w3.org/2000/svg';
-    let highlighted=0;
-
-    // Illustrator may split a station name between separate <text> elements
-    // or between <tspan> elements. Check each label and short adjacent groups.
     const textElements=[...svg.querySelectorAll('text')];
-    const parents=new Map();
-    textElements.forEach(el=>{
-      if(!parents.has(el.parentNode))parents.set(el.parentNode,[]);
-      parents.get(el.parentNode).push(el);
-    });
+    const svgMatrix=svg.getScreenCTM();
+    if(!svgMatrix)return;
+    const inverse=svgMatrix.inverse();
+    let highlighted=0;
 
     function addHighlight(elements){
       if(!elements.length)return false;
-      const parent=elements[0].parentNode;
-      if(!parent||!elements.every(el=>el.parentNode===parent))return false;
-      const parentMatrix=parent.getScreenCTM();
-      if(!parentMatrix)return false;
-      const inverse=parentMatrix.inverse();
       let bounds=null;
       elements.forEach(el=>{
         const box=el.getBBox();
@@ -408,7 +396,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         }
       });
       if(!bounds)return false;
-      const marker=document.createElementNS(ns,'rect');
+      const marker=document.createElementNS('http://www.w3.org/2000/svg','rect');
       const padX=3,padY=2;
       marker.setAttribute('class','station-label-highlight');
       marker.setAttribute('x',bounds.x-padX);
@@ -418,49 +406,27 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       marker.setAttribute('rx','3');
       marker.setAttribute('fill',routeColours[code].glow);
       marker.setAttribute('pointer-events','none');
-      parent.insertBefore(marker,elements[0]);
+      svg.appendChild(marker);
       return true;
     }
 
-    parents.forEach(elements=>{
-      // First handle a complete label contained in one SVG text element.
-      elements.forEach(el=>{
-        if(matchesTarget(el.textContent)){
-          if(addHighlight([el]))highlighted++;
-          return;
+    // Search all SVG text fragments in document order. Illustrator often
+    // places each part of a station name in a different nested <g>, so the
+    // fragments do not share a parent element.
+    for(let start=0;start<textElements.length;start++){
+      let combined='';
+      const run=[];
+      for(let end=start;end<Math.min(textElements.length,start+12);end++){
+        const el=textElements[end];
+        combined+=normalise(el.textContent);
+        run.push(el);
+        if(matchesTarget(combined)){
+          if(addHighlight(run))highlighted++;
+          break;
         }
-        // Some exports split words into tspans inside a single text element.
-        const spans=[...el.querySelectorAll('tspan')];
-        for(let start=0;start<spans.length;start++){
-          let combined='';
-          const group=[];
-          for(let end=start;end<Math.min(spans.length,start+6);end++){
-            combined+=spans[end].textContent||'';
-            group.push(spans[end]);
-            if(matchesTarget(combined)){
-              if(addHighlight([el]))highlighted++;
-              break;
-            }
-          }
-        }
-      });
-
-      // Then join adjacent text elements. This catches Illustrator labels
-      // exported as separate fragments such as "Wood" + "lands".
-      for(let start=0;start<elements.length;start++){
-        let combined='';
-        const group=[];
-        for(let end=start;end<Math.min(elements.length,start+5);end++){
-          combined+=elements[end].textContent||'';
-          group.push(elements[end]);
-          if(group.length>1&&matchesTarget(combined)){
-            if(addHighlight(group))highlighted++;
-            break;
-          }
-          if(combined.length>Math.max(...targets.map(t=>t.length))+8)break;
-        }
+        if(combined.length>Math.max(...targets.map(t=>t.length))+8)break;
       }
-    });
+    }
 
     if(!highlighted){
       status.textContent=stationName+' selected and announced. I could not locate its label in the SVG artwork.';
@@ -496,7 +462,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261104-ewl-labels-fixed');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261104-ewl-highlight-fix');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -655,7 +621,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   document.getElementById('backHome').addEventListener('click',()=>{window.location.href='./index.html';});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement);else status.textContent='Choose a station first, then use Repeat announcement.'});
-  fetch('./mrt-map.svg?v=20261104-ewl-labels-fixed')
+  fetch('./mrt-map.svg?v=20261104-ewl-highlight-fix')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
