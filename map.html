@@ -332,6 +332,24 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     // Cache the SVG text nodes before assigning special-case labels.
     // This declaration must come before the Bedok fragment handling below.
     const textFragments=[...svg.querySelectorAll('text')];
+    // Clarke Quay (NE5) is split into four separate Illustrator text nodes.
+    // Tag the exact artwork fragments so they remain visible in NEL focus mode.
+    const clarkeQuayAnchors=[
+      'translate(510.54 679.06)',
+      'translate(527.13 678.9)',
+      'translate(545.13 678.9)',
+      'translate(579.34 679.23)'
+    ];
+    textFragments.forEach(fragment=>{
+      const transform=fragment.getAttribute('transform')||'';
+      if(clarkeQuayAnchors.some(anchor=>transform.startsWith(anchor))){
+        fragment.setAttribute('data-lines','NEL');
+        fragment.setAttribute('data-line','NEL');
+        fragment.setAttribute('data-station-label','true');
+        fragment.classList.remove('focus-text-hidden','dimmed');
+        fragment.style.removeProperty('display');
+      }
+    });
     // Bedok North and Bedok Reservoir are split across separate text rows
     // in the Illustrator export. Their fragments are not a single adjacent
     // text run because DT29/DT30 labels are interleaved in document order.
@@ -495,7 +513,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261104-purple-line-corrected-6');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261104-purple-clarke-label-fix-1');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -536,6 +554,31 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       const keep=owners.includes(code)||childOwners.includes(code);
       el.classList.toggle('focus-text-hidden',!keep);
     });
+    // Restore every fragment of Clarke Quay (NE5) after focus filtering.
+    // The Illustrator export separates the name into four individual text nodes.
+    if(code==='NEL'){
+      const clarkeQuayAnchors=[
+        'translate(510.54 679.06)',
+        'translate(527.13 678.9)',
+        'translate(545.13 678.9)',
+        'translate(579.34 679.23)'
+      ];
+      mount.querySelectorAll('text').forEach(part=>{
+        const transform=part.getAttribute('transform')||'';
+        if(!clarkeQuayAnchors.some(anchor=>transform.startsWith(anchor)))return;
+        part.classList.remove('dimmed','focus-text-hidden');
+        part.style.setProperty('display','inline','important');
+        part.style.setProperty('visibility','visible','important');
+        part.style.setProperty('opacity','1','important');
+        part.setAttribute('data-lines','NEL');
+        part.setAttribute('data-line','NEL');
+        part.setAttribute('data-station-label','true');
+        part.querySelectorAll('tspan').forEach(span=>{
+          span.setAttribute('data-lines','NEL');
+          span.setAttribute('data-line','NEL');
+        });
+      });
+    }
     // Punggol Cove is split across four adjacent SVG text elements. Restore
     // the complete label after focus filtering so no earlier classification
     // or inherited dimming can make it disappear on the North-East Line.
@@ -666,7 +709,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   document.getElementById('backHome').addEventListener('click',()=>{window.location.href='./index.html';});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement);else status.textContent='Choose a station first, then use Repeat announcement.'});
-  fetch('./mrt-map.svg?v=20261104-purple-line-corrected-6')
+  fetch('./mrt-map.svg?v=20261104-purple-clarke-label-fix-1')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
