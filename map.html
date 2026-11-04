@@ -557,6 +557,32 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       const keep=owners.includes(code)||childOwners.includes(code);
       el.classList.toggle('focus-text-hidden',!keep);
     });
+    // Restore all four Illustrator text fragments that form "Orchard Boulevard"
+    // (TE13). The artwork splits both words across separate SVG text nodes and
+    // does not attach TEL ownership metadata, so the generic focus filter hides them.
+    if(code==='TEL'){
+      const orchardBoulevardAnchors=[
+        'translate(227.57 526.77)',
+        'translate(246.14 526.77)',
+        'translate(294.19 526.77)',
+        'translate(323.76 526.77)'
+      ];
+      mount.querySelectorAll('text').forEach(part=>{
+        const transform=part.getAttribute('transform')||'';
+        if(!orchardBoulevardAnchors.some(anchor=>transform.startsWith(anchor)))return;
+        part.classList.remove('dimmed','focus-text-hidden');
+        part.style.setProperty('display','inline','important');
+        part.style.setProperty('visibility','visible','important');
+        part.style.setProperty('opacity','1','important');
+        part.setAttribute('data-lines','TEL');
+        part.setAttribute('data-line','TEL');
+        part.setAttribute('data-station-label','true');
+        part.querySelectorAll('tspan').forEach(span=>{
+          span.setAttribute('data-lines','TEL');
+          span.setAttribute('data-line','TEL');
+        });
+      });
+    }
     // Restore every fragment of Clarke Quay (NE5) after focus filtering.
     // The Illustrator export separates the name into four individual text nodes.
     if(code==='NEL'){
