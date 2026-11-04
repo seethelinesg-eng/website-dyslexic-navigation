@@ -1309,10 +1309,7 @@
     <text class="st34" transform="translate(72.82 353.14) scale(1.03 1)"><tspan x="0" y="0">as</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(94.8 353.32) scale(1.03 1)"><tspan x="0" y="0">Cre</tspan></text>
-  </g>
-  <g class="st29">
-    <text class="st34" transform="translate(112.5 353.14) scale(1.03 1)"><tspan x="0" y="0">scent</tspan></text>
+    <text transform="translate(94.8 353.14) scale(1.03 1)"><tspan class="st63">Cre</tspan><tspan class="st34">scent</tspan></text>
   </g>
   <g class="st29">
     <text class="st63" transform="translate(52.62 409.4) scale(1.03 1)"><tspan x="0" y="0">Gu</tspan></text>
