@@ -614,6 +614,50 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         });
       });
     }
+      // The Brown Line SVG splits Woodlands North and Woodlands South
+      // into separate Illustrator text fragments. Restore each fragment and
+      // its ancestor groups so focus mode does not hide either suffix.
+      const restoreTelLabel=anchors=>{
+        mount.querySelectorAll('text').forEach(part=>{
+          const transform=part.getAttribute('transform')||'';
+          if(!anchors.some(anchor=>transform.startsWith(anchor)))return;
+          let node=part;
+          while(node&&node!==mount){
+            node.classList?.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+            if(node.style){
+              node.style.setProperty('display','inline','important');
+              node.style.setProperty('visibility','visible','important');
+              node.style.setProperty('opacity','1','important');
+            }
+            node=node.parentElement;
+          }
+          part.setAttribute('data-lines','TEL');
+          part.setAttribute('data-line','TEL');
+          part.querySelectorAll('tspan').forEach(span=>{
+            span.classList.remove('dimmed','focus-text-hidden');
+            span.style.setProperty('display','inline','important');
+            span.style.setProperty('visibility','visible','important');
+            span.style.setProperty('opacity','1','important');
+            span.setAttribute('data-lines','TEL');
+            span.setAttribute('data-line','TEL');
+          });
+        });
+      };
+      restoreTelLabel([
+        'translate(208.01 134.46)',
+        'translate(230.62 134.46)',
+        'translate(239.41 134.46)',
+        'translate(296.33 134.46)',
+        'translate(317.8 134.63)'
+      ]);
+      restoreTelLabel([
+        'translate(322.19 220.87)',
+        'translate(344.98 220.7)',
+        'translate(354.6 220.35)',
+        'translate(409.51 220.02)',
+        'translate(428.63 220.19)'
+      ]);
+    }
     // Restore every fragment of Clarke Quay (NE5) after focus filtering.
     // The Illustrator export separates the name into four individual text nodes.
     if(code==='NEL'){
