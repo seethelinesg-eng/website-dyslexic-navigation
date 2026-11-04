@@ -959,6 +959,11 @@ body, body * {
       return el?el.getAttribute('data-line'):null;
     };
     const preview=code=>{
+      // The Circle Line's orange loop overlaps several nearby SVG shapes.
+      // Hover-preview repeatedly switches hit targets there and looks like
+      // the route is jumping. Keep CCL visually fixed on hover; click still
+      // selects it and applies the normal line emphasis.
+      if(code==='CCL')return;
       if(svg.dataset.hoverLine===code)return;
       svg.dataset.hoverLine=code||'';
       applyLineEmphasis(svg,code||selected);
