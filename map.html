@@ -938,7 +938,16 @@ body, body * {
       const match=!!code&&owners.includes(code);
       el.classList.toggle('dimmed',!!code&&!match);
       el.classList.toggle('selected-line',match);
-      el.classList.toggle('line-hover',match&&svg.dataset.hoverLine===code);
+      const hovering=match&&svg.dataset.hoverLine===code;
+      el.classList.toggle('line-hover',hovering);
+      if(el.getAttribute('data-line')==='CCL'&&el.matches('path,line,polyline,polygon')){
+        if(!el.hasAttribute('data-base-stroke-width'))el.setAttribute('data-base-stroke-width',getComputedStyle(el).strokeWidth||'');
+        const base=parseFloat(el.getAttribute('data-base-stroke-width'));
+        if(Number.isFinite(base)&&base>0){
+          if(hovering)el.style.setProperty('stroke-width',(base+1.25)+'px');
+          else el.style.removeProperty('stroke-width');
+        }
+      }
     });
   }
   function selectLineOnFullMap(code){
@@ -959,11 +968,6 @@ body, body * {
       return el?el.getAttribute('data-line'):null;
     };
     const preview=code=>{
-      // The Circle Line's orange loop overlaps several nearby SVG shapes.
-      // Hover-preview repeatedly switches hit targets there and looks like
-      // the route is jumping. Keep CCL visually fixed on hover; click still
-      // selects it and applies the normal line emphasis.
-      if(code==='CCL')return;
       if(svg.dataset.hoverLine===code)return;
       svg.dataset.hoverLine=code||'';
       applyLineEmphasis(svg,code||selected);
