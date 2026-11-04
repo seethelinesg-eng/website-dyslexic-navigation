@@ -221,48 +221,91 @@ body, body * {
   // word so a split such as "Ju" + "rong" becomes JU(800) + rong(600).
   function bionicizeSvgTextElement(textElement) {
     if (textElement.hasAttribute('data-bionicized')) return;
-    textElement.setAttribute('data-bionicized', 'true');
-    const walker = document.createTreeWalker(textElement, NodeFilter.SHOW_TEXT);
+
+    // Illustrator sometimes exports one station name as several adjacent
+    // <text> elements (for example, "Or" + "chard"). Treat neighbouring
+    // elements on the same baseline as one continuous label when there is
+    // no visible word-sized gap between them.
+    const parent = textElement.parentElement;
+    const siblings = parent
+      ? [...parent.children].filter(el => el.namespaceURI === 'http://www.w3.org/2000/svg' && el.localName === 'text')
+      : [textElement];
+    const boxes = new Map();
+    const getBox = el => {
+      if (!boxes.has(el)) {
+        try {
+          const r = el.getBoundingClientRect();
+          boxes.set(el, {left:r.left, right:r.right, top:r.top, bottom:r.bottom, width:r.width, height:r.height});
+        } catch (_) {
+          boxes.set(el, null);
+        }
+      }
+      return boxes.get(el);
+    };
+    const index = siblings.indexOf(textElement);
+    let first = index, last = index;
+    const joins = (a,b) => {
+      const A=getBox(a), B=getBox(b);
+      if (!A || !B || !A.width || !B.width) return false;
+      const sameBaseline=Math.abs(A.bottom-B.bottom)<=3.5 || Math.abs(A.top-B.top)<=3.5;
+      const gap=B.left-A.right;
+      const noSpace= !/\\s$/.test(a.textContent||'') && !/^\\s/.test(b.textContent||'');
+      return sameBaseline && noSpace && gap>=-2.5 && gap<=4.5;
+    };
+    while(first>0 && !siblings[first].hasAttribute('data-bionicized') && joins(siblings[first-1],siblings[first])) first--;
+    while(last<siblings.length-1 && !siblings[last].hasAttribute('data-bionicized') && joins(siblings[last],siblings[last+1])) last++;
+    const labelElements=siblings.slice(first,last+1);
+    if (labelElements.some(el => el.hasAttribute('data-bionicized'))) {
+      // If a neighbouring fragment was already processed, avoid double-wrapping.
+      labelElements.forEach(el=>el.setAttribute('data-bionicized','true'));
+      return;
+    }
+
     const nodes = [];
     let combined = '';
-    while (walker.nextNode()) {
-      const node = walker.currentNode;
-      const value = node.nodeValue || '';
-      if (!value) continue;
-      nodes.push({node, start: combined.length, value});
-      combined += value;
-    }
+    labelElements.forEach(label => {
+      const walker = document.createTreeWalker(label, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) {
+        const node=walker.currentNode, value=node.nodeValue||'';
+        if (!value) continue;
+        nodes.push({node, start:combined.length, value});
+        combined+=value;
+      }
+    });
+    labelElements.forEach(el=>el.setAttribute('data-bionicized','true'));
     if (!nodes.length) return;
 
     const boldPositions = new Set();
     wordPattern.lastIndex = 0;
     for (const match of combined.matchAll(wordPattern)) {
-      const firstTwo = Array.from(match[0]).slice(0, 2).join('');
-      for (let i = 0; i < firstTwo.length; i++) boldPositions.add(match.index + i);
+      const letters=Array.from(match[0]);
+      let offset=match.index;
+      for (let i=0;i<Math.min(2,letters.length);i++) {
+        boldPositions.add(offset);
+        offset+=letters[i].length;
+      }
     }
 
-    // Keep the original parent tspans so Illustrator's x/y/dx positioning stays intact.
-    nodes.forEach(({node, start: offset, value}) => {
-      const fragment = document.createDocumentFragment();
-      let runStart = 0;
-      let runWeight = boldPositions.has(offset) ? 800 : 600;
-      for (let i = 1; i <= value.length; i++) {
-        const nextWeight = i < value.length
-          ? (boldPositions.has(offset + i) ? 800 : 600)
-          : null;
-        if (i === value.length || nextWeight !== runWeight) {
-          const part = value.slice(runStart, i);
-          if (part) {
-            const span = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-            applyWeight(span, runWeight);
-            span.textContent = part;
+    // Retain each original <text>/<tspan> and its Illustrator coordinates.
+    nodes.forEach(({node, start:offset, value}) => {
+      const fragment=document.createDocumentFragment();
+      let runStart=0;
+      let runWeight=boldPositions.has(offset)?800:600;
+      for(let i=1;i<=value.length;i++){
+        const nextWeight=i<value.length?(boldPositions.has(offset+i)?800:600):null;
+        if(i===value.length||nextWeight!==runWeight){
+          const part=value.slice(runStart,i);
+          if(part){
+            const span=document.createElementNS('http://www.w3.org/2000/svg','tspan');
+            applyWeight(span,runWeight);
+            span.textContent=part;
             fragment.appendChild(span);
           }
-          runStart = i;
-          runWeight = nextWeight;
+          runStart=i;
+          runWeight=nextWeight;
         }
       }
-      node.parentNode.replaceChild(fragment, node);
+      node.parentNode.replaceChild(fragment,node);
     });
   }
 
