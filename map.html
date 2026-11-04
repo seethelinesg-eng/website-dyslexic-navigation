@@ -59,9 +59,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .map-heading{display:flex;justify-content:space-between;align-items:end;gap:14px;margin:0 0 12px}
 .map-heading h2{font-size:1.35rem;letter-spacing:-.035em;margin:0}
 .map-heading span{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.map-shell{width:100%;background:var(--white);border:1px solid var(--rule);padding:clamp(6px,1vw,14px);min-height:0;box-shadow:8px 8px 0 #19191912;box-sizing:border-box;overflow:hidden}
+.map-shell{width:100%;background:var(--white);border:1px solid var(--rule);padding:0;min-height:0;box-shadow:8px 8px 0 #19191912;box-sizing:border-box;overflow:visible}
 #mapMount{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
-#mapMount svg{width:100%;max-width:100%;height:auto;max-height:none;display:block;box-sizing:border-box}
+#mapMount svg{width:120%;max-width:none;height:auto;max-height:none;margin-left:-10%;display:block;box-sizing:border-box}
 #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
 #mapMount .dimmed,#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:none!important}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
@@ -103,7 +103,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 @media(max-width:700px){.legend-explorer-layout{grid-template-columns:1fr}.legend-topic-list{grid-template-columns:repeat(2,minmax(0,1fr))}.legend-topic-button{padding:10px}.legend-explorer{max-height:96vh;padding:16px}#legendZoomViewport{height:210px}}
 @media(max-width:420px){.legend-topic-list{grid-template-columns:1fr 1fr}.legend-topic-button{font-size:.88rem}}
 @media(max-width:900px){.workspace{grid-template-columns:1fr}.map-sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.map-sidebar>.panel:first-child{grid-row:span 2}.toolbar{grid-template-columns:1fr}}
-@media(max-width:620px){.sitebar{align-items:flex-start;flex-direction:column;gap:5px}.page-intro:after{right:-120px;opacity:.35}.map-sidebar{display:flex}.station-panel-heading{align-items:flex-start;flex-direction:column;gap:6px}.map-shell{min-height:300px}.map-heading{align-items:start;flex-direction:column;gap:4px}}
+@media(max-width:620px){.sitebar{align-items:flex-start;flex-direction:column;gap:5px}.page-intro:after{right:-120px;opacity:.35}.map-sidebar{display:flex}.station-panel-heading{align-items:flex-start;flex-direction:column;gap:6px}.map-shell{min-height:300px}#mapMount svg{width:100%;max-width:100%;margin-left:0}.map-heading{align-items:start;flex-direction:column;gap:4px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}}
 
 /* Site-wide Bionic typography: Atkinson Hyperlegible Next, 800/600 weights. */
