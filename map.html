@@ -461,6 +461,25 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       return true;
     }
 
+    // Orchard Boulevard (TE13) is split into four non-adjacent SVG text
+    // fragments, so the general consecutive-fragment matcher cannot combine
+    // the two words. Highlight all four pieces as one station label.
+    if(code==='TEL' && normalise(stationName)==='orchardboulevard'){
+      const anchors=[
+        'translate(227.57 526.77)',
+        'translate(246.14 526.77)',
+        'translate(294.19 526.77)',
+        'translate(323.76 526.77)'
+      ];
+      const orchardParts=textElements.filter(el=>{
+        const transform=el.getAttribute('transform')||'';
+        return anchors.some(anchor=>transform.startsWith(anchor));
+      });
+      if(orchardParts.length===anchors.length && addHighlight(orchardParts)){
+        highlighted++;
+      }
+    }
+
     // Search all SVG text fragments in document order. Illustrator often
     // places each part of a station name in a different nested <g>, so the
     // fragments do not share a parent element.
