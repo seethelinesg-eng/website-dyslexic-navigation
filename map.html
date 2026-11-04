@@ -19,8 +19,8 @@ body,button{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Ari
 .eyebrow{font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;color:#b84d32;margin:0 0 14px}
 .page-intro h1{font-size:clamp(2.6rem,6vw,5.6rem);line-height:.94;letter-spacing:-.065em;max-width:850px;margin:0 0 16px;position:relative;z-index:1}
 .page-intro p{font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.6;color:#555149;max-width:690px;margin:0;position:relative;z-index:1}
-main{max-width:1680px;margin:auto;padding:clamp(22px,3vw,44px) clamp(16px,4vw,64px) 76px}
-.route-selector-panel{margin-bottom:18px}.controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.controls button{min-width:0;text-align:center;padding:12px 8px;font-size:.94rem;line-height:1.25}.map-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.map-actions .toolbar{display:flex;flex-wrap:wrap;gap:8px}.map-actions .toolbar button{min-height:44px}.map-actions .status{flex:1;min-width:180px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);gap:clamp(18px,2.4vw,34px);align-items:start}
+main{width:100%;max-width:none;margin:0;padding:clamp(18px,2.5vw,36px) clamp(12px,2vw,30px) 64px}
+.route-selector-panel{margin-bottom:18px}.controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.controls button{min-width:0;text-align:center;padding:12px 8px;font-size:.94rem;line-height:1.25}.map-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.map-actions .toolbar{display:flex;flex-wrap:wrap;gap:8px}.map-actions .toolbar button{min-height:44px}.map-actions .status{flex:1;min-width:180px}.workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:start}
 .map-sidebar{display:flex;flex-direction:column;gap:16px;min-width:0}
 .panel{background:var(--white);border:1px solid var(--rule);padding:22px;box-shadow:5px 5px 0 #1919190c}
 .panel-kicker{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:#a34b34;font-weight:700;margin:0 0 9px}
@@ -59,9 +59,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .map-heading{display:flex;justify-content:space-between;align-items:end;gap:14px;margin:0 0 12px}
 .map-heading h2{font-size:1.35rem;letter-spacing:-.035em;margin:0}
 .map-heading span{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.map-shell{background:var(--white);border:1px solid var(--rule);padding:clamp(12px,2vw,28px);min-height:520px;box-shadow:8px 8px 0 #19191912;box-sizing:border-box;overflow:hidden}
+.map-shell{width:100%;background:var(--white);border:1px solid var(--rule);padding:clamp(6px,1vw,14px);min-height:0;box-shadow:8px 8px 0 #19191912;box-sizing:border-box;overflow:hidden}
 #mapMount{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
-#mapMount svg{width:100%;max-width:100%;height:auto;max-height:82vh;display:block;box-sizing:border-box}
+#mapMount svg{width:100%;max-width:100%;height:auto;max-height:none;display:block;box-sizing:border-box}
 #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
 #mapMount .dimmed,#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:none!important}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
