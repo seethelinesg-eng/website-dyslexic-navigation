@@ -164,16 +164,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       [/\bSungei Bedok\b/gi,'Sungei Bedok'],
       [/\bYio Chu Kang\b/gi,'Yio Chu Kang'],
       [/\bBukit Panjang\b/gi,'Bukit Panjang'],
-      [/\bTampines East\b/gi,'tam-puh-NEES East'],
+      [/\bTampines East\b/gi,'Tampines East'],
       [/\bUpper Changi\b/gi,'Upper Changi'],
-      [/\bTampines\b/gi,'tam-puh-NEES'],
-      [/\bKembangan\b/gi,'kem-BANG-uhn'],
-      [/\bPotong Pasir\b/gi,'Po-tong Pah-seer'],
-      [/\bKovan\b/gi,'Ko-vun'],
-      [/\bHougang\b/gi,'HO-gung'],
-      [/\bKallang\b/gi,'kuh-LANG'],
-      [/\bTiong Bahru\b/gi,'Chong BAH-roo'],
-      [/\bBugis\b/gi,'BOO geese'],
+      [/\bTampines\b/gi,'Tampines'],
       [/\bBedok\b/gi,'Bedok'],
       [/\bPromenade\b/gi,'Promenade'],
       [/\bKatong\b/gi,'Katong'],
@@ -332,47 +325,6 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         });
       });
     });
-    // Cache the SVG text nodes before assigning special-case labels.
-    // This declaration must come before the Bedok fragment handling below.
-    const textFragments=[...svg.querySelectorAll('text')];
-    // Clarke Quay (NE5) is split into four separate Illustrator text nodes.
-    // Tag the exact artwork fragments so they remain visible in NEL focus mode.
-    const clarkeQuayAnchors=[
-      'translate(510.54 679.06)',
-      'translate(527.13 678.9)',
-      'translate(545.13 678.9)',
-      'translate(579.34 679.23)'
-    ];
-    textFragments.forEach(fragment=>{
-      const transform=fragment.getAttribute('transform')||'';
-      if(clarkeQuayAnchors.some(anchor=>transform.startsWith(anchor))){
-        fragment.setAttribute('data-lines','NEL');
-        fragment.setAttribute('data-line','NEL');
-        fragment.setAttribute('data-station-label','true');
-        fragment.classList.remove('focus-text-hidden','dimmed');
-        fragment.style.removeProperty('display');
-      }
-    });
-    // Bedok North and Bedok Reservoir are split across separate text rows
-    // in the Illustrator export. Their fragments are not a single adjacent
-    // text run because DT29/DT30 labels are interleaved in document order.
-    // Assign the exact artwork fragments to the Downtown Line explicitly.
-    const downtownLabelFragments = [
-      'translate(773.75 399.46)', 'translate(793.94 399.46)',
-      'translate(777.05 415.17)', 'translate(797.38 415.34)',
-      'translate(844.63 370.04)', 'translate(863.88 370.04)',
-      'translate(832.13 384.81)', 'translate(851.22 384.63)'
-    ];
-    textFragments.forEach(fragment=>{
-      const transform=fragment.getAttribute('transform')||'';
-      if(downtownLabelFragments.some(anchor=>transform.startsWith(anchor))){
-        fragment.setAttribute('data-lines','DTL');
-        fragment.setAttribute('data-line','DTL');
-        fragment.setAttribute('data-station-label','true');
-        fragment.classList.remove('focus-text-hidden','dimmed');
-        fragment.style.removeProperty('display');
-      }
-    });
     // A few Illustrator labels use slightly different wording from the station list.
     // Treat these as aliases so their artwork remains visible in the correct line view.
     [['Brighter Hill','Bright Hill']].forEach(([artworkName,stationName])=>{
@@ -384,6 +336,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     // Match the SVG's text elements in document order across nested groups.
     // Stop as soon as a complete station name/code is found, then tag every
     // fragment in that run so line-focus mode keeps the whole label visible.
+    const textFragments=[...svg.querySelectorAll('text')];
     for(let start=0;start<textFragments.length;start++){
       let combined='';
       const run=[];
@@ -412,17 +365,29 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     if(!svg)return;
     svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
+    // Accept the Illustrator spelling used for this TEL station label.
     const labelAliases={'Bright Hill':['Bright Hill','Brighter Hill']};
     const targets=(labelAliases[stationName]||[stationName]).map(normalise);
     const matchesTarget=value=>targets.includes(normalise(value));
-    const textElements=[...svg.querySelectorAll('text')];
-    const svgMatrix=svg.getScreenCTM();
-    if(!svgMatrix)return;
-    const inverse=svgMatrix.inverse();
+    const ns='http://www.w3.org/2000/svg';
     let highlighted=0;
+
+    // Illustrator may split a station name between separate <text> elements
+    // or between <tspan> elements. Check each label and short adjacent groups.
+    const textElements=[...svg.querySelectorAll('text')];
+    const parents=new Map();
+    textElements.forEach(el=>{
+      if(!parents.has(el.parentNode))parents.set(el.parentNode,[]);
+      parents.get(el.parentNode).push(el);
+    });
 
     function addHighlight(elements){
       if(!elements.length)return false;
+      const parent=elements[0].parentNode;
+      if(!parent||!elements.every(el=>el.parentNode===parent))return false;
+      const parentMatrix=parent.getScreenCTM();
+      if(!parentMatrix)return false;
+      const inverse=parentMatrix.inverse();
       let bounds=null;
       elements.forEach(el=>{
         const box=el.getBBox();
@@ -443,7 +408,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         }
       });
       if(!bounds)return false;
-      const marker=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      const marker=document.createElementNS(ns,'rect');
       const padX=3,padY=2;
       marker.setAttribute('class','station-label-highlight');
       marker.setAttribute('x',bounds.x-padX);
@@ -452,53 +417,50 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       marker.setAttribute('height',Math.max(1,bounds.bottom-bounds.y+padY*2));
       marker.setAttribute('rx','3');
       marker.setAttribute('fill',routeColours[code].glow);
-      marker.setAttribute('fill-opacity','0.20');
-      marker.setAttribute('stroke',routeColours[code].glow);
-      marker.setAttribute('stroke-width','1.5');
       marker.setAttribute('pointer-events','none');
-      // Draw the highlight on the top SVG layer. Inserting it as the
-      // first child put it underneath the map artwork, making it invisible.
-      // A light translucent fill and outline keep the station name readable.
-      svg.appendChild(marker);
+      parent.insertBefore(marker,elements[0]);
       return true;
     }
 
-    // Orchard Boulevard (TE13) is split into four non-adjacent SVG text
-    // fragments, so the general consecutive-fragment matcher cannot combine
-    // the two words. Highlight all four pieces as one station label.
-    if(code==='TEL' && normalise(stationName)==='orchardboulevard'){
-      const anchors=[
-        'translate(227.57 526.77)',
-        'translate(246.14 526.77)',
-        'translate(294.19 526.77)',
-        'translate(323.76 526.77)'
-      ];
-      const orchardParts=textElements.filter(el=>{
-        const transform=el.getAttribute('transform')||'';
-        return anchors.some(anchor=>transform.startsWith(anchor));
-      });
-      if(orchardParts.length===anchors.length && addHighlight(orchardParts)){
-        highlighted++;
-      }
-    }
-
-    // Search all SVG text fragments in document order. Illustrator often
-    // places each part of a station name in a different nested <g>, so the
-    // fragments do not share a parent element.
-    for(let start=0;start<textElements.length;start++){
-      let combined='';
-      const run=[];
-      for(let end=start;end<Math.min(textElements.length,start+12);end++){
-        const el=textElements[end];
-        combined+=normalise(el.textContent);
-        run.push(el);
-        if(matchesTarget(combined)){
-          if(addHighlight(run))highlighted++;
-          break;
+    parents.forEach(elements=>{
+      // First handle a complete label contained in one SVG text element.
+      elements.forEach(el=>{
+        if(matchesTarget(el.textContent)){
+          if(addHighlight([el]))highlighted++;
+          return;
         }
-        if(combined.length>Math.max(...targets.map(t=>t.length))+8)break;
+        // Some exports split words into tspans inside a single text element.
+        const spans=[...el.querySelectorAll('tspan')];
+        for(let start=0;start<spans.length;start++){
+          let combined='';
+          const group=[];
+          for(let end=start;end<Math.min(spans.length,start+6);end++){
+            combined+=spans[end].textContent||'';
+            group.push(spans[end]);
+            if(matchesTarget(combined)){
+              if(addHighlight([el]))highlighted++;
+              break;
+            }
+          }
+        }
+      });
+
+      // Then join adjacent text elements. This catches Illustrator labels
+      // exported as separate fragments such as "Wood" + "lands".
+      for(let start=0;start<elements.length;start++){
+        let combined='';
+        const group=[];
+        for(let end=start;end<Math.min(elements.length,start+5);end++){
+          combined+=elements[end].textContent||'';
+          group.push(elements[end]);
+          if(group.length>1&&matchesTarget(combined)){
+            if(addHighlight(group))highlighted++;
+            break;
+          }
+          if(combined.length>Math.max(...targets.map(t=>t.length))+8)break;
+        }
       }
-    }
+    });
 
     if(!highlighted){
       status.textContent=stationName+' selected and announced. I could not locate its label in the SVG artwork.';
@@ -530,14 +492,11 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   async function selectLine(code){
     if(!names[code])return;
     selected=code;
-    // Start speech immediately inside the user's click gesture. Safari may
-    // block speech synthesis if it is first requested after the SVG fetch.
-    speak(names[code]+' selected');
     renderStations(code);
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261104-brown-correction-6');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261104-stable-rollback');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -578,110 +537,6 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       const keep=owners.includes(code)||childOwners.includes(code);
       el.classList.toggle('focus-text-hidden',!keep);
     });
-    // Force the complete Orchard Boulevard (TE13) label to remain visible.
-    // Illustrator splits it into four text fragments; explicitly restore both
-    // words and their ancestor groups after all focus-mode filtering has run.
-    if(code==='TEL'){
-      const orchardBoulevardAnchors=[
-        'translate(227.57 526.77)',
-        'translate(246.14 526.77)',
-        'translate(294.19 526.77)',
-        'translate(323.76 526.77)'
-      ];
-      mount.querySelectorAll('text').forEach(part=>{
-        const transform=part.getAttribute('transform')||'';
-        if(!orchardBoulevardAnchors.some(anchor=>transform.startsWith(anchor)))return;
-        let node=part;
-        while(node&&node!==mount){
-          node.classList?.remove('dimmed','focus-text-hidden','focus-shape-hidden');
-          if(node.style){
-            node.style.setProperty('display','inline','important');
-            node.style.setProperty('visibility','visible','important');
-            node.style.setProperty('opacity','1','important');
-          }
-          node=node.parentElement;
-        }
-        part.setAttribute('data-lines','TEL');
-        part.setAttribute('data-line','TEL');
-        part.setAttribute('data-station-label','true');
-        part.querySelectorAll('tspan').forEach(span=>{
-          span.classList.remove('dimmed','focus-text-hidden');
-          span.style.setProperty('display','inline','important');
-          span.style.setProperty('visibility','visible','important');
-          span.style.setProperty('opacity','1','important');
-          span.setAttribute('data-lines','TEL');
-          span.setAttribute('data-line','TEL');
-        });
-      });
-      // The Brown Line SVG splits Woodlands North and Woodlands South
-      // into separate Illustrator text fragments. Restore each fragment and
-      // its ancestor groups so focus mode does not hide either suffix.
-      const restoreTelLabel=anchors=>{
-        mount.querySelectorAll('text').forEach(part=>{
-          const transform=part.getAttribute('transform')||'';
-          if(!anchors.some(anchor=>transform.startsWith(anchor)))return;
-          let node=part;
-          while(node&&node!==mount){
-            node.classList?.remove('dimmed','focus-text-hidden','focus-shape-hidden');
-            if(node.style){
-              node.style.setProperty('display','inline','important');
-              node.style.setProperty('visibility','visible','important');
-              node.style.setProperty('opacity','1','important');
-            }
-            node=node.parentElement;
-          }
-          part.setAttribute('data-lines','TEL');
-          part.setAttribute('data-line','TEL');
-          part.querySelectorAll('tspan').forEach(span=>{
-            span.classList.remove('dimmed','focus-text-hidden');
-            span.style.setProperty('display','inline','important');
-            span.style.setProperty('visibility','visible','important');
-            span.style.setProperty('opacity','1','important');
-            span.setAttribute('data-lines','TEL');
-            span.setAttribute('data-line','TEL');
-          });
-        });
-      };
-      restoreTelLabel([
-        'translate(208.01 134.46)',
-        'translate(230.62 134.46)',
-        'translate(239.41 134.46)',
-        'translate(296.33 134.46)',
-        'translate(317.8 134.63)'
-      ]);
-      restoreTelLabel([
-        'translate(322.19 220.87)',
-        'translate(344.98 220.7)',
-        'translate(354.6 220.35)',
-        'translate(409.51 220.02)',
-        'translate(428.63 220.19)'
-      ]);
-    }
-    // Restore every fragment of Clarke Quay (NE5) after focus filtering.
-    // The Illustrator export separates the name into four individual text nodes.
-    if(code==='NEL'){
-      const clarkeQuayAnchors=[
-        'translate(510.54 679.06)',
-        'translate(527.13 678.9)',
-        'translate(545.13 678.9)',
-        'translate(579.34 679.23)'
-      ];
-      mount.querySelectorAll('text').forEach(part=>{
-        const transform=part.getAttribute('transform')||'';
-        if(!clarkeQuayAnchors.some(anchor=>transform.startsWith(anchor)))return;
-        part.classList.remove('dimmed','focus-text-hidden');
-        part.style.setProperty('display','inline','important');
-        part.style.setProperty('visibility','visible','important');
-        part.style.setProperty('opacity','1','important');
-        part.setAttribute('data-lines','NEL');
-        part.setAttribute('data-line','NEL');
-        part.setAttribute('data-station-label','true');
-        part.querySelectorAll('tspan').forEach(span=>{
-          span.setAttribute('data-lines','NEL');
-          span.setAttribute('data-line','NEL');
-        });
-      });
-    }
     // Punggol Cove is split across four adjacent SVG text elements. Restore
     // the complete label after focus filtering so no earlier classification
     // or inherited dimming can make it disappear on the North-East Line.
@@ -711,26 +566,12 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       if(el.closest('#interactiveLegendTargets'))return;
       // Preserve the pale white Singapore island silhouette in every line-focus view.
       if(el.classList.contains('island-background')){el.classList.remove('focus-shape-hidden');return;}
-      // In the latest Blue Line Illustrator export, Bedok North and Bedok Reservoir
-      // are outlined vector lettering rather than SVG <text>. Keep compact dark
-      // glyph paths visible in DTL focus mode so outlined station names survive
-      // the shape filter. The size limits avoid restoring large background artwork.
-      if(code==='DTL'){
-        const fill=rgbFromCss(getComputedStyle(el).fill);
-        let labelBox=null;
-        try{labelBox=el.getBBox();}catch(_){}
-        const isOutlinedLabel=fill&&Math.max(...fill)<110&&labelBox
-          &&labelBox.width>0&&labelBox.width<=180
-          &&labelBox.height>0&&labelBox.height<=55;
-        if(isOutlinedLabel){el.classList.remove('focus-shape-hidden');return;}
-      }
+      // The TEL artwork contains unrelated grey guide/connector strokes.
+      // Hide those in brown-line focus without affecting the brown route itself.
       if(code==='TEL'){
-        // The Brown Line is loaded from its own dedicated Illustrator SVG.
-        // Its station lettering (including Orchard Boulevard) is converted
-        // into vector artwork rather than SVG text. Do not run the generic
-        // shape filter on this dedicated asset: it was hiding parts of labels.
-        el.classList.remove('focus-shape-hidden');
-        return;
+        const stroke=rgbFromCss(getComputedStyle(el).stroke);
+        const isGreyStroke=stroke&&Math.max(...stroke)-Math.min(...stroke)<28&&Math.max(...stroke)>55&&Math.max(...stroke)<190;
+        if(isGreyStroke){el.classList.add('focus-shape-hidden');return;}
       }
       if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
       let box;
@@ -740,6 +581,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     });
     // Hide interchange gradient boxes and unrelated LRT corner labels.
     mount.querySelectorAll('[data-gradient-route],[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
+    speak(names[code]+' selected');
   }
   function showAll(){
     selected=null;
@@ -813,7 +655,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   document.getElementById('backHome').addEventListener('click',()=>{window.location.href='./index.html';});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement);else status.textContent='Choose a station first, then use Repeat announcement.'});
-  fetch('./mrt-map.svg?v=20261104-brown-outlined-label-fix-2')
+  fetch('./mrt-map.svg?v=20261104-stable-rollback')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
