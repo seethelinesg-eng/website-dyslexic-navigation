@@ -557,9 +557,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       const keep=owners.includes(code)||childOwners.includes(code);
       el.classList.toggle('focus-text-hidden',!keep);
     });
-    // Restore all four Illustrator text fragments that form "Orchard Boulevard"
-    // (TE13). The artwork splits both words across separate SVG text nodes and
-    // does not attach TEL ownership metadata, so the generic focus filter hides them.
+    // Force the complete Orchard Boulevard (TE13) label to remain visible.
+    // Illustrator splits it into four text fragments; explicitly restore both
+    // words and their ancestor groups after all focus-mode filtering has run.
     if(code==='TEL'){
       const orchardBoulevardAnchors=[
         'translate(227.57 526.77)',
@@ -570,14 +570,24 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       mount.querySelectorAll('text').forEach(part=>{
         const transform=part.getAttribute('transform')||'';
         if(!orchardBoulevardAnchors.some(anchor=>transform.startsWith(anchor)))return;
-        part.classList.remove('dimmed','focus-text-hidden');
-        part.style.setProperty('display','inline','important');
-        part.style.setProperty('visibility','visible','important');
-        part.style.setProperty('opacity','1','important');
+        let node=part;
+        while(node&&node!==mount){
+          node.classList?.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+          if(node.style){
+            node.style.setProperty('display','inline','important');
+            node.style.setProperty('visibility','visible','important');
+            node.style.setProperty('opacity','1','important');
+          }
+          node=node.parentElement;
+        }
         part.setAttribute('data-lines','TEL');
         part.setAttribute('data-line','TEL');
         part.setAttribute('data-station-label','true');
         part.querySelectorAll('tspan').forEach(span=>{
+          span.classList.remove('dimmed','focus-text-hidden');
+          span.style.setProperty('display','inline','important');
+          span.style.setProperty('visibility','visible','important');
+          span.style.setProperty('opacity','1','important');
           span.setAttribute('data-lines','TEL');
           span.setAttribute('data-line','TEL');
         });
