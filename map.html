@@ -70,6 +70,27 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #mapMount .station-label-highlight{pointer-events:none}
 #mapMount.zoomed svg{transform:none;transform-origin:center center;transition:none}
 .help{color:var(--muted);line-height:1.6;font-size:.92rem;margin:16px 0 0;max-width:900px}
+
+/* Legend Guide: isolated styles; existing map legend artwork is unchanged. */
+#legendGuideButton{background:#fffdf8;border-color:var(--ink);color:var(--ink)}
+#legendGuide[hidden]{display:none!important}
+#legendGuide{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:rgba(25,25,25,.62)}
+.legend-guide-dialog{width:min(100%,720px);max-height:min(88vh,820px);overflow:auto;background:#fffdf8;border:2px solid var(--ink);padding:clamp(20px,4vw,34px);box-shadow:9px 9px 0 rgba(0,0,0,.22)}
+.legend-guide-header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:10px}
+.legend-guide-header h2{font-size:clamp(1.7rem,4vw,2.3rem);letter-spacing:-.045em;margin:0}
+.legend-guide-header p{color:var(--muted);line-height:1.5;margin:8px 0 0}
+#closeLegendGuide{flex:0 0 auto;min-width:44px;min-height:44px;text-align:center;padding:8px;font-size:1.2rem}
+.legend-guide-section{border-top:1px solid var(--rule);padding:15px 0}
+.legend-guide-section h3{font-size:1.08rem;margin:0 0 10px}
+.legend-guide-section p{color:#555149;line-height:1.5;margin:7px 0}
+.legend-line-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.legend-line-item{display:flex;align-items:center;gap:10px;padding:9px 10px;background:#f3efe6;border:1px solid var(--rule);font-weight:700}
+.legend-line-swatch{width:13px;height:30px;border-radius:3px;flex:0 0 13px}
+.legend-guide-examples{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.legend-guide-example{background:#f3efe6;border:1px solid var(--rule);padding:10px}
+.legend-guide-example strong{display:block;margin-bottom:4px}
+.legend-guide-foot{font-size:.88rem;color:var(--muted);line-height:1.5;margin:14px 0 0}
+@media(max-width:520px){#legendGuide{padding:10px}.legend-guide-dialog{max-height:92vh;padding:18px}.legend-line-list{grid-template-columns:1fr}.legend-guide-header{gap:10px}}
 @media(max-width:900px){.workspace{grid-template-columns:1fr}.map-sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.map-sidebar>.panel:first-child{grid-row:span 2}.toolbar{grid-template-columns:1fr}}
 @media(max-width:620px){.sitebar{align-items:flex-start;flex-direction:column;gap:5px}.page-intro:after{right:-120px;opacity:.35}.map-sidebar{display:flex}.station-panel-heading{align-items:flex-start;flex-direction:column;gap:6px}.map-shell{min-height:300px}.map-heading{align-items:start;flex-direction:column;gap:4px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}}
@@ -102,6 +123,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         <button type="button" id="backHome">← Back to home</button>
         <button type="button" id="backToMap">← Back to full MRT map</button>
         <button type="button" id="repeatAudio">Repeat announcement</button>
+        <button type="button" id="legendGuideButton" aria-haspopup="dialog" aria-controls="legendGuide" aria-expanded="false">ⓘ Legend guide</button>
       </div>
       <p class="status" id="status" role="status" aria-live="polite">Loading the MRT map…</p>
       </div>
@@ -112,8 +134,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         <p class="help">Choose a coloured line button to show only that route and reveal its station list. Select a station to hear its name.</p>
       </section>
         <section id="stationPanel" aria-live="polite" aria-label="Stations on selected line">
-          <div class="station-panel-heading">
-            <div><p class="panel-kicker">02 / Choose a station</p><h2 id="stationHeading">Stations</h2></div>
+          <div class="station-panel-heading">            <div><p class="panel-kicker">02 / Choose a station</p><h2 id="stationHeading">Stations</h2></div>
             <p>Tap a station button to hear its name spoken aloud.</p>
           </div>
           <div id="stationList"><p class="panel-copy">Choose an MRT line below to see its station buttons here.</p></div>
@@ -121,6 +142,67 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       </div>
     </main>
   </div>
+  <section id="legendGuide" hidden role="dialog" aria-modal="true" aria-labelledby="legendGuideTitle">
+    <div class="legend-guide-dialog">
+      <div class="legend-guide-header">
+        <div>
+          <p class="panel-kicker">MAP REFERENCE</p>
+          <h2 id="legendGuideTitle">Singapore MRT legend guide</h2>
+          <p>Use this guide to understand the colours, station codes and transport connections shown on the map.</p>
+        </div>
+        <button type="button" id="closeLegendGuide" aria-label="Close legend guide">×</button>
+      </div>
+      <section class="legend-guide-section" aria-labelledby="legendLinesTitle">
+        <h3 id="legendLinesTitle">MRT line colours</h3>
+        <div class="legend-line-list">
+          <div class="legend-line-item"><span class="legend-line-swatch" style="background:#eb1d27"></span>North-South Line (NSL)</div>
+          <div class="legend-line-item"><span class="legend-line-swatch" style="background:#279641"></span>East-West Line (EWL)</div>
+          <div class="legend-line-item"><span class="legend-line-swatch" style="background:#7f2594"></span>North-East Line (NEL)</div>
+          <div class="legend-line-item"><span class="legend-line-swatch" style="background:#f68712"></span>Circle Line (CCL)</div>
+          <div class="legend-line-item"><span class="legend-line-swatch" style="background:#3153ad"></span>Downtown Line (DTL)</div>
+          <div class="legend-line-item"><span class="legend-line-swatch" style="background:#513019"></span>Thomson-East Coast Line (TEL)</div>
+        </div>
+      </section>
+      <section class="legend-guide-section" aria-labelledby="legendCodesTitle">
+        <h3 id="legendCodesTitle">Station codes</h3>
+        <p>Each station code combines a line abbreviation with a number. The letters identify the MRT line, while the number identifies the station on that line.</p>
+        <div class="legend-guide-examples">
+          <div class="legend-guide-example"><strong>NS1</strong>NS = North-South Line</div>
+          <div class="legend-guide-example"><strong>EW2</strong>EW = East-West Line</div>
+          <div class="legend-guide-example"><strong>NE3</strong>NE = North-East Line</div>
+          <div class="legend-guide-example"><strong>TE1</strong>TE = Thomson-East Coast Line</div>
+        </div>
+      </section>
+      <section class="legend-guide-section" aria-labelledby="legendInterchangeTitle">
+        <h3 id="legendInterchangeTitle">Interchange stations</h3>
+        <p>An interchange is a station where you can change from one MRT line to another. The station may have more than one line code.</p>
+        <div class="legend-guide-examples">
+          <div class="legend-guide-example"><strong>Dhoby Ghaut</strong>NS24 · NE6 · CC1</div>
+          <div class="legend-guide-example"><strong>Bishan</strong>NS17 · CC15</div>
+          <div class="legend-guide-example"><strong>Bugis</strong>EW12 · DT14</div>
+        </div>
+      </section>
+      <section class="legend-guide-section" aria-labelledby="legendLrtTitle">
+        <h3 id="legendLrtTitle">LRT lines</h3>
+        <p>Light Rail Transit (LRT) connects nearby neighbourhoods with the MRT network.</p>
+        <div class="legend-guide-examples">
+          <div class="legend-guide-example"><strong>Bukit Panjang LRT</strong>BPLRT</div>
+          <div class="legend-guide-example"><strong>Sengkang LRT</strong>SKLRT</div>
+          <div class="legend-guide-example"><strong>Punggol LRT</strong>PGLRT</div>
+        </div>
+      </section>
+      <section class="legend-guide-section" aria-labelledby="legendConnectionsTitle">
+        <h3 id="legendConnectionsTitle">Transport connections</h3>
+        <p>These symbols point out places where you can connect to other forms of transport or travel.</p>
+        <div class="legend-guide-examples">
+          <div class="legend-guide-example"><strong>Bus terminal</strong>Connect to bus services.</div>
+          <div class="legend-guide-example"><strong>Airport</strong>Connect to Changi Airport.</div>
+          <div class="legend-guide-example"><strong>Cruise terminal</strong>Connect to cruise services.</div>
+        </div>
+      </section>
+      <p class="legend-guide-foot">This guide explains common map labels and symbols. The original black legend panel on the map has been left unchanged.</p>
+    </div>
+  </section>
 <script>
 (() => {
   // Explicitly bind every page element used by the script. In particular,
@@ -247,8 +329,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
           owner=code;break;
         }
       }
-      if(owner){
-        el.setAttribute('data-line',owner);
+      if(owner){        el.setAttribute('data-line',owner);
         el.style.setProperty('--line-glow',routeColours[owner].glow);
       }else if((style.stroke||'').includes('url(')||(style.fill||'').includes('url(')){
         // Interchange gradients combine multiple route colours. Hide them in
@@ -397,8 +478,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         if(!matrix)return;
         const corners=[
           new DOMPoint(box.x,box.y).matrixTransform(matrix),
-          new DOMPoint(box.x+box.width,box.y).matrixTransform(matrix),
-          new DOMPoint(box.x,box.y+box.height).matrixTransform(matrix),
+          new DOMPoint(box.x+box.width,box.y).matrixTransform(matrix),          new DOMPoint(box.x,box.y+box.height).matrixTransform(matrix),
           new DOMPoint(box.x+box.width,box.y+box.height).matrixTransform(matrix)
         ].map(point=>point.matrixTransform(inverse));
         const xs=corners.map(point=>point.x),ys=corners.map(point=>point.y);
@@ -597,8 +677,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     });
     // Punggol Cove is split across four adjacent SVG text elements. Restore
     // the complete label after focus filtering so no earlier classification
-    // or inherited dimming can make it disappear on the North-East Line.
-    if(code==='NEL'){
+    // or inherited dimming can make it disappear on the North-East Line.    if(code==='NEL'){
       const normaliseLabel=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
       mount.querySelectorAll('g').forEach(group=>{
         if(normaliseLabel(group.textContent)!=='punggolcove')return;
@@ -713,6 +792,27 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   document.getElementById('backHome').addEventListener('click',()=>{window.location.href='./index.html';});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement);else status.textContent='Choose a station first, then use Repeat announcement.'});
+  const legendGuideButton=document.getElementById('legendGuideButton');
+  const legendGuide=document.getElementById('legendGuide');
+  const closeLegendGuide=document.getElementById('closeLegendGuide');
+  function openLegendGuide(){
+    legendGuide.hidden=false;
+    legendGuideButton.setAttribute('aria-expanded','true');
+    closeLegendGuide.focus();
+  }
+  function closeLegendGuidePanel(){
+    legendGuide.hidden=true;
+    legendGuideButton.setAttribute('aria-expanded','false');
+    legendGuideButton.focus();
+  }
+  legendGuideButton.addEventListener('click',openLegendGuide);
+  closeLegendGuide.addEventListener('click',closeLegendGuidePanel);
+  legendGuide.addEventListener('click',event=>{
+    if(event.target===legendGuide)closeLegendGuidePanel();
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
+  });
   fetch('./mrt-map.svg?v=20261104-stable-rollback')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
