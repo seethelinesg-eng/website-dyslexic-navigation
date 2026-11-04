@@ -456,8 +456,10 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       marker.setAttribute('stroke',routeColours[code].glow);
       marker.setAttribute('stroke-width','1.5');
       marker.setAttribute('pointer-events','none');
-      // Place the translucent highlight behind the station lettering.
-      svg.insertBefore(marker,svg.firstChild);
+      // Draw the highlight on the top SVG layer. Inserting it as the
+      // first child put it underneath the map artwork, making it invisible.
+      // A light translucent fill and outline keep the station name readable.
+      svg.appendChild(marker);
       return true;
     }
 
