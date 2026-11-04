@@ -484,6 +484,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   async function selectLine(code){
     if(!names[code])return;
     selected=code;
+    // Start speech immediately inside the user's click gesture. Safari may
+    // block speech synthesis if it is first requested after the SVG fetch.
+    speak(names[code]+' selected');
     renderStations(code);
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
@@ -586,7 +589,6 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     });
     // Hide interchange gradient boxes and unrelated LRT corner labels.
     mount.querySelectorAll('[data-gradient-route],[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
-    speak(names[code]+' selected');
   }
   function showAll(){
     selected=null;
