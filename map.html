@@ -615,10 +615,13 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       // are outlined vector lettering rather than SVG <text>. Keep compact dark
       // glyph paths visible in DTL focus mode so outlined station names survive
       // the shape filter. The size limits avoid restoring large background artwork.
-      if(code==='DTL'){
+      if(code==='DTL'||code==='TEL'){
         const fill=rgbFromCss(getComputedStyle(el).fill);
         let labelBox=null;
         try{labelBox=el.getBBox();}catch(_){}
+        // Illustrator may convert station lettering into dark vector paths
+        // instead of <text>. Preserve compact glyph shapes in both DTL and TEL
+        // focus views so labels such as Orchard Boulevard are not filtered out.
         const isOutlinedLabel=fill&&Math.max(...fill)<110&&labelBox
           &&labelBox.width>0&&labelBox.width<=180
           &&labelBox.height>0&&labelBox.height<=55;
