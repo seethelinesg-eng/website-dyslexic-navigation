@@ -325,6 +325,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         });
       });
     });
+    // Cache the SVG text nodes before assigning special-case labels.
+    // This declaration must come before the Bedok fragment handling below.
+    const textFragments=[...svg.querySelectorAll('text')];
     // Bedok North and Bedok Reservoir are split across separate text rows
     // in the Illustrator export. Their fragments are not a single adjacent
     // text run because DT29/DT30 labels are interleaved in document order.
@@ -356,7 +359,6 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     // Match the SVG's text elements in document order across nested groups.
     // Stop as soon as a complete station name/code is found, then tag every
     // fragment in that run so line-focus mode keeps the whole label visible.
-    const textFragments=[...svg.querySelectorAll('text')];
     for(let start=0;start<textFragments.length;start++){
       let combined='';
       const run=[];
