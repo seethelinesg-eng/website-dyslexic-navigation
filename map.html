@@ -315,13 +315,15 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     // into separate neighbouring <text> elements (sometimes one syllable or
     // character per element). Match adjacent fragments as a complete label
     // before focus mode hides unrecognised text.
-    const labelOwners=new Map(stations ? Object.entries(stations).flatMap(([line,list]) =>
-      list.flatMap(([stationCode,stationName]) => [
-        [normalise(stationName),line],
-        [normalise(stationCode),line]
-      ])
-    ) : []);
-    const maxLabelLength=Math.max(...labelOwners.keys().map?[]:[0]);
+    const labelOwners=new Map();
+    Object.entries(stations).forEach(([line,list])=>{
+      list.forEach(([stationCode,stationName])=>{
+        [normalise(stationName),normalise(stationCode)].forEach(label=>{
+          if(!labelOwners.has(label))labelOwners.set(label,new Set());
+          labelOwners.get(label).add(line);
+        });
+      });
+    });
     svg.querySelectorAll('*').forEach(parent=>{
       const fragments=[...parent.children].filter(child=>child.localName==='text');
       if(fragments.length<2)return;
@@ -332,11 +334,12 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
           const fragment=fragments[end];
           combined+=normalise(fragment.textContent);
           run.push(fragment);
-          const owner=labelOwners.get(combined);
-          if(owner){
+          const owners=labelOwners.get(combined);
+          if(owners){
+            const ownerList=[...owners];
             run.forEach(part=>{
-              part.setAttribute('data-lines',owner);
-              part.setAttribute('data-line',owner);
+              part.setAttribute('data-lines',ownerList.join(' '));
+              part.setAttribute('data-line',ownerList[0]);
               part.setAttribute('data-station-label','true');
               part.classList.remove('focus-text-hidden','dimmed');
             });
