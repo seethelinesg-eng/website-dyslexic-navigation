@@ -311,6 +311,41 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         el.setAttribute('data-station-label','true');
       }
     });
+    // Corrected 5 Illustrator exports split many station names and codes
+    // into separate neighbouring <text> elements (sometimes one syllable or
+    // character per element). Match adjacent fragments as a complete label
+    // before focus mode hides unrecognised text.
+    const labelOwners=new Map(stations ? Object.entries(stations).flatMap(([line,list]) =>
+      list.flatMap(([stationCode,stationName]) => [
+        [normalise(stationName),line],
+        [normalise(stationCode),line]
+      ])
+    ) : []);
+    const maxLabelLength=Math.max(...labelOwners.keys().map?[]:[0]);
+    svg.querySelectorAll('*').forEach(parent=>{
+      const fragments=[...parent.children].filter(child=>child.localName==='text');
+      if(fragments.length<2)return;
+      for(let start=0;start<fragments.length;start++){
+        let combined='';
+        const run=[];
+        for(let end=start;end<Math.min(fragments.length,start+12);end++){
+          const fragment=fragments[end];
+          combined+=normalise(fragment.textContent);
+          run.push(fragment);
+          const owner=labelOwners.get(combined);
+          if(owner){
+            run.forEach(part=>{
+              part.setAttribute('data-lines',owner);
+              part.setAttribute('data-line',owner);
+              part.setAttribute('data-station-label','true');
+              part.classList.remove('focus-text-hidden','dimmed');
+            });
+            break;
+          }
+          if(combined.length>32)break;
+        }
+      }
+    });
   }
   function highlightStation(stationName,code){
     const svg=mount.querySelector('svg');
