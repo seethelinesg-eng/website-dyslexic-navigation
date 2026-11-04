@@ -64,7 +64,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #mapMount svg{width:120%;max-width:none;height:auto;max-height:none;margin-left:-10%;display:block;box-sizing:border-box}
 #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
 #mapMount .dimmed,#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:none!important}
-#mapMount [data-line].dimmed{display:initial!important;opacity:.16!important;filter:saturate(.45)!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line].line-hover{opacity:1!important;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 7px var(--line-glow)) drop-shadow(0 0 12px var(--line-glow))!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease,filter .16s ease,stroke-width .16s ease}
+#mapMount [data-line].dimmed{display:initial!important;opacity:.16!important;filter:saturate(.45)!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line].line-hover{opacity:1!important;filter:brightness(1.18)!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease,filter .16s ease}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
 #mapMount .selected-line{filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 11px var(--line-glow)) drop-shadow(0 0 19px var(--line-glow))!important;opacity:1!important;animation:routeGlow 1.8s ease-in-out infinite alternate}
 @keyframes routeGlow{from{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 8px var(--line-glow))}to{filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px var(--line-glow)) drop-shadow(0 0 14px var(--line-glow))}}
@@ -958,31 +958,23 @@ body, body * {
       return el?el.getAttribute('data-line'):null;
     };
     const preview=code=>{
+      if(svg.dataset.hoverLine===code)return;
       svg.dataset.hoverLine=code||'';
       applyLineEmphasis(svg,code||selected);
-      // Hover emphasis is visual only: do not change SVG geometry, stroke width,
-      // or transform. This prevents the Circle Line artwork from jumping.
     };
     const clearPreview=()=>{
+      if(!svg.dataset.hoverLine)return;
       svg.dataset.hoverLine='';
-      svg.querySelectorAll(selector).forEach(el=>{
-        if(el.hasAttribute('data-original-stroke-width')){
-          el.style.removeProperty('stroke-width');
-          el.removeAttribute('data-original-stroke-width');
-        }
-      });
       applyLineEmphasis(svg,selected);
     };
-    svg.addEventListener('pointerover',event=>{
+    // Track the route under the pointer without reacting to every transition
+    // between adjacent Illustrator path fragments. This prevents the CCL
+    // orange loop from rapidly switching between hover states.
+    svg.addEventListener('pointermove',event=>{
       const code=codeFor(event.target);
       if(code)preview(code);
     });
-    svg.addEventListener('pointerout',event=>{
-      const code=codeFor(event.target);
-      const next=event.relatedTarget?codeFor(event.relatedTarget):null;
-      if(code&&!next)clearPreview();
-      else if(code&&next&&code!==next)preview(next);
-    });
+    svg.addEventListener('pointerleave',clearPreview);
     svg.addEventListener('click',event=>{
       const code=codeFor(event.target);
       if(code){
@@ -990,8 +982,6 @@ body, body * {
         selectLineOnFullMap(code);
       }
     });
-    // Make each route segment respond to pointer input even when the
-    // Illustrator artwork originally used non-interactive SVG paint styles.
     svg.querySelectorAll(selector).forEach(el=>{
       el.style.setProperty('pointer-events','visiblePainted','important');
       el.style.setProperty('cursor','pointer','important');
