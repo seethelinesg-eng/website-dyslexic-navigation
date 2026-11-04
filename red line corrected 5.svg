@@ -703,8 +703,7 @@
     </g>
   </g>
   <g class="st26">
-    <text class="st55" transform="translate(433.18 183.68) scale(1.03 1)"><tspan x="0" y="0">Cam</tspan></text>
-    <text class="st28" transform="translate(467.49 183.85) scale(1.03 1)"><tspan x="0" y="0">berra</tspan></text>
+    <text transform="translate(433.18 183.68) scale(1.03 1)"><tspan class="st55" x="0" y="0">Cam</tspan><tspan class="st28" x="34.31" y="0.17">berra</tspan></text>
   </g>
   <g>
     <rect class="st14" x="463.95" y="215.71" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
