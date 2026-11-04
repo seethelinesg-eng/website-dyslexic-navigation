@@ -516,7 +516,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261104-brown-outlined-label-fix-2');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261104-brown-label-preserve-all-3');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -625,20 +625,12 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         if(isOutlinedLabel){el.classList.remove('focus-shape-hidden');return;}
       }
       if(code==='TEL'){
-        const style=getComputedStyle(el);
-        const fill=rgbFromCss(style.fill);
-        let labelBox=null;
-        try{labelBox=el.getBBox();}catch(_){}
-        // Brown Line station lettering is outlined in Illustrator and may use
-        // light as well as dark fills. Keep compact filled glyph shapes visible
-        // before filtering grey guide strokes, which can otherwise hide letters.
-        const isOutlinedLabel=fill&&labelBox
-          &&labelBox.width>0&&labelBox.width<=180
-          &&labelBox.height>0&&labelBox.height<=55;
-        if(isOutlinedLabel){el.classList.remove('focus-shape-hidden');return;}
-        const stroke=rgbFromCss(style.stroke);
-        const isGreyStroke=stroke&&Math.max(...stroke)-Math.min(...stroke)<28&&Math.max(...stroke)>55&&Math.max(...stroke)<190;
-        if(isGreyStroke){el.classList.add('focus-shape-hidden');return;}
+        // The Brown Line is loaded from its own dedicated Illustrator SVG.
+        // Its station lettering (including Orchard Boulevard) is converted
+        // into vector artwork rather than SVG text. Do not run the generic
+        // shape filter on this dedicated asset: it was hiding parts of labels.
+        el.classList.remove('focus-shape-hidden');
+        return;
       }
       if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
       let box;
