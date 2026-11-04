@@ -960,24 +960,8 @@ body, body * {
     const preview=code=>{
       svg.dataset.hoverLine=code||'';
       applyLineEmphasis(svg,code||selected);
-      if(code)svg.querySelectorAll(selector).forEach(el=>{
-        if(el.getAttribute('data-line')!==code)return;
-        const tag=el.tagName.toLowerCase();
-        const stroke=getComputedStyle(el).stroke;
-        if(stroke&&stroke!=='none'){
-          const width=parseFloat(getComputedStyle(el).strokeWidth);
-          if(Number.isFinite(width)&&width>0){
-            if(!el.hasAttribute('data-original-stroke-width'))el.setAttribute('data-original-stroke-width',String(width));
-            el.style.setProperty('stroke-width',(Math.max(width,parseFloat(el.getAttribute('data-original-stroke-width')))*1.65)+'px','important');
-          }
-        }
-      });
-      svg.querySelectorAll(selector).forEach(el=>{
-        if(el.getAttribute('data-line')!==code&&el.hasAttribute('data-original-stroke-width')){
-          el.style.removeProperty('stroke-width');
-          el.removeAttribute('data-original-stroke-width');
-        }
-      });
+      // Hover emphasis is visual only: do not change SVG geometry, stroke width,
+      // or transform. This prevents the Circle Line artwork from jumping.
     };
     const clearPreview=()=>{
       svg.dataset.hoverLine='';
