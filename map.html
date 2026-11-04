@@ -462,6 +462,62 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       }
     });
 
+    // Some Illustrator exports split a station label across nested groups.
+    // Search the full SVG text order as well, then draw the highlight in root SVG coordinates.
+    if(!highlighted){
+      const rootMatrix=svg.getScreenCTM();
+      if(rootMatrix){
+        const inverseRoot=rootMatrix.inverse();
+        function addGlobalHighlight(elements){
+          let bounds=null;
+          elements.forEach(el=>{
+            const box=el.getBBox(),matrix=el.getScreenCTM();
+            if(!matrix)return;
+            const corners=[
+              new DOMPoint(box.x,box.y).matrixTransform(matrix),
+              new DOMPoint(box.x+box.width,box.y).matrixTransform(matrix),
+              new DOMPoint(box.x,box.y+box.height).matrixTransform(matrix),
+              new DOMPoint(box.x+box.width,box.y+box.height).matrixTransform(matrix)
+            ].map(point=>point.matrixTransform(inverseRoot));
+            const xs=corners.map(point=>point.x),ys=corners.map(point=>point.y);
+            const current={x:Math.min(...xs),y:Math.min(...ys),right:Math.max(...xs),bottom:Math.max(...ys)};
+            if(!bounds)bounds=current;
+            else{
+              bounds.x=Math.min(bounds.x,current.x);bounds.y=Math.min(bounds.y,current.y);
+              bounds.right=Math.max(bounds.right,current.right);bounds.bottom=Math.max(bounds.bottom,current.bottom);
+            }
+          });
+          if(!bounds)return false;
+          const marker=document.createElementNS(ns,'rect');
+          marker.setAttribute('class','station-label-highlight');
+          marker.setAttribute('x',bounds.x-3);marker.setAttribute('y',bounds.y-2);
+          marker.setAttribute('width',Math.max(1,bounds.right-bounds.x+6));
+          marker.setAttribute('height',Math.max(1,bounds.bottom-bounds.y+4));
+          marker.setAttribute('rx','3');
+          marker.setAttribute('fill',routeColours[code].glow);
+          marker.setAttribute('fill-opacity','.28');
+          marker.setAttribute('stroke',routeColours[code].glow);
+          marker.setAttribute('stroke-width','1.2');
+          marker.setAttribute('pointer-events','none');
+          svg.appendChild(marker);
+          return true;
+        }
+        for(let start=0;start<textElements.length&&!highlighted;start++){
+          let combined='';
+          const group=[];
+          for(let end=start;end<Math.min(textElements.length,start+9);end++){
+            combined+=textElements[end].textContent||'';
+            group.push(textElements[end]);
+            if(group.length>1&&matchesTarget(combined)){
+              if(addGlobalHighlight(group))highlighted++;
+              break;
+            }
+            if(combined.length>Math.max(...targets.map(t=>t.length))+10)break;
+          }
+        }
+      }
+    }
+
     if(!highlighted){
       status.textContent=stationName+' selected and announced. I could not locate its label in the SVG artwork.';
     }else{
