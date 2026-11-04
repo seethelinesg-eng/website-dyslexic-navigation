@@ -64,7 +64,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #mapMount svg{width:120%;max-width:none;height:auto;max-height:none;margin-left:-10%;display:block;box-sizing:border-box}
 #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
 #mapMount .dimmed,#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:none!important}
-#mapMount [data-line].dimmed{display:initial!important;opacity:.18!important;filter:none!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line].line-hover{opacity:1!important;filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 9px var(--line-glow))!important}#mapMount path.line-hover,#mapMount line.line-hover,#mapMount polyline.line-hover{stroke-width:var(--hover-stroke-width)!important}#mapMount circle.line-hover,#mapMount ellipse.line-hover{transform-box:fill-box;transform-origin:center;transform:scale(1.5)}#mapMount [data-line]{cursor:pointer;transition:opacity .18s ease,filter .18s ease,stroke-width .18s ease,transform .18s ease}
+#mapMount [data-line].dimmed{display:initial!important;opacity:.16!important;filter:saturate(.45)!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line].line-hover{opacity:1!important;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 7px var(--line-glow)) drop-shadow(0 0 12px var(--line-glow))!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease,filter .16s ease,stroke-width .16s ease}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
 #mapMount .selected-line{filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 11px var(--line-glow)) drop-shadow(0 0 19px var(--line-glow))!important;opacity:1!important;animation:routeGlow 1.8s ease-in-out infinite alternate}
 @keyframes routeGlow{from{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 4px var(--line-glow)) drop-shadow(0 0 8px var(--line-glow))}to{filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px var(--line-glow)) drop-shadow(0 0 14px var(--line-glow))}}
@@ -931,39 +931,87 @@ body, body * {
     target.style.filter='drop-shadow(0 0 5px '+item.colour+')';
     speak(item.spoken+' highlighted in the legend.');
   }
+  function applyLineEmphasis(svg,code){
+    svg.querySelectorAll('[data-line]').forEach(el=>{
+      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
+      const match=!!code&&owners.includes(code);
+      el.classList.toggle('dimmed',!!code&&!match);
+      el.classList.toggle('selected-line',match);
+      el.classList.toggle('line-hover',match&&svg.dataset.hoverLine===code);
+    });
+  }
   function selectLineOnFullMap(code){
     if(!names[code]||!fullMapRaw)return;
     selected=code;
     renderStations(code);
     installMap(fullMapRaw);
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
-    mount.querySelectorAll('[data-line]').forEach(el=>{
-      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/);
-      const match=owners.includes(code);
-      el.classList.toggle('dimmed',!match);
-      el.classList.toggle('selected-line',match);
-    });
+    const svg=mount.querySelector('svg');
+    if(svg)applyLineEmphasis(svg,code);
     speak(names[code]);
-    status.textContent=names[code]+' selected. Other lines are faded.';
+    status.textContent=names[code]+' selected. Other MRT lines are translucent.';
   }
   function addMapLineInteractions(svg){
     const selector='path[data-line],line[data-line],polyline[data-line],polygon[data-line],circle[data-line],ellipse[data-line],rect[data-line]';
-    const codeFor=target=>{const el=target.closest(selector);return el?el.getAttribute('data-line'):null};
-    const hover=(code,on)=>{
-      if(!code)return;
-      svg.querySelectorAll('[data-line]').forEach(el=>{
-        const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/);
-        if(!owners.includes(code))return;
-        el.classList.toggle('line-hover',on);
-        if(on&&/^(path|line|polyline)$/i.test(el.tagName)){
+    const codeFor=target=>{
+      const el=target&&target.closest?target.closest(selector):null;
+      return el?el.getAttribute('data-line'):null;
+    };
+    const preview=code=>{
+      svg.dataset.hoverLine=code||'';
+      applyLineEmphasis(svg,code||selected);
+      if(code)svg.querySelectorAll(selector).forEach(el=>{
+        if(el.getAttribute('data-line')!==code)return;
+        const tag=el.tagName.toLowerCase();
+        const stroke=getComputedStyle(el).stroke;
+        if(stroke&&stroke!=='none'){
           const width=parseFloat(getComputedStyle(el).strokeWidth);
-          if(Number.isFinite(width))el.style.setProperty('--hover-stroke-width',(width*1.8)+'px');
-        }else if(!on){el.style.removeProperty('--hover-stroke-width')}
+          if(Number.isFinite(width)&&width>0){
+            if(!el.hasAttribute('data-original-stroke-width'))el.setAttribute('data-original-stroke-width',String(width));
+            el.style.setProperty('stroke-width',(Math.max(width,parseFloat(el.getAttribute('data-original-stroke-width')))*1.65)+'px','important');
+          }
+        }
+      });
+      svg.querySelectorAll(selector).forEach(el=>{
+        if(el.getAttribute('data-line')!==code&&el.hasAttribute('data-original-stroke-width')){
+          el.style.removeProperty('stroke-width');
+          el.removeAttribute('data-original-stroke-width');
+        }
       });
     };
-    svg.addEventListener('pointerover',e=>{const code=codeFor(e.target);if(code)hover(code,true)});
-    svg.addEventListener('pointerout',e=>{const code=codeFor(e.target),next=e.relatedTarget?codeFor(e.relatedTarget):null;if(code&&code!==next)hover(code,false)});
-    svg.addEventListener('click',e=>{const code=codeFor(e.target);if(code){e.preventDefault();selectLineOnFullMap(code)}});
+    const clearPreview=()=>{
+      svg.dataset.hoverLine='';
+      svg.querySelectorAll(selector).forEach(el=>{
+        if(el.hasAttribute('data-original-stroke-width')){
+          el.style.removeProperty('stroke-width');
+          el.removeAttribute('data-original-stroke-width');
+        }
+      });
+      applyLineEmphasis(svg,selected);
+    };
+    svg.addEventListener('pointerover',event=>{
+      const code=codeFor(event.target);
+      if(code)preview(code);
+    });
+    svg.addEventListener('pointerout',event=>{
+      const code=codeFor(event.target);
+      const next=event.relatedTarget?codeFor(event.relatedTarget):null;
+      if(code&&!next)clearPreview();
+      else if(code&&next&&code!==next)preview(next);
+    });
+    svg.addEventListener('click',event=>{
+      const code=codeFor(event.target);
+      if(code){
+        event.preventDefault();
+        selectLineOnFullMap(code);
+      }
+    });
+    // Make each route segment respond to pointer input even when the
+    // Illustrator artwork originally used non-interactive SVG paint styles.
+    svg.querySelectorAll(selector).forEach(el=>{
+      el.style.setProperty('pointer-events','visiblePainted','important');
+      el.style.setProperty('cursor','pointer','important');
+    });
   }
   function installMap(raw){
     const doc=new DOMParser().parseFromString(raw,'image/svg+xml');
