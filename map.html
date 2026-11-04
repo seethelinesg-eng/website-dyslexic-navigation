@@ -536,6 +536,19 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       if(el.closest('#interactiveLegendTargets'))return;
       // Preserve the pale white Singapore island silhouette in every line-focus view.
       if(el.classList.contains('island-background')){el.classList.remove('focus-shape-hidden');return;}
+      // In the latest Blue Line Illustrator export, Bedok North and Bedok Reservoir
+      // are outlined vector lettering rather than SVG <text>. Keep compact dark
+      // glyph paths visible in DTL focus mode so outlined station names survive
+      // the shape filter. The size limits avoid restoring large background artwork.
+      if(code==='DTL'){
+        const fill=rgbFromCss(getComputedStyle(el).fill);
+        let labelBox=null;
+        try{labelBox=el.getBBox();}catch(_){}
+        const isOutlinedLabel=fill&&Math.max(...fill)<110&&labelBox
+          &&labelBox.width>0&&labelBox.width<=180
+          &&labelBox.height>0&&labelBox.height<=55;
+        if(isOutlinedLabel){el.classList.remove('focus-shape-hidden');return;}
+      }
       // The TEL artwork contains unrelated grey guide/connector strokes.
       // Hide those in brown-line focus without affecting the brown route itself.
       if(code==='TEL'){
