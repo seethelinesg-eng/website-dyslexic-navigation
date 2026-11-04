@@ -330,33 +330,34 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       const owners=labelOwners.get(normalise(stationName));
       if(owners)labelOwners.set(normalise(artworkName),new Set(owners));
     });
-    // Include the SVG root itself: many Illustrator exports place label fragments
-    // directly under <svg>, not inside a <g>. Searching descendants alone skips them.
-    [svg,...svg.querySelectorAll('*')].forEach(parent=>{
-      const fragments=[...parent.children].filter(child=>child.localName==='text');
-      if(fragments.length<2)return;
-      for(let start=0;start<fragments.length;start++){
-        let combined='';
-        const run=[];
-        for(let end=start;end<Math.min(fragments.length,start+12);end++){
-          const fragment=fragments[end];
-          combined+=normalise(fragment.textContent);
-          run.push(fragment);
-          const owners=labelOwners.get(combined);
-          if(owners){
-            const ownerList=[...owners];
-            run.forEach(part=>{
-              part.setAttribute('data-lines',ownerList.join(' '));
-              part.setAttribute('data-line',ownerList[0]);
-              part.setAttribute('data-station-label','true');
-              part.classList.remove('focus-text-hidden','dimmed');
-            });
-            break;
-          }
-          if(combined.length>32)break;
+    // Illustrator sometimes nests each fragment in its own <g>, so
+    // sibling-only matching misses labels even when all their pieces exist.
+    // Match the SVG's text elements in document order across nested groups.
+    // Stop as soon as a complete station name/code is found, then tag every
+    // fragment in that run so line-focus mode keeps the whole label visible.
+    const textFragments=[...svg.querySelectorAll('text')];
+    for(let start=0;start<textFragments.length;start++){
+      let combined='';
+      const run=[];
+      for(let end=start;end<Math.min(textFragments.length,start+12);end++){
+        const fragment=textFragments[end];
+        combined+=normalise(fragment.textContent);
+        run.push(fragment);
+        const owners=labelOwners.get(combined);
+        if(owners){
+          const ownerList=[...owners];
+          run.forEach(part=>{
+            part.setAttribute('data-lines',ownerList.join(' '));
+            part.setAttribute('data-line',ownerList[0]);
+            part.setAttribute('data-station-label','true');
+            part.classList.remove('focus-text-hidden','dimmed');
+            part.style.removeProperty('display');
+          });
+          break;
         }
+        if(combined.length>40)break;
       }
-    });
+    }
   }
   function highlightStation(stationName,code){
     const svg=mount.querySelector('svg');
