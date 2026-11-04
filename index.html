@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f5f7fb">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@600;800&display=swap" rel="stylesheet">
   <title>SeeTheLine SG — Dyslexia-Friendly MRT Map</title>
   <style>
 :root{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif;color:#191919;background:#f3efe6;--ink:#191919;--paper:#f3efe6;--accent:#ef704d;--rule:#d8d1c5}
@@ -28,6 +28,21 @@
 .instruction-icon{display:grid;place-items:center;width:44px;height:44px;font-size:1.4rem;font-weight:700}.line-icon{color:#3153ad;background:#e8efff}.sound-icon{color:#7f2594;background:#f2e8fa}.glow-icon{color:#279641;background:#e5f5eb}.map-icon{color:#b85e00;background:#fff0df}
 .instructions li strong{font-size:1.04rem}.instructions li p{margin:4px 0 0;color:#555149;line-height:1.5}
 @media(max-width:700px){.instructions ol{grid-template-columns:1fr}.welcome-card{box-shadow:7px 7px 0 var(--ink)}.welcome-card:after{opacity:.45;right:-180px;top:-180px}}
+
+/* Site-wide Bionic typography: Atkinson Hyperlegible Next, 800/600 weights. */
+body, body * {
+  font-family: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Arial, sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.75pt !important;
+}
+.bionic-first { font-weight: 800 !important; }
+.bionic-rest { font-weight: 600 !important; }
+#mapMount svg text, #mapMount svg tspan,
+#legendZoomViewport svg text, #legendZoomViewport svg tspan {
+  font-family: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Arial, sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.75pt !important;
+}
 </style>
 </head>
 <body>
@@ -50,5 +65,56 @@
       </div>
     </div>
   </section>
+<script>
+(() => {
+  const wordPattern = /[\\p{L}\\p{M}]+(?:['’][\\p{L}\\p{M}]+)*/gu;
+  function bionicizeTextNode(node) {
+    const parent = node.parentElement;
+    if (!parent || parent.closest('[data-bionic-word]') ||
+        parent.closest('script,style,noscript,textarea,input,option')) return;
+    const text = node.nodeValue || '';
+    wordPattern.lastIndex = 0;
+    const matches = [...text.matchAll(wordPattern)];
+    if (!matches.length) return;
+    const svgMode = parent.namespaceURI === 'http://www.w3.org/2000/svg';
+    const make = tag => svgMode
+      ? document.createElementNS('http://www.w3.org/2000/svg', tag === 'span' ? 'tspan' : tag)
+      : document.createElement(tag);
+    const fragment = document.createDocumentFragment();
+    let cursor = 0;
+    for (const match of matches) {
+      const word = match[0], start = match.index, letters = Array.from(word);
+      if (start > cursor) fragment.appendChild(document.createTextNode(text.slice(cursor, start)));
+      const wrapper = make('span');
+      wrapper.setAttribute('data-bionic-word', 'true');
+      const first = make('span');
+      first.setAttribute('class', 'bionic-first');
+      first.textContent = letters.slice(0, 2).join('');
+      wrapper.appendChild(first);
+      if (letters.length > 2) {
+        const rest = make('span');
+        rest.setAttribute('class', 'bionic-rest');
+        rest.textContent = letters.slice(2).join('');
+        wrapper.appendChild(rest);
+      }
+      fragment.appendChild(wrapper);
+      cursor = start + word.length;
+    }
+    if (cursor < text.length) fragment.appendChild(document.createTextNode(text.slice(cursor)));
+    node.parentNode.replaceChild(fragment, node);
+  }
+  function bionicizeTree(root) {
+    if (!root) return;
+    if (root.nodeType === Node.TEXT_NODE) { bionicizeTextNode(root); return; }
+    if (root.nodeType !== Node.ELEMENT_NODE || root.hasAttribute('data-bionic-word') ||
+        root.matches('script,style,noscript,textarea,input,option')) return;
+    [...root.childNodes].forEach(bionicizeTree);
+  }
+  bionicizeTree(document.body);
+  const observer = new MutationObserver(records =>
+    records.forEach(record => record.addedNodes.forEach(bionicizeTree)));
+  observer.observe(document.body, {childList:true, subtree:true});
+})();
+</script>
 </body>
 </html>
