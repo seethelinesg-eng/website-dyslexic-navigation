@@ -364,7 +364,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     const svg=mount.querySelector('svg');
     if(!svg)return;
     svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
-    const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
+    const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
     const labelAliases={'Bright Hill':['Bright Hill','Brighter Hill']};
     const targets=(labelAliases[stationName]||[stationName]).map(normalise);
     const matchesTarget=value=>targets.includes(normalise(value));
@@ -405,8 +405,12 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       marker.setAttribute('height',Math.max(1,bounds.bottom-bounds.y+padY*2));
       marker.setAttribute('rx','3');
       marker.setAttribute('fill',routeColours[code].glow);
+      marker.setAttribute('fill-opacity','0.20');
+      marker.setAttribute('stroke',routeColours[code].glow);
+      marker.setAttribute('stroke-width','1.5');
       marker.setAttribute('pointer-events','none');
-      svg.appendChild(marker);
+      // Place the translucent highlight behind the station lettering.
+      svg.insertBefore(marker,svg.firstChild);
       return true;
     }
 
