@@ -205,7 +205,7 @@ body, body * {
   // window.status is a built-in browser string, not the status paragraph.
 
 (() => {
-  const wordPattern = /[\\p{L}\\p{M}]+(?:['’][\\p{L}\\p{M}]+)*/gu;
+  const wordPattern = /[\p{L}\p{M}]+(?:['’][\p{L}\p{M}]+)*/gu;
   function bionicizeTextNode(node) {
     const parent = node.parentElement;
     if (!parent || parent.closest('[data-bionic-word]') ||
