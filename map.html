@@ -986,7 +986,7 @@ body, body * {
   }
   const startButton=document.getElementById('startMap');
   if(startButton)startButton.addEventListener('click',()=>{window.location.href='./map.html';});
-  document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLine(b.dataset.selectLine)});
+  document.getElementById('lineControls').addEventListener('click',e=>{const b=e.target.closest('[data-select-line]');if(b)selectLineOnFullMap(b.dataset.selectLine)});
   document.getElementById('backHome').addEventListener('click',()=>{window.location.href='./index.html';});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement);else status.textContent='Choose a station first, then use Repeat announcement.'});
