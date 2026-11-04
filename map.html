@@ -516,7 +516,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261104-purple-clarke-label-fix-1');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261104-brown-outlined-label-fix-2');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -615,22 +615,28 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
       // are outlined vector lettering rather than SVG <text>. Keep compact dark
       // glyph paths visible in DTL focus mode so outlined station names survive
       // the shape filter. The size limits avoid restoring large background artwork.
-      if(code==='DTL'||code==='TEL'){
+      if(code==='DTL'){
         const fill=rgbFromCss(getComputedStyle(el).fill);
         let labelBox=null;
         try{labelBox=el.getBBox();}catch(_){}
-        // Illustrator may convert station lettering into dark vector paths
-        // instead of <text>. Preserve compact glyph shapes in both DTL and TEL
-        // focus views so labels such as Orchard Boulevard are not filtered out.
         const isOutlinedLabel=fill&&Math.max(...fill)<110&&labelBox
           &&labelBox.width>0&&labelBox.width<=180
           &&labelBox.height>0&&labelBox.height<=55;
         if(isOutlinedLabel){el.classList.remove('focus-shape-hidden');return;}
       }
-      // The TEL artwork contains unrelated grey guide/connector strokes.
-      // Hide those in brown-line focus without affecting the brown route itself.
       if(code==='TEL'){
-        const stroke=rgbFromCss(getComputedStyle(el).stroke);
+        const style=getComputedStyle(el);
+        const fill=rgbFromCss(style.fill);
+        let labelBox=null;
+        try{labelBox=el.getBBox();}catch(_){}
+        // Brown Line station lettering is outlined in Illustrator and may use
+        // light as well as dark fills. Keep compact filled glyph shapes visible
+        // before filtering grey guide strokes, which can otherwise hide letters.
+        const isOutlinedLabel=fill&&labelBox
+          &&labelBox.width>0&&labelBox.width<=180
+          &&labelBox.height>0&&labelBox.height<=55;
+        if(isOutlinedLabel){el.classList.remove('focus-shape-hidden');return;}
+        const stroke=rgbFromCss(style.stroke);
         const isGreyStroke=stroke&&Math.max(...stroke)-Math.min(...stroke)<28&&Math.max(...stroke)>55&&Math.max(...stroke)<190;
         if(isGreyStroke){el.classList.add('focus-shape-hidden');return;}
       }
@@ -715,7 +721,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   document.getElementById('backHome').addEventListener('click',()=>{window.location.href='./index.html';});
   document.getElementById('backToMap').addEventListener('click',showAll);
   document.getElementById('repeatAudio').addEventListener('click',()=>{if(lastAnnouncement)speak(lastAnnouncement);else status.textContent='Choose a station first, then use Repeat announcement.'});
-  fetch('./mrt-map.svg?v=20261104-purple-clarke-label-fix-1')
+  fetch('./mrt-map.svg?v=20261104-brown-outlined-label-fix-2')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
