@@ -324,7 +324,15 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
         });
       });
     });
-    svg.querySelectorAll('*').forEach(parent=>{
+    // A few Illustrator labels use slightly different wording from the station list.
+    // Treat these as aliases so their artwork remains visible in the correct line view.
+    [['Brighter Hill','Bright Hill']].forEach(([artworkName,stationName])=>{
+      const owners=labelOwners.get(normalise(stationName));
+      if(owners)labelOwners.set(normalise(artworkName),new Set(owners));
+    });
+    // Include the SVG root itself: many Illustrator exports place label fragments
+    // directly under <svg>, not inside a <g>. Searching descendants alone skips them.
+    [svg,...svg.querySelectorAll('*')].forEach(parent=>{
       const fragments=[...parent.children].filter(child=>child.localName==='text');
       if(fragments.length<2)return;
       for(let start=0;start<fragments.length;start++){
