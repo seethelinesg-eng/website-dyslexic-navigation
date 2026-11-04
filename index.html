@@ -35,8 +35,8 @@ body, body * {
   font-weight: 600 !important;
   letter-spacing: 0.75pt !important;
 }
-.bionic-first { font-weight: 800 !important; }
-.bionic-rest { font-weight: 600 !important; }
+.bionic-first { font-family: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Arial, sans-serif !important; font-weight: 800 !important; font-variation-settings: "wght" 800 !important; letter-spacing: 0.75pt !important; }
+.bionic-rest { font-family: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Arial, sans-serif !important; font-weight: 600 !important; font-variation-settings: "wght" 600 !important; letter-spacing: 0.75pt !important; }
 #mapMount svg text, #mapMount svg tspan,
 #legendZoomViewport svg text, #legendZoomViewport svg tspan {
   font-family: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Arial, sans-serif !important;
@@ -89,11 +89,19 @@ body, body * {
       wrapper.setAttribute('data-bionic-word', 'true');
       const first = make('span');
       first.setAttribute('class', 'bionic-first');
+      first.style.setProperty('font-family', '"Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Arial, sans-serif', 'important');
+      first.style.setProperty('font-weight', '800', 'important');
+      first.style.setProperty('font-variation-settings', '"wght" 800', 'important');
+      first.style.setProperty('letter-spacing', '0.75pt', 'important');
       first.textContent = letters.slice(0, 2).join('');
       wrapper.appendChild(first);
       if (letters.length > 2) {
         const rest = make('span');
         rest.setAttribute('class', 'bionic-rest');
+        rest.style.setProperty('font-family', '"Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Arial, sans-serif', 'important');
+        rest.style.setProperty('font-weight', '600', 'important');
+        rest.style.setProperty('font-variation-settings', '"wght" 600', 'important');
+        rest.style.setProperty('letter-spacing', '0.75pt', 'important');
         rest.textContent = letters.slice(2).join('');
         wrapper.appendChild(rest);
       }
