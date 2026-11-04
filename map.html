@@ -938,7 +938,7 @@ body, body * {
     installMap(fullMapRaw);
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     mount.querySelectorAll('[data-line]').forEach(el=>{
-      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\\s+/);
+      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/);
       const match=owners.includes(code);
       el.classList.toggle('dimmed',!match);
       el.classList.toggle('selected-line',match);
@@ -952,7 +952,7 @@ body, body * {
     const hover=(code,on)=>{
       if(!code)return;
       svg.querySelectorAll('[data-line]').forEach(el=>{
-        const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\\s+/);
+        const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/);
         if(!owners.includes(code))return;
         el.classList.toggle('line-hover',on);
         if(on&&/^(path|line|polyline)$/i.test(el.tagName)){
