@@ -64,11 +64,11 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #mapMount svg{width:120%;max-width:none;height:auto;max-height:none;margin-left:-10%;display:block;box-sizing:border-box}
 #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
 #mapMount .dimmed,#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:none!important}
-#mapMount [data-line].dimmed{display:initial!important;opacity:.16!important;filter:saturate(.45)!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line].line-hover{opacity:1!important;filter:brightness(1.18)!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease,filter .16s ease}
+#mapMount [data-line].dimmed{display:initial!important;opacity:.16!important;filter:saturate(.45)!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
 #mapMount .selected-line{filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 9px var(--line-glow))!important;opacity:1!important;animation:none!important}
   /* Keep the orange Circle Line geometry visually fixed: no glow filters, transforms, or animated effects on hover/selection. */
-  #mapMount [data-line="CCL"],#mapMount [data-line="CCL"].dimmed,#mapMount [data-line="CCL"].selected-line,#mapMount [data-line="CCL"].line-hover{transform:none!important;animation:none!important;filter:none!important;transition:opacity .16s ease!important}
+  #mapMount [data-line="CCL"],#mapMount [data-line="CCL"].dimmed,#mapMount [data-line="CCL"].selected-line{transform:none!important;animation:none!important;transition:opacity .16s ease!important}
 #mapMount .station-label-highlight{pointer-events:none}
 #mapMount.zoomed svg{transform:none;transform-origin:center center;transition:none}
 .help{color:var(--muted);line-height:1.6;font-size:.92rem;margin:16px 0 0;max-width:900px}
@@ -938,15 +938,9 @@ body, body * {
       const match=!!code&&owners.includes(code);
       el.classList.toggle('dimmed',!!code&&!match);
       el.classList.toggle('selected-line',match);
-      const hovering=match&&svg.dataset.hoverLine===code;
-      el.classList.toggle('line-hover',hovering);
+      el.classList.remove('line-hover');
       if(el.getAttribute('data-line')==='CCL'&&el.matches('path,line,polyline,polygon')){
-        if(!el.hasAttribute('data-base-stroke-width'))el.setAttribute('data-base-stroke-width',getComputedStyle(el).strokeWidth||'');
-        const base=parseFloat(el.getAttribute('data-base-stroke-width'));
-        if(Number.isFinite(base)&&base>0){
-          if(hovering)el.style.setProperty('stroke-width',(base+1.25)+'px');
-          else el.style.removeProperty('stroke-width');
-        }
+        if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
     });
   }
@@ -967,24 +961,7 @@ body, body * {
       const el=target&&target.closest?target.closest(selector):null;
       return el?el.getAttribute('data-line'):null;
     };
-    const preview=code=>{
-      if(svg.dataset.hoverLine===code)return;
-      svg.dataset.hoverLine=code||'';
-      applyLineEmphasis(svg,code||selected);
-    };
-    const clearPreview=()=>{
-      if(!svg.dataset.hoverLine)return;
-      svg.dataset.hoverLine='';
-      applyLineEmphasis(svg,selected);
-    };
-    // Track the route under the pointer without reacting to every transition
-    // between adjacent Illustrator path fragments. This prevents the CCL
-    // orange loop from rapidly switching between hover states.
-    svg.addEventListener('pointermove',event=>{
-      const code=codeFor(event.target);
-      if(code)preview(code);
-    });
-    svg.addEventListener('pointerleave',clearPreview);
+    // Route selection is click-only: hovering never changes line emphasis.
     svg.addEventListener('click',event=>{
       const code=codeFor(event.target);
       if(code){
