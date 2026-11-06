@@ -986,12 +986,14 @@ body, body * {
       if(el.closest('#interactiveLegendTargets')||el.classList.contains('island-background'))return;
       if(!el.hasAttribute('data-tel-grey')){
         const style=getComputedStyle(el);
-        const paints=[rgbFromCss(style.stroke),rgbFromCss(style.fill)].filter(Boolean);
-        const isGrey=paints.some(rgb=>
-          Math.max(...rgb)-Math.min(...rgb)<32 &&
-          Math.max(...rgb)>55 &&
-          Math.max(...rgb)<190
-        );
+        // Only classify grey-stroked route geometry as LRT. Do not inspect
+        // fills: dark legend panels and other black map artwork can use grey
+        // fills and must remain completely unchanged.
+        const stroke=rgbFromCss(style.stroke);
+        const isGrey=!!stroke &&
+          Math.max(...stroke)-Math.min(...stroke)<32 &&
+          Math.max(...stroke)>55 &&
+          Math.max(...stroke)<190;
         if(isGrey)el.setAttribute('data-tel-grey','true');
       }
       if(el.hasAttribute('data-tel-grey')){
