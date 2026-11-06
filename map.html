@@ -947,6 +947,11 @@ body, body * {
         if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
     });
+    // The uploaded map's grey LRT network is a single Illustrator path (.st37).
+    // Fade it explicitly in TEL focus; do not rely on computed stroke detection.
+    svg.querySelectorAll('.st37').forEach(el=>{
+      el.style.setProperty('opacity',code==='TEL'?'0.16':'1','important');
+    });
     // The grey LRT guide/route strokes are not part of the Thomson-East Coast
     // Line. Mark them once, then fade them only while TEL is selected.
     svg.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
