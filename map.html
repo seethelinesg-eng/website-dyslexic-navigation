@@ -846,22 +846,7 @@ body, body * {
       const raw=await response.text();
       if(selected!==code)return;
       installMap(raw);
-      // Make the Punggol Cove label itself interactive, not just the station-list buttons.
-      const punggolCoveLabel=mount.querySelector('#punggol-cove-label');
-      if(punggolCoveLabel){
-        punggolCoveLabel.setAttribute('role','button');
-        punggolCoveLabel.setAttribute('tabindex','0');
-        punggolCoveLabel.setAttribute('aria-label','Highlight and announce Punggol Cove');
-        punggolCoveLabel.style.cursor='pointer';
-        const activatePunggolCove=()=>{
-          highlightStation('Punggol Cove','NEL');
-          speak('Punggol Cove');
-        };
-        punggolCoveLabel.addEventListener('click',activatePunggolCove);
-        punggolCoveLabel.addEventListener('keydown',event=>{
-          if(event.key==='Enter'||event.key===' '){event.preventDefault();activatePunggolCove();}
-        });
-      }
+      // All station labels, including Punggol Cove, use the shared click/audio/highlight handler.
       mount.classList.add('zoomed');
     }catch(error){
       status.textContent='Could not load the corrected '+names[code]+' artwork. Please check the uploaded SVG file.';
