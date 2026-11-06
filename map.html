@@ -1052,21 +1052,34 @@ body, body * {
         const textNode=node.closest('text,tspan');
         if(textNode)node=textNode;
       }
+      let best=null;
       while(node&&node!==svg){
         const label=normalise(node.textContent);
         if(label){
-          const exactMatches=stationEntries.filter(item=>normalise(item.stationName)===label);
-          const partialMatches=exactMatches.length?exactMatches:stationEntries
-            .filter(item=>label.includes(normalise(item.stationName)))
-            .sort((a,b)=>normalise(b.stationName).length-normalise(a.stationName).length);
-          if(partialMatches.length){
-            const chosen=partialMatches.find(item=>item.line===selected)||partialMatches[0];
-            return chosen;
+          const matches=stationEntries.filter(item=>label.includes(normalise(item.stationName)));
+          const uniqueNames=new Map();
+          matches.forEach(item=>{
+            const key=normalise(item.stationName);
+            if(!uniqueNames.has(key))uniqueNames.set(key,item);
+          });
+          // Keep walking through nested Illustrator groups so a fragment such
+          // as "Bedok" inside "Bedok North" resolves to the full station name.
+          if(uniqueNames.size>2)break;
+          if(uniqueNames.size){
+            const candidates=[...uniqueNames.values()].sort((a,b)=>
+              normalise(b.stationName).length-normalise(a.stationName).length
+            );
+            if(!best||normalise(candidates[0].stationName).length>normalise(best.stationName).length){
+              best=candidates[0];
+            }
           }
         }
         node=node.parentElement;
       }
-      return null;
+      if(!best)return null;
+      return stationEntries.find(item=>
+        normalise(item.stationName)===normalise(best.stationName)&&item.line===selected
+      )||best;
     }
     const codeFor=target=>{
       const el=target&&target.closest?target.closest(selector):null;
