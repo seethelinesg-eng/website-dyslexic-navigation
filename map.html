@@ -801,7 +801,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261106-tel-grey-fix2');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261106-tel-lrt-path-fix3');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -959,9 +959,10 @@ body, body * {
         if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
     });
-    // The uploaded map's grey LRT network is a single Illustrator path (.st37).
-    // Fade it explicitly in TEL focus; do not rely on computed stroke detection.
-    svg.querySelectorAll('.st37').forEach(el=>{
+    // The four dark-grey LRT loop outlines in the uploaded full-map SVG
+    // are Illustrator paths with class .st29 (stroke #383b38).
+    // They are separate from the six MRT routes and must fade in TEL focus.
+    svg.querySelectorAll('path.st29').forEach(el=>{
       el.style.setProperty('opacity',code==='TEL'?'0.16':'1','important');
     });
     // The grey LRT guide/route strokes are not part of the Thomson-East Coast
