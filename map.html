@@ -890,24 +890,24 @@ body, body * {
       if(el.closest('#interactiveLegendTargets'))return;
       // Preserve the pale white Singapore island silhouette in every line-focus view.
       if(el.classList.contains('island-background')){el.classList.remove('focus-shape-hidden');return;}
-      // In the dedicated TEL artwork, the grey LRT network can be exported
-      // as either a stroked path or a filled Illustrator shape. Check both
-      // paint properties before preserving any element tagged as a route.
-      // This prevents a grey LRT segment from surviving just because an
-      // Illustrator group inherited the TEL data-line tag.
-      if(code==='TEL'){
-        const style=getComputedStyle(el);
-        const paints=[rgbFromCss(style.stroke),rgbFromCss(style.fill)].filter(Boolean);
-        const isGrey=paints.some(rgb=>
-          Math.max(...rgb)-Math.min(...rgb)<32 &&
-          Math.max(...rgb)>55 &&
-          Math.max(...rgb)<195
-        );
-        if(isGrey){
-          el.classList.add('focus-shape-hidden');
-          el.style.setProperty('display','none','important');
-          return;
-        }
+      // LRT guide lines are not part of any of the six MRT routes.
+      // Hide neutral-grey route geometry in EVERY line-focus view (not only
+      // TEL), even when Illustrator has placed it inside a data-line group.
+      // display:none guarantees the LRT strokes are fully transparent/absent.
+      const style=getComputedStyle(el);
+      const paints=[rgbFromCss(style.stroke),rgbFromCss(style.fill)].filter(Boolean);
+      const isGreyLrtGeometry=paints.some(rgb=>
+        Math.max(...rgb)-Math.min(...rgb)<32 &&
+        Math.max(...rgb)>55 &&
+        Math.max(...rgb)<195
+      );
+      if(isGreyLrtGeometry){
+        el.classList.add('focus-shape-hidden');
+        el.style.setProperty('display','none','important');
+        el.style.setProperty('opacity','0','important');
+        el.style.setProperty('stroke-opacity','0','important');
+        el.style.setProperty('fill-opacity','0','important');
+        return;
       }
       if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
       let box;
