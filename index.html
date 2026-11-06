@@ -25,7 +25,7 @@
 .instructions h2{font-size:clamp(1.5rem,2.8vw,2.1rem);letter-spacing:-.04em;margin:0 0 18px}
 .instructions ol{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .instructions li{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:center;background:#f3efe6;border:1px solid var(--rule);padding:16px}
-.instruction-icon{display:grid;place-items:center;width:44px;height:44px;font-size:1.4rem;font-weight:700}.line-icon{color:#3153ad;background:#e8efff}.sound-icon{color:#7f2594;background:#f2e8fa}.glow-icon{color:#279641;background:#e5f5eb}.map-icon{color:#b85e00;background:#fff0df}
+.instruction-icon{display:grid;place-items:center;width:44px;height:44px;font-size:1.4rem;font-weight:700}.line-icon{color:#3153ad;background:#e8efff}.sound-icon{color:#7f2594;background:#f2e8fa}.sound-icon{color:#7f2594;background:#f2e8fa}.map-icon{color:#b85e00;background:#fff0df}
 .instructions li strong{font-size:1.04rem}.instructions li p{margin:4px 0 0;color:#555149;line-height:1.5}
 @media(max-width:700px){.instructions ol{grid-template-columns:1fr}.welcome-card{box-shadow:7px 7px 0 var(--ink)}.welcome-card:after{opacity:.45;right:-180px;top:-180px}}
 
@@ -58,8 +58,8 @@ body, body * {
         <h2 id="instructionsTitle">How to use the map</h2>
         <ol>
           <li><span class="instruction-icon line-icon" aria-hidden="true">●</span><div><strong>Choose an MRT line</strong><p>Click a coloured line button to focus on that route.</p></div></li>
-          <li><span class="instruction-icon sound-icon" aria-hidden="true">♫</span><div><strong>Choose a station</strong><p>Click a station name. You will hear the station announced aloud.</p></div></li>
-          <li><span class="instruction-icon glow-icon" aria-hidden="true">✦</span><div><strong>Follow the glowing line</strong><p>The selected route will glow to help you follow it.</p></div></li>
+          <li><span class="instruction-icon sound-icon" aria-hidden="true">♫</span><div><strong>Click a station name</strong><p>Click any station name directly on the map. It will be highlighted and its name will be read aloud.</p></div></li>
+          <li><span class="instruction-icon line-icon" aria-hidden="true">●</span><div><strong>Follow the selected line</strong><p>The selected route stays fully visible in its original colour, while other lines fade into the background.</p></div></li>
           <li><span class="instruction-icon map-icon" aria-hidden="true">↗</span><div><strong>See the whole network again</strong><p>Click “Back to full MRT map” to return to all lines.</p></div></li>
         </ol>
       </div>
