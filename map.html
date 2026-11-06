@@ -875,7 +875,7 @@ body, body * {
     // the complete label after focus filtering so no earlier classification
     // or inherited dimming can make it disappear on the North-East Line.
     if(code==='NEL'){
-      const normaliseLabel=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
+      const normaliseLabel=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
       mount.querySelectorAll('g').forEach(group=>{
         if(normaliseLabel(group.textContent)!=='punggolcove')return;
         group.classList.remove('dimmed','focus-text-hidden');
