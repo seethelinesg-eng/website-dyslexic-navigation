@@ -962,7 +962,7 @@ body, body * {
     // The four dark-grey LRT loop outlines in the uploaded full-map SVG
     // are Illustrator paths with class .st29 (stroke #383b38).
     // They are separate from the six MRT routes and must fade in TEL focus.
-    svg.querySelectorAll('path.st29').forEach(el=>{
+    svg.querySelectorAll('path.st29, path.st37').forEach(el=>{
       el.style.setProperty('opacity',code==='TEL'?'0.16':'1','important');
     });
     // The grey LRT guide/route strokes are not part of the Thomson-East Coast
