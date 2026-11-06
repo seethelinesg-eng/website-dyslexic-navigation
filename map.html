@@ -986,9 +986,11 @@ body, body * {
       if(el.closest('#interactiveLegendTargets')||el.classList.contains('island-background'))return;
       if(!el.hasAttribute('data-tel-grey')){
         const style=getComputedStyle(el);
-        // Only classify grey-stroked route geometry as LRT. Do not inspect
-        // fills: dark legend panels and other black map artwork can use grey
-        // fills and must remain completely unchanged.
+        // Protect solid-black map panels and legend rectangles from all LRT
+        // focus styling, even if Illustrator gives them a grey outline.
+        const fill=rgbFromCss(style.fill);
+        if(fill && Math.max(...fill)<35)return;
+        // Only classify grey-stroked route geometry as LRT.
         const stroke=rgbFromCss(style.stroke);
         const isGrey=!!stroke &&
           Math.max(...stroke)-Math.min(...stroke)<32 &&
