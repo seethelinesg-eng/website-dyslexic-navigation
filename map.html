@@ -1054,13 +1054,15 @@ body, body * {
       }
       while(node&&node!==svg){
         const label=normalise(node.textContent);
-        const exactMatches=stationEntries.filter(item=>normalise(item.stationName)===label);
-        const partialMatches=exactMatches.length?exactMatches:stationEntries
-          .filter(item=>label.includes(normalise(item.stationName)))
-          .sort((a,b)=>normalise(b.stationName).length-normalise(a.stationName).length);
-        if(partialMatches.length){
-          const chosen=partialMatches.find(item=>item.line===selected)||partialMatches[0];
-          return chosen;
+        if(label){
+          const exactMatches=stationEntries.filter(item=>normalise(item.stationName)===label);
+          const partialMatches=exactMatches.length?exactMatches:stationEntries
+            .filter(item=>label.includes(normalise(item.stationName)))
+            .sort((a,b)=>normalise(b.stationName).length-normalise(a.stationName).length);
+          if(partialMatches.length){
+            const chosen=partialMatches.find(item=>item.line===selected)||partialMatches[0];
+            return chosen;
+          }
         }
         node=node.parentElement;
       }
@@ -1076,6 +1078,8 @@ body, body * {
       el.style.setProperty('cursor','pointer','important');
       el.setAttribute('tabindex','0');
       el.setAttribute('role','button');
+      const station=stationForTarget(el);
+      if(station)el.setAttribute('aria-label','Hear and highlight '+station.stationName);
     });
     svg.addEventListener('click',event=>{
       const station=stationForTarget(event.target);
