@@ -100,6 +100,15 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .legend-line-key{display:flex;align-items:center;gap:9px;margin:7px 0;font-weight:700}
 .legend-line-dot{width:13px;height:13px;border-radius:50%;flex:0 0 13px}
 .legend-topic-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.legend-audio-player{display:grid;gap:10px;width:100%;max-width:560px;margin-top:16px;padding:14px 16px;background:#191919;color:#fffdf8;border-radius:10px}
+.legend-audio-controls{display:flex;align-items:center;justify-content:center;gap:18px}
+.legend-audio-controls button{display:grid;place-items:center;min-width:42px;min-height:42px;padding:8px;border:0;border-radius:50%;background:transparent;color:#fffdf8;font-size:1.15rem}
+.legend-audio-controls button:hover{background:#ffffff20;box-shadow:none;transform:none}
+.legend-audio-controls #legendPlayPause{width:48px;height:48px;background:#fffdf8;color:#191919;font-size:1.25rem}
+.legend-audio-controls #legendPlayPause:hover{background:#e9e2d6}
+.legend-audio-timeline{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px}
+.legend-audio-time{font-size:.78rem;font-variant-numeric:tabular-nums;color:#e4ded5}
+#legendProgress{width:100%;height:5px;margin:0;accent-color:#ef704d;cursor:pointer}
 #legendSpeakButton{background:var(--ink);color:#fff;border-color:var(--ink)}
 #legendTopicHint{font-size:.86rem;color:var(--muted);margin:12px 0 0;line-height:1.5}
 @media(max-width:700px){.legend-explorer-layout{grid-template-columns:1fr}.legend-topic-list{grid-template-columns:repeat(2,minmax(0,1fr))}.legend-topic-button{padding:10px}.legend-explorer{max-height:96vh;padding:16px}#legendZoomViewport{height:210px}}
@@ -193,8 +202,17 @@ body, body * {
           <h3 id="legendTopicTitle">1. Line colours and codes</h3>
           <p id="legendTopicDescription"></p>
           <div id="legendTopicDetails"></div>
-          <div class="legend-topic-actions">
-            <button type="button" id="legendSpeakButton">▶ Hear this explanation</button>
+          <div class="legend-audio-player" aria-label="Legend explanation audio player">
+            <div class="legend-audio-controls">
+              <button type="button" id="legendRewind" aria-label="Rewind 10 seconds" title="Rewind 10 seconds">↶ 10</button>
+              <button type="button" id="legendPlayPause" aria-label="Play explanation" title="Play / pause">▶</button>
+              <button type="button" id="legendForward" aria-label="Forward 10 seconds" title="Forward 10 seconds">10 ↷</button>
+            </div>
+            <div class="legend-audio-timeline">
+              <span class="legend-audio-time" id="legendCurrentTime">0:00</span>
+              <input id="legendProgress" type="range" min="0" max="1000" value="0" step="1" aria-label="Audio progress">
+              <span class="legend-audio-time" id="legendDuration">0:00</span>
+            </div>
           </div>
           <p id="legendTopicHint">Select another topic on the left to zoom to a different part of the map.</p>
         </section>
@@ -1158,6 +1176,7 @@ body, body * {
     }
   }
   function renderLegendTopic(key){
+    stopLegendAudio();
     const topic=legendTopics[key];
     if(!topic)return;
     activeLegendTopic=key;
@@ -1210,9 +1229,137 @@ body, body * {
   document.querySelectorAll('[data-legend-topic]').forEach(button=>{
     button.addEventListener('click',()=>renderLegendTopic(button.dataset.legendTopic));
   });
-  legendSpeakButton.addEventListener('click',()=>{
+  const legendPlayPause=document.getElementById('legendPlayPause');
+  const legendRewind=document.getElementById('legendRewind');
+  const legendForward=document.getElementById('legendForward');
+  const legendProgress=document.getElementById('legendProgress');
+  const legendCurrentTime=document.getElementById('legendCurrentTime');
+  const legendDuration=document.getElementById('legendDuration');
+  let legendUtterance=null;
+  let legendSpeechText='';
+  let legendCharOffset=0;
+  let legendCharPosition=0;
+  let legendAudioPaused=false;
+  let legendAudioActive=false;
+  const LEGEND_CHARS_PER_SECOND=14;
+  function formatLegendTime(seconds){
+    const safe=Math.max(0,Math.floor(seconds||0));
+    return Math.floor(safe/60)+':'+String(safe%60).padStart(2,'0');
+  }
+  function updateLegendAudioProgress(){
+    const length=Math.max(1,legendSpeechText.length);
+    const duration=length/LEGEND_CHARS_PER_SECOND;
+    const progress=Math.min(length,Math.max(0,legendCharPosition));
+    legendProgress.value=String(Math.round(progress/length*1000));
+    legendCurrentTime.textContent=formatLegendTime(progress/length*duration);
+    legendDuration.textContent=formatLegendTime(duration);
+  }
+  function stopLegendAudio(){
+    if('speechSynthesis' in window)window.speechSynthesis.cancel();
+    legendUtterance=null;
+    legendAudioActive=false;
+    legendAudioPaused=false;
+    legendSpeechText='';
+    legendCharOffset=0;
+    legendCharPosition=0;
+    legendPlayPause.textContent='▶';
+    legendPlayPause.setAttribute('aria-label','Play explanation');
+    legendProgress.value='0';
+    legendCurrentTime.textContent='0:00';
+    legendDuration.textContent='0:00';
+  }
+  function startLegendAudioAt(position){
+    if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){
+      status.textContent='Audio is not supported by this browser. Please try Safari with speech enabled.';
+      return;
+    }
     const topic=legendTopics[activeLegendTopic];
-    if(topic)speak(topic.narration);
+    if(!topic)return;
+    if(!legendSpeechText)legendSpeechText=topic.narration;
+    legendCharOffset=Math.max(0,Math.min(legendSpeechText.length,position));
+    legendCharPosition=legendCharOffset;
+    const remaining=legendSpeechText.slice(legendCharOffset);
+    if(!remaining.trim()){
+      stopLegendAudio();
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance=new SpeechSynthesisUtterance(remaining);
+    utterance.lang='en-SG';
+    utterance.rate=0.9;
+    const voices=window.speechSynthesis.getVoices();
+    const voice=voices.find(v=>/^en[-_]SG$/i.test(v.lang))
+      ||voices.find(v=>/^en[-_]MY$/i.test(v.lang))
+      ||voices.find(v=>/^en[-_]AU$/i.test(v.lang))
+      ||voices.find(v=>/^en[-_]GB/i.test(v.lang))
+      ||voices.find(v=>/^en/i.test(v.lang));
+    if(voice){utterance.voice=voice;utterance.lang=voice.lang||'en-SG';}
+    legendUtterance=utterance;
+    legendAudioActive=true;
+    legendAudioPaused=false;
+    legendPlayPause.textContent='Ⅱ';
+    legendPlayPause.setAttribute('aria-label','Pause explanation');
+    utterance.onstart=()=>{status.textContent='Playing legend explanation: '+topic.title;};
+    utterance.onboundary=event=>{
+      if(legendUtterance!==utterance)return;
+      legendCharPosition=Math.min(legendSpeechText.length,legendCharOffset+(event.charIndex||0));
+      updateLegendAudioProgress();
+    };
+    utterance.onend=()=>{
+      if(legendUtterance!==utterance)return;
+      legendCharPosition=legendSpeechText.length;
+      updateLegendAudioProgress();
+      legendUtterance=null;
+      legendAudioActive=false;
+      legendAudioPaused=false;
+      legendPlayPause.textContent='▶';
+      legendPlayPause.setAttribute('aria-label','Play explanation');
+      status.textContent='Finished legend explanation: '+topic.title;
+    };
+    utterance.onerror=event=>{
+      if(legendUtterance!==utterance)return;
+      legendUtterance=null;
+      legendAudioActive=false;
+      legendPlayPause.textContent='▶';
+      legendPlayPause.setAttribute('aria-label','Play explanation');
+      status.textContent='Audio could not play ('+(event.error||'speech error')+').';
+    };
+    updateLegendAudioProgress();
+    window.speechSynthesis.resume();
+    window.speechSynthesis.speak(utterance);
+  }
+  legendPlayPause.addEventListener('click',()=>{
+    if(legendAudioActive&&!legendAudioPaused){
+      window.speechSynthesis.pause();
+      legendAudioPaused=true;
+      legendPlayPause.textContent='▶';
+      legendPlayPause.setAttribute('aria-label','Resume explanation');
+    }else if(legendAudioActive&&legendAudioPaused){
+      window.speechSynthesis.resume();
+      legendAudioPaused=false;
+      legendPlayPause.textContent='Ⅱ';
+      legendPlayPause.setAttribute('aria-label','Pause explanation');
+    }else{
+      const topic=legendTopics[activeLegendTopic];
+      if(!legendSpeechText&&topic)legendSpeechText=topic.narration;
+      const start=legendCharPosition>=legendSpeechText.length?0:legendCharPosition;
+      startLegendAudioAt(start);
+    }
+  });
+  legendRewind.addEventListener('click',()=>{
+    if(!legendSpeechText){const topic=legendTopics[activeLegendTopic];if(topic)legendSpeechText=topic.narration;}
+    const target=Math.max(0,legendCharPosition-10*LEGEND_CHARS_PER_SECOND);
+    startLegendAudioAt(target);
+  });
+  legendForward.addEventListener('click',()=>{
+    if(!legendSpeechText){const topic=legendTopics[activeLegendTopic];if(topic)legendSpeechText=topic.narration;}
+    const target=Math.min(legendSpeechText.length,legendCharPosition+10*LEGEND_CHARS_PER_SECOND);
+    startLegendAudioAt(target);
+  });
+  legendProgress.addEventListener('input',()=>{
+    if(!legendSpeechText){const topic=legendTopics[activeLegendTopic];if(topic)legendSpeechText=topic.narration;}
+    const target=Math.round(Number(legendProgress.value)/1000*legendSpeechText.length);
+    startLegendAudioAt(target);
   });
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
