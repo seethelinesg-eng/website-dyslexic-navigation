@@ -610,6 +610,25 @@ body, body * {
         });
       }
     }
+    // These two Circle Line names are split into Illustrator text fragments
+    // whose nested groups interrupt the normal adjacent-fragment matcher.
+    // Tag the exact artwork fragments so they remain visible in CCL focus mode.
+    const circleLabelFragments=[
+      ['770.57 733.28','780.48 733.28'], // Promenade
+      ['736.7 778.55','747.99 778.55']  // Bayfront
+    ];
+    circleLabelFragments.flat().forEach(position=>{
+      svg.querySelectorAll('text').forEach(el=>{
+        const transform=el.getAttribute('transform')||'';
+        if(transform.includes('translate('+position+')')){
+          el.setAttribute('data-lines','CCL');
+          el.setAttribute('data-line','CCL');
+          el.setAttribute('data-station-label','true');
+          el.classList.remove('focus-text-hidden','dimmed');
+          el.style.removeProperty('display');
+        }
+      });
+    });
   }
   function highlightStation(stationName,code){
     const svg=mount.querySelector('svg');
@@ -801,7 +820,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261106-tel-lrt-path-fix3');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261106-circle-labels-fix1');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
