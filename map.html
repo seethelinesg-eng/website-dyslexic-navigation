@@ -1042,7 +1042,7 @@ body, body * {
   }
   function addMapLineInteractions(svg){
     const selector='path[data-line],line[data-line],polyline[data-line],polygon[data-line],circle[data-line],ellipse[data-line],rect[data-line]';
-    const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
+    const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
     const stationEntries=Object.entries(stations).flatMap(([line,list])=>
       list.map(([stationCode,stationName])=>({line,stationCode,stationName}))
     );
