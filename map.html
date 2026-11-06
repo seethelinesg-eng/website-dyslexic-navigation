@@ -981,7 +981,7 @@ body, body * {
     // Grey LRT routes (including Bukit Panjang, Sengkang and Punggol)
     // are separate from the six coloured MRT lines. Fade every grey route
     // whenever an MRT line is selected; do not hide the Bukit Panjang LRT.
-    // Inspect both stroke and fill because Illustrator exports vary by shape.
+    // Identify routes by their grey stroke only; preserve filled legend artwork.
     svg.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
       if(el.closest('#interactiveLegendTargets')||el.classList.contains('island-background'))return;
       if(!el.hasAttribute('data-tel-grey')){
@@ -1215,7 +1215,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261106-lrt-grey-fade')
+  fetch('./mrt-map.svg?v=20261106-preserve-black-legend')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
