@@ -820,7 +820,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261106-lrt-hide-all-focus');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261106-lrt-grey-fade');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -978,10 +978,10 @@ body, body * {
         if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
     });
-    // LRT guide/route strokes are not part of any MRT line. Hide them
-    // completely whenever a line is selected, regardless of which MRT line
-    // is active. Inspect stroke AND fill because Illustrator exports them in
-    // different forms. Keep the island and bottom legend untouched.
+    // Grey LRT routes (including Bukit Panjang, Sengkang and Punggol)
+    // are separate from the six coloured MRT lines. Fade every grey route
+    // whenever an MRT line is selected; do not hide the Bukit Panjang LRT.
+    // Inspect both stroke and fill because Illustrator exports vary by shape.
     svg.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
       if(el.closest('#interactiveLegendTargets')||el.classList.contains('island-background'))return;
       if(!el.hasAttribute('data-tel-grey')){
@@ -996,11 +996,17 @@ body, body * {
       }
       if(el.hasAttribute('data-tel-grey')){
         el.classList.remove('dimmed','selected-line','line-hover');
-        el.style.setProperty('display','none','important');
-        el.style.setProperty('visibility','hidden','important');
-        el.style.setProperty('opacity','0','important');
-        el.style.setProperty('stroke-opacity','0','important');
-        el.style.setProperty('filter','none','important');
+        if(code){
+          el.style.setProperty('display','initial','important');
+          el.style.setProperty('visibility','visible','important');
+          el.style.setProperty('opacity','.16','important');
+          el.style.setProperty('stroke-opacity','.16','important');
+          el.style.setProperty('fill-opacity','.16','important');
+          el.style.setProperty('filter','none','important');
+          el.style.setProperty('pointer-events','none','important');
+        }else{
+          ['display','visibility','opacity','stroke-opacity','fill-opacity','filter','pointer-events'].forEach(prop=>el.style.removeProperty(prop));
+        }
       }
     });
   }
