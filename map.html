@@ -820,7 +820,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261106-circle-labels-fix1');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261106-lrt-hide-all-focus');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -978,26 +978,30 @@ body, body * {
         if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
     });
-    // These four dark-grey LRT loop outlines are separate from all six MRT
-    // routes. Force both overall and stroke opacity so SVG group styling cannot
-    // leave their dark outlines looking selected in TEL focus.
-    svg.querySelectorAll('path.st29, path.st37').forEach(el=>{
-      const fade=code==='TEL'?'0.12':'1';
-      el.classList.remove('selected-line');
-      el.style.setProperty('opacity',fade,'important');
-      el.style.setProperty('stroke-opacity',fade,'important');
-      el.style.setProperty('filter','none','important');
-    });
-    // The grey LRT guide/route strokes are not part of the Thomson-East Coast
-    // Line. Mark them once, then fade them only while TEL is selected.
+    // LRT guide/route strokes are not part of any MRT line. Hide them
+    // completely whenever a line is selected, regardless of which MRT line
+    // is active. Inspect stroke AND fill because Illustrator exports them in
+    // different forms. Keep the island and bottom legend untouched.
     svg.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
-      if(el.closest('#interactiveLegendTargets')||el.classList.contains('island-background')||el.hasAttribute('data-line'))return;
+      if(el.closest('#interactiveLegendTargets')||el.classList.contains('island-background'))return;
       if(!el.hasAttribute('data-tel-grey')){
-        const stroke=rgbFromCss(getComputedStyle(el).stroke);
-        const isGreyStroke=stroke&&Math.max(...stroke)-Math.min(...stroke)<28&&Math.max(...stroke)>55&&Math.max(...stroke)<190;
-        if(isGreyStroke)el.setAttribute('data-tel-grey','true');
+        const style=getComputedStyle(el);
+        const paints=[rgbFromCss(style.stroke),rgbFromCss(style.fill)].filter(Boolean);
+        const isGrey=paints.some(rgb=>
+          Math.max(...rgb)-Math.min(...rgb)<32 &&
+          Math.max(...rgb)>55 &&
+          Math.max(...rgb)<190
+        );
+        if(isGrey)el.setAttribute('data-tel-grey','true');
       }
-      if(el.hasAttribute('data-tel-grey'))el.classList.toggle('dimmed',code==='TEL');
+      if(el.hasAttribute('data-tel-grey')){
+        el.classList.remove('dimmed','selected-line','line-hover');
+        el.style.setProperty('display','none','important');
+        el.style.setProperty('visibility','hidden','important');
+        el.style.setProperty('opacity','0','important');
+        el.style.setProperty('stroke-opacity','0','important');
+        el.style.setProperty('filter','none','important');
+      }
     });
   }
   function selectLineOnFullMap(code){
