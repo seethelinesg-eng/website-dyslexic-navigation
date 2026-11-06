@@ -1800,4 +1800,10 @@
       <text class="st31" transform="translate(370.12 279.15) scale(1.03 1)"><tspan x="0" y="0">CC 16</tspan></text>
     </g>
   </g>
+
+  <!-- Restored missing Circle Line station names -->
+  <g id="restored-circle-station-names" fill="#292929" font-family="Atkinson Hyperlegible Next, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing=".25">
+    <text x="770" y="614">Promenade</text>
+    <text x="735" y="659">Bayfront</text>
+  </g>
 </svg>
