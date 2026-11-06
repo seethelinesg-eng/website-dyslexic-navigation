@@ -954,15 +954,15 @@ body, body * {
   }
 
   function makeLegendInteractive(svg){
-    // The bottom black legend is part of the Illustrator SVG. These focused
-    // click zones sit over its transport icons without changing the artwork.
+    // The bottom black legend is part of the Illustrator SVG. These hit areas
+    // cover each icon and its label, aligned to the current SVG viewBox.
     const items=[
-      {id:'bus-terminal',label:'Bus Terminal',spoken:'Bus Terminal',x:698,y:948,width:62,height:38,colour:'#f4c542'},
-      {id:'airport',label:'Changi Airport',spoken:'Changi Airport',x:779,y:948,width:62,height:38,colour:'#67c7ef'},
-      {id:'ferry-terminal',label:'Ferry Terminal',spoken:'Ferry Terminal',x:861,y:948,width:70,height:38,colour:'#55d6a5'},
-      {id:'cruise-centre',label:'Cruise Centre',spoken:'Cruise Centre',x:690,y:1010,width:78,height:40,colour:'#55d6a5'},
-      {id:'sentosa-express',label:'Sentosa Express',spoken:'Sentosa Express',x:775,y:1010,width:82,height:40,colour:'#67c7ef'},
-      {id:'cable-car',label:'Cable Car',spoken:'Cable Car',x:861,y:1010,width:72,height:40,colour:'#f4c542'}
+      {id:'bus-terminal',label:'Bus Interchange / Terminal',spoken:'Bus Interchange and Bus Terminal',x:688,y:960,width:82,height:55,colour:'#f4c542'},
+      {id:'airport',label:'Changi Airport',spoken:'Changi Airport',x:772,y:960,width:82,height:55,colour:'#67c7ef'},
+      {id:'ferry-terminal',label:'Ferry Terminal',spoken:'Ferry Terminal',x:853,y:960,width:84,height:55,colour:'#55d6a5'},
+      {id:'cruise-centre',label:'Cruise Centre',spoken:'Cruise Centre',x:688,y:1020,width:82,height:54,colour:'#55d6a5'},
+      {id:'sentosa-express',label:'Sentosa Express',spoken:'Sentosa Express',x:772,y:1020,width:82,height:54,colour:'#67c7ef'},
+      {id:'cable-car',label:'Cable Car',spoken:'Cable Car',x:853,y:1020,width:84,height:54,colour:'#f4c542'}
     ];
     const ns='http://www.w3.org/2000/svg';
     const layer=document.createElementNS(ns,'g');
