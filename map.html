@@ -1057,17 +1057,61 @@ body, body * {
   }
   function addMapLineInteractions(svg){
     const selector='path[data-line],line[data-line],polyline[data-line],polygon[data-line],circle[data-line],ellipse[data-line],rect[data-line]';
+    const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
+    const stationEntries=Object.entries(stations).flatMap(([line,list])=>
+      list.map(([stationCode,stationName])=>({line,stationCode,stationName}))
+    );
+    function stationForTarget(target){
+      let node=target&&target.nodeType===1?target:null;
+      if(node&&node.closest){
+        const textNode=node.closest('text,tspan');
+        if(textNode)node=textNode;
+      }
+      while(node&&node!==svg){
+        const label=normalise(node.textContent);
+        const matches=stationEntries.filter(item=>normalise(item.stationName)===label);
+        if(matches.length){
+          const chosen=matches.find(item=>item.line===selected)||matches[0];
+          return chosen;
+        }
+        node=node.parentElement;
+      }
+      return null;
+    }
     const codeFor=target=>{
       const el=target&&target.closest?target.closest(selector):null;
       return el?el.getAttribute('data-line'):null;
     };
-    // Route selection is click-only: hovering never changes line emphasis.
+    // Station labels are independently clickable: announce and highlight the
+    // complete Illustrator label, including names split across text fragments.
+    svg.querySelectorAll('[data-station-label="true"]').forEach(el=>{
+      el.style.setProperty('cursor','pointer','important');
+      el.setAttribute('tabindex','0');
+      el.setAttribute('role','button');
+    });
     svg.addEventListener('click',event=>{
+      const station=stationForTarget(event.target);
+      if(station){
+        event.preventDefault();
+        event.stopPropagation();
+        highlightStation(station.stationName,station.line);
+        speak(station.stationName);
+        return;
+      }
       const code=codeFor(event.target);
       if(code){
         event.preventDefault();
         selectLineOnFullMap(code);
       }
+    });
+    svg.addEventListener('keydown',event=>{
+      if(event.key!=='Enter'&&event.key!==' ')return;
+      const station=stationForTarget(event.target);
+      if(!station)return;
+      event.preventDefault();
+      event.stopPropagation();
+      highlightStation(station.stationName,station.line);
+      speak(station.stationName);
     });
     svg.querySelectorAll(selector).forEach(el=>{
       el.style.setProperty('pointer-events','visiblePainted','important');
