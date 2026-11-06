@@ -866,7 +866,7 @@ body, body * {
         .flatMap(span=>(span.getAttribute('data-lines')||span.getAttribute('data-line')||'').split(/\s+/));
       // Keep the Changi Airport legend label visible in every focused
       // line view, even though it is not part of an MRT route.
-      const legendLabel=el.textContent.replace(/\\s+/g,'').toLowerCase();
+      const legendLabel=el.textContent.replace(/\s+/g,'').toLowerCase();
       const keep=owners.includes(code)||childOwners.includes(code)||
         legendLabel==='changi'||legendLabel==='airport'||legendLabel==='changiairport';
       el.classList.toggle('focus-text-hidden',!keep);
@@ -1054,9 +1054,12 @@ body, body * {
       }
       while(node&&node!==svg){
         const label=normalise(node.textContent);
-        const matches=stationEntries.filter(item=>normalise(item.stationName)===label);
-        if(matches.length){
-          const chosen=matches.find(item=>item.line===selected)||matches[0];
+        const exactMatches=stationEntries.filter(item=>normalise(item.stationName)===label);
+        const partialMatches=exactMatches.length?exactMatches:stationEntries
+          .filter(item=>label.includes(normalise(item.stationName)))
+          .sort((a,b)=>normalise(b.stationName).length-normalise(a.stationName).length);
+        if(partialMatches.length){
+          const chosen=partialMatches.find(item=>item.line===selected)||partialMatches[0];
           return chosen;
         }
         node=node.parentElement;
