@@ -580,30 +580,34 @@ body, body * {
     });
     // Illustrator sometimes nests each fragment in its own <g>, so
     // sibling-only matching misses labels even when all their pieces exist.
-    // Match the SVG's text elements in document order across nested groups.
-    // Stop as soon as a complete station name/code is found, then tag every
-    // fragment in that run so line-focus mode keeps the whole label visible.
+    // Prefer the longest complete station name/code: "Bedok" is also a
+    // standalone EWL station name, but "Bedok North" belongs to the DTL.
     const textFragments=[...svg.querySelectorAll('text')];
+    const maxLabelLength=Math.max(0,...labelOwners.keys().map(label=>label.length));
     for(let start=0;start<textFragments.length;start++){
       let combined='';
       const run=[];
+      let bestOwners=null,bestRunLength=0;
       for(let end=start;end<Math.min(textFragments.length,start+12);end++){
         const fragment=textFragments[end];
         combined+=normalise(fragment.textContent);
         run.push(fragment);
         const owners=labelOwners.get(combined);
         if(owners){
-          const ownerList=[...owners];
-          run.forEach(part=>{
-            part.setAttribute('data-lines',ownerList.join(' '));
-            part.setAttribute('data-line',ownerList[0]);
-            part.setAttribute('data-station-label','true');
-            part.classList.remove('focus-text-hidden','dimmed');
-            part.style.removeProperty('display');
-          });
-          break;
+          bestOwners=owners;
+          bestRunLength=run.length;
         }
-        if(combined.length>40)break;
+        if(combined.length>maxLabelLength)break;
+      }
+      if(bestOwners){
+        const ownerList=[...bestOwners];
+        run.slice(0,bestRunLength).forEach(part=>{
+          part.setAttribute('data-lines',ownerList.join(' '));
+          part.setAttribute('data-line',ownerList[0]);
+          part.setAttribute('data-station-label','true');
+          part.classList.remove('focus-text-hidden','dimmed');
+          part.style.removeProperty('display');
+        });
       }
     }
   }
