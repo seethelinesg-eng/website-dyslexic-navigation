@@ -66,7 +66,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #mapMount .dimmed,#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:none!important}
 #mapMount [data-line].dimmed{display:initial!important;opacity:.16!important;filter:saturate(.45)!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
-#mapMount .selected-line{filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--line-glow)) drop-shadow(0 0 9px var(--line-glow))!important;opacity:1!important;animation:none!important}
+#mapMount .selected-line{filter:none!important;opacity:1!important;animation:none!important}
   /* Keep the orange Circle Line geometry visually fixed: no glow filters, transforms, or animated effects on hover/selection. */
   #mapMount [data-line="CCL"],#mapMount [data-line="CCL"].dimmed,#mapMount [data-line="CCL"].selected-line{transform:none!important;animation:none!important;transition:opacity .16s ease!important}
 #mapMount .station-label-highlight{pointer-events:none}
@@ -1439,7 +1439,7 @@ body, body * {
       fullMapRaw=raw;
       const counts=installMap(raw);
       const missing=Object.keys(names).filter(code=>!counts[code]);
-      status.textContent=missing.length?'Map loaded, but line colours need checking: '+missing.join(', '):'MRT map ready. Choose a line to make it glow.';
+      status.textContent=missing.length?'Map loaded, but line colours need checking: '+missing.join(', '):'MRT map ready. Choose a line to highlight it.';
     })
     .catch(error=>{
       status.textContent='The MRT map could not be displayed: '+(error&&error.message?error.message:'loading error')+'. Please refresh once the update is published.';
