@@ -5678,7 +5678,7 @@
         <g class="st85">
           <g class="st85">
             <g class="st85">
-              <text class="st91" transform="translate(486.43 645.5) scale(1.03 1)"><tspan x="0" y="0" xml:space="preserve">NS 24  NE 6   CC 1</tspan></text>
+              <text class="st91" y="645.5" text-anchor="middle"><tspan x="493.91">NS 24</tspan><tspan x="512.50">NE 6</tspan><tspan x="531.80">CC 1</tspan></text>
             </g>
           </g>
         </g>
