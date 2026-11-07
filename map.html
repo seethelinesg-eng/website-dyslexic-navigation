@@ -993,6 +993,15 @@ body, body * {
         if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
     });
+    // The two green vector strokes framing the Tanah Merah station label
+    // are a label border, not route geometry. Keep them only on the full map
+    // and when the East-West Line is selected.
+    svg.querySelectorAll('[data-tanah-merah-border="true"]').forEach(el=>{
+      const show=!code||code==='EWL';
+      el.style.setProperty('display',show?'initial':'none','important');
+      el.style.setProperty('visibility',show?'visible':'hidden','important');
+      el.style.setProperty('opacity',show?'1':'0','important');
+    });
     // Grey LRT routes (including Bukit Panjang, Sengkang and Punggol)
     // are separate from the six coloured MRT lines. Fade every grey route
     // whenever an MRT line is selected; do not hide the Bukit Panjang LRT.
