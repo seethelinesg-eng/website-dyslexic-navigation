@@ -1064,6 +1064,9 @@ body, body * {
       let best=null;
       while(node&&node!==svg){
         const label=normalise(node.textContent);
+        // Sentosa is a separate map destination rather than an MRT station.
+        // Keep it independently clickable so its name is announced as well.
+        if(label==='sentosa')return {stationName:'Sentosa',line:null};
         if(label){
           const matches=stationEntries.filter(item=>label.includes(normalise(item.stationName)));
           const uniqueNames=new Map();
@@ -1103,12 +1106,22 @@ body, body * {
       const station=stationForTarget(el);
       if(station)el.setAttribute('aria-label','Hear and highlight '+station.stationName);
     });
+    // Sentosa is labelled separately from the rail-station list in the SVG.
+    // Give its text the same pointer and keyboard accessibility as station labels.
+    svg.querySelectorAll('text,tspan').forEach(el=>{
+      if(normalise(el.textContent)==='sentosa'){
+        el.style.setProperty('cursor','pointer','important');
+        el.setAttribute('tabindex','0');
+        el.setAttribute('role','button');
+        el.setAttribute('aria-label','Hear Sentosa announced aloud');
+      }
+    });
     svg.addEventListener('click',event=>{
       const station=stationForTarget(event.target);
       if(station){
         event.preventDefault();
         event.stopPropagation();
-        highlightStation(station.stationName,station.line);
+        if(station.line)highlightStation(station.stationName,station.line);
         speak(station.stationName);
         return;
       }
@@ -1124,7 +1137,7 @@ body, body * {
       if(!station)return;
       event.preventDefault();
       event.stopPropagation();
-      highlightStation(station.stationName,station.line);
+      if(station.line)highlightStation(station.stationName,station.line);
       speak(station.stationName);
     });
     svg.querySelectorAll(selector).forEach(el=>{
