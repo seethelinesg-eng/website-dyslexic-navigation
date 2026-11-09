@@ -818,27 +818,26 @@ body, body * {
   }
   function applyDestinationVisibility(svg,code){
     if(!svg)return;
-    const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
-    // These destinations belong to specific rail corridors. Keep them on the
-    // full map, and only on their related line when a line is focused.
+    const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
+    // Keep these destination labels only on the corridors they belong to.
     const rules=[
       {key:'marinasouthpier',visible:!code||code==='NSL'},
       {key:'bedoksouth',visible:!code||code==='TEL'},
       {key:'sentosa',visible:!code||code==='NEL'||code==='CCL'}
     ];
     const matches=label=>rules.find(rule=>label.includes(rule.key));
-    // First hide complete Illustrator groups when the label is grouped.
+    // Hide only a group whose own text is exactly the destination label;
+    // never hide a larger parent group containing the whole map.
     svg.querySelectorAll('g').forEach(group=>{
-      const groupLabel=normalise(group.textContent);\n      const rule=rules.find(item=>groupLabel===item.key);
+      const groupLabel=normalise(group.textContent);
+      const rule=rules.find(item=>groupLabel===item.key);
       if(!rule)return;
-      const show=rule.visible;
-      group.style.setProperty('display',show?'inline':'none','important');
-      group.style.setProperty('visibility',show?'visible':'hidden','important');
-      group.style.setProperty('opacity',show?'1':'0','important');
+      group.style.setProperty('display',rule.visible?'inline':'none','important');
+      group.style.setProperty('visibility',rule.visible?'visible':'hidden','important');
+      group.style.setProperty('opacity',rule.visible?'1':'0','important');
     });
-    // Illustrator may split a single label over multiple neighbouring text
-    // elements. Match concatenated runs as well, so fragments cannot escape
-    // the line filter just because no individual <text> contains the full name.
+    // Illustrator can split one name across adjacent <text> elements.
+    // Match concatenated runs so every fragment receives the same visibility.
     const texts=[...svg.querySelectorAll('text')];
     for(let start=0;start<texts.length;start++){
       let combined='';
@@ -848,19 +847,18 @@ body, body * {
         combined+=normalise(texts[end].textContent);
         const rule=matches(combined);
         if(rule){
-          const show=rule.visible;
           run.forEach(part=>{
             part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
-            part.style.setProperty('display',show?'inline':'none','important');
-            part.style.setProperty('visibility',show?'visible':'hidden','important');
-            part.style.setProperty('opacity',show?'1':'0','important');
+            part.style.setProperty('display',rule.visible?'inline':'none','important');
+            part.style.setProperty('visibility',rule.visible?'visible':'hidden','important');
+            part.style.setProperty('opacity',rule.visible?'1':'0','important');
           });
           break;
         }
         if(rules.every(rule=>!rule.key.startsWith(combined)&&!rule.key.includes(combined)))break;
       }
     }
-    // Also handle an intact label carried by a single text/tspan element.
+    // Also handle complete labels contained in a single text or tspan.
     svg.querySelectorAll('text,tspan').forEach(el=>{
       const rule=matches(normalise(el.textContent));
       if(!rule)return;
