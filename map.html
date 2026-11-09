@@ -1301,6 +1301,14 @@ body, body * {
     function stationForTarget(target){
       let node=target&&target.nodeType===1?target:null;
       if(node&&node.closest){
+        // Marina South Pier is split into separate Illustrator text objects.
+        // Resolve its explicitly tagged fragments directly to NS28 rather
+        // than relying on a complete text label in an ancestor group.
+        const marinaFragment=node.closest('[data-destination-label="marina-south-pier"]');
+        if(marinaFragment){
+          return stationEntries.find(item=>item.stationCode==='NS28')||
+            {stationCode:'NS28',stationName:'Marina South Pier',line:'NSL'};
+        }
         const textNode=node.closest('text,tspan');
         if(textNode)node=textNode;
       }
