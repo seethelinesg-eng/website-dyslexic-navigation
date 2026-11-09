@@ -134,6 +134,16 @@ body, body * {
   font-weight: 600 !important;
   letter-spacing: 0.75pt !important;
 }
+
+/* Keep station-code lettering compact so every interchange code stays
+   centred within its own coloured pill, including Dhoby Ghaut's three codes. */
+#mapMount svg text.station-code-label,
+#mapMount svg text.station-code-label tspan,
+#legendZoomViewport svg text.station-code-label,
+#legendZoomViewport svg text.station-code-label tspan {
+  letter-spacing: 0 !important;
+  font-weight: 700 !important;
+}
 </style>
 </head>
 <body>
@@ -244,6 +254,16 @@ body, body * {
   // word so a split such as "Ju" + "rong" becomes JU(800) + rong(600).
   function bionicizeSvgTextElement(textElement) {
     if (textElement.hasAttribute('data-bionicized')) return;
+
+    // Station-code labels sit inside fixed Illustrator pill shapes. Keep their
+    // original SVG text metrics instead of splitting them into bionic spans,
+    // which can widen interchange codes beyond their coloured boxes.
+    const stationCodePattern = /^\\s*(?:(?:NS|EW|NE|CC|DT|TE|CG|BP|ST|PTC|EWL|NSL|NEL|CCL|DTL|TEL)\\s*\\d+\\s*)+$/i;
+    if (stationCodePattern.test(textElement.textContent || '')) {
+      textElement.classList.add('station-code-label');
+      textElement.setAttribute('data-bionicized', 'true');
+      return;
+    }
 
     // Illustrator sometimes exports one station name as several adjacent
     // <text> elements (for example, "Or" + "chard"). Treat neighbouring
