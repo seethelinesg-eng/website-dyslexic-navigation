@@ -1891,6 +1891,14 @@
       </g>
     </g>
   </g>
-  <g class="st30" data-station-label="true" data-station-code="DT36" data-line="DTL" data-lines="DTL" data-station-name="Xilin"><text class="station-label-original-semibold" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>
-  <g class="st30" data-station-label="true" data-station-code="DT37" data-line="DTL" data-lines="DTL" data-station-name="Sungei Bedok"><text class="station-label-original-semibold" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
+  <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT36" data-station-name="Xilin">
+    <text class="station-label-original-heavy" transform="translate(1018.6013 559.0973) scale(1.05 1)"><tspan x="0" y="0">Xi</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(1028.5984 559.0983) scale(1.05 1)"><tspan x="0" y="0">lin</tspan></text>
+  </g>
+  <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT37" data-station-name="Sungei Bedok">
+    <text class="station-label-original-heavy" transform="translate(1010.5261 586.2233) scale(1.05 1)"><tspan x="0" y="0">Su</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(1021.862 586.2233) scale(1.05 1)"><tspan x="0" y="0">ngei</tspan></text>
+    <text class="station-label-original-heavy" transform="translate(1044.28 586.2233) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(1055.9324 586.2233) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
+  </g>
 </svg>
