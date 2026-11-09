@@ -645,25 +645,39 @@ body, body * {
   }
   const lineSvgFiles={"NSL":"red line corrected 6.svg","EWL":"green line corrected 5 svg.svg","NEL":"purple line corrct 6.svg","CCL":"yellow line corrected 5.svg","DTL":"blue line corrected 6 svg.svg","TEL":"brown line correction 6.svg"};
   const unavailableLabels=new Set(['NS6','CC18','TE10','TE21','Sungei Kadut','Bukit Brown','Mount Pleasant','Marina South']);
+  function canonicalStationSpokenName(value){
+    const raw=String(value||'').trim();
+    if(!raw)return '';
+    const compact=raw.replace(/[^a-z0-9]/gi,'').toLocaleLowerCase('en');
+    const allStations=Object.values(stations).flat();
+    // Resolve a station code to its full name, so codes are never read aloud.
+    const byCode=allStations.find(([code])=>String(code).replace(/[^a-z0-9]/gi,'').toLocaleLowerCase('en')===compact);
+    if(byCode)return byCode[1];
+    // Prefer the canonical station spelling and pronunciation input.
+    const byName=allStations.find(([,name])=>String(name).toLocaleLowerCase('en')===raw.toLocaleLowerCase('en'));
+    if(byName)return byName[1];
+    if(raw.toLocaleLowerCase('en')==='sentosa')return 'Sentosa';
+    return raw;
+  }
   function speak(text){
-    lastAnnouncement=text;
-    speakWithBrowserVoice(text);
+    const stationName=canonicalStationSpokenName(text);
+    lastAnnouncement=stationName;
+    speakWithBrowserVoice(stationName);
   }
   function speakWithBrowserVoice(text){
     if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){
       status.textContent='Audio is not supported by this browser. Please try Safari with speech enabled.';
       return;
     }
-    // Readable phonetic cues based on the pronunciation guide supplied for this map.
-    // Hyphens are converted to spaces for smoother Safari speech synthesis.
-    const pronunciationMap=new Map([["Pasir Ris","PAH-seer REES"],["Tampines","TAM-puh-nees"],["Simei","SEE-may"],["Tanah Merah","TAH-nah MAY-rah"],["Bedok","buh-DOK"],["Kembangan","kum-BAHNG-ahn"],["Eunos","YOO-nuhs"],["Paya Lebar","PIE-yah LEH-bahr"],["Aljunied","al-JOO-need"],["Kallang","KAH-lahng"],["Lavender","LAH-vuhn-dur"],["Bugis","BOO-gis"],["City Hall","SIT-ee HAWL"],["Raffles Place","RAH-fuhls PLAYSS"],["Tanjong Pagar","TAHN-jong PAH-gahr"],["Outram Park","OO-truhm PAHRK"],["Tiong Bahru","TEE-ong BAH-roo"],["Redhill","RED-hil"],["Queenstown","KWEENZ-town"],["Commonwealth","KOM-uhn-welth"],["Buona Vista","BWON-nah VEES-tah"],["Dover","DOH-vur"],["Clementi","kluh-MEN-tee"],["Jurong East","JOO-rong EEST"],["Chinese Garden","CHIE-neez GAHR-duhn"],["Lakeside","LAKE-side"],["Boon Lay","BOON LAY"],["Pioneer","pie-uh-NEER"],["Joo Koon","JOO KOON"],["Gul Circle","GUL SUR-kuhl"],["Tuas Crescent","TOO-ahss KREH-suhnt"],["Tuas West Road","TOO-ahss WEST ROHD"],["Tuas Link","TOO-ahss LINK"],["Expo","EK-spoh"],["Changi Airport","CHAH-nghee EHR-port"],["Bukit Batok","BOO-kit BAH-tok"],["Bukit Gombak","BOO-kit GOM-bahk"],["Choa Chu Kang","CHOH CHOO KAHNG"],["Yew Tee","YOO TEE"],["Kranji","KRAHN-jee"],["Marsiling","MAHR-see-ling"],["Woodlands","WOOD-luhndz"],["Woodlands North","WOOD-luhndz NORTH"],["Woodlands South","WOOD-luhndz SOWTH"],["Admiralty","AD-muh-ruhl-tee"],["Sembawang","sum-BAH-wahng"],["Canberra","KAN-beh-ruh"],["Yishun","YEE-shoon"],["Khatib","KHAH-tib"],["Yio Chu Kang","YOW CHOO KAHNG"],["Ang Mo Kio","AHNG MOH KYOH"],["Bishan","BEE-shahn"],["Braddell","brah-DEL"],["Toa Payoh","TOH PIE-yoh"],["Novena","noh-VEE-nah"],["Newton","NYOO-tuhn"],["Orchard","AW-chuhrd"],["Somerset","SUM-uhr-set"],["Dhoby Ghaut","DOH-bee GAWT"],["Marina Bay","muh-REE-nah BAY"],["Marina South Pier","muh-REE-nah SOWTH PEER"],["HarbourFront","HAHR-buhr-frunt"],["Chinatown","CHIE-nah-town"],["Clarke Quay","KLAHRK KEE"],["Little India","LIT-uhl IN-dee-uh"],["Farrer Park","FAH-ruhr PAHRK"],["Boon Keng","BOON KENG"],["Potong Pasir","poh-TONG PAH-seer"],["Woodleigh","WOOD-lee"],["Serangoon","suh-RAHNG-goon"],["Kovan","KOH-vuhn"],["Hougang","HOW-gahng"],["Buangkok","BWAHNG-kok"],["Sengkang","SENG-kahng"],["Punggol","PUNG-gohl"],["Punggol Coast","PUNG-gohl KOHST"],["Bras Basah","BRAHSS BAH-sah"],["Esplanade","es-pluh-NAHD"],["Promenade","prom-uh-NAHD"],["Nicoll Highway","NIK-uhl HIGH-way"],["Stadium","STAY-dee-uhm"],["Mountbatten","mownt-BAT-uhn"],["Dakota","duh-KOH-tah"],["MacPherson","muhk-FUR-suhn"],["Tai Seng","TIE SENG"],["Bartley","BAHRT-lee"],["Lorong Chuan","LOH-rong CHWAHN"],["Marymount","MEH-ree-mownt"],["Caldecott","KAHL-duh-kot"],["Botanic Gardens","boh-TAN-ik GAHR-duhns"],["Farrer Road","FAH-ruhr ROHD"],["Holland Village","HOL-uhnd VIL-ij"],["one-north","WUN NORTH"],["Kent Ridge","KENT RIJ"],["Haw Par Villa","HAW PAHR VIL-lah"],["Pasir Panjang","PAH-seer PAHN-jahng"],["Labrador Park","LAB-ruh-dawr PAHRK"],["Telok Blangah","TEH-lok BLAHNG-ah"],["Bayfront","BAY-frunt"],["Bukit Panjang","BOO-kit PAHN-jahng"],["Cashew","KASH-oo"],["Hillview","HIL-vyoo"],["Beauty World","BYOO-tee WURLD"],["King Albert Park","KING AL-buhrt PAHRK"],["Sixth Avenue","SIKST AV-uh-nyoo"],["Tan Kah Kee","TAHN KAH KEE"],["Stevens","STEE-vuhns"],["Rochor","ROH-chawr"],["Bencoolen","ben-KOO-luhn"],["Jalan Besar","JAH-lahn buh-SAHR"],["Bendemeer","BEN-duh-meer"],["Geylang Bahru","GAY-lahng BAH-roo"],["Mattar","MAHT-tahr"],["Ubi","OO-bee"],["Kaki Bukit","KAH-kee BOO-kit"],["Bedok North","buh-DOK NORTH"],["Bedok Reservoir","buh-DOK REZ-uhr-vwahr"],["Tampines West","TAM-puh-nees WEST"],["Tampines East","TAM-puh-nees EEST"],["Upper Changi","UP-puhr CHAH-nghee"],["Springleaf","SPRING-leef"],["Lentor","LEN-tawr"],["Mayflower","MAY-flow-uhr"],["Bright Hill","BRITE HIL"],["Upper Thomson","UP-puhr TOM-suhn"],["Mount Pleasant","MOWNT PLEZ-uhnt"],["Napier","NAY-peer"],["Orchard Boulevard","AW-chuhrd BOOL-uh-vahrd"],["Great World","GRATE WURLD"],["Havelock","HAV-lok"],["Maxwell","MAKS-wel"],["Shenton Way","SHEN-tuhn WAY"],["Marina South","muh-REE-nah SOWTH"],["Gardens by the Bay","GAHR-duhns BY THE BAY"],["Tanjong Rhu","TAHN-jong ROO"],["Katong Park","KAH-tong PAHRK"],["Tanjong Katong","TAHN-jong KAH-tong"],["Marine Parade","muh-REEN puh-RAHD"],["Marine Terrace","muh-REEN TEH-ruhs"],["Siglap","SIG-lup"],["Bayshore","BAY-shawr"],["Keppel","KEH-puhl"],["Cantonment","kan-TON-ment"],["Prince Edward Road","PRINS ED-werd ROHD"],["Hume","HYOOM"],["Downtown","DOWN-town"],["Telok Ayer","tuh-LOK EYE-yer"],["Fort Canning","FORT KAN-ing"],["Xilin","SHEE-lin"],["Sungei Bedok","SOONG-eye buh-DOK"],["Bedok South","buh-DOK SOWTH"]].map(([name,reading])=>[name.toLocaleLowerCase('en'),reading.replace(/-/g,' ')]));
-    const speechText=pronunciationMap.get(String(text).toLocaleLowerCase('en'))||text;
-    const utterance=new SpeechSynthesisUtterance(speechText);
+    // Send the real station name to Safari. Phonetic spellings such as
+    // "PAH-seer" or all-caps syllables can be mistaken for individual letters.
+    const spokenName=canonicalStationSpokenName(text);
+    const utterance=new SpeechSynthesisUtterance(spokenName);
     utterance.lang='en-SG';
     utterance.rate=0.88;
     utterance.pitch=1.02;
-    utterance.onstart=()=>{status.textContent='Speaking: '+text};
-    utterance.onend=()=>{status.textContent='Finished announcing: '+text};
+    utterance.onstart=()=>{status.textContent='Speaking: '+spokenName};
+    utterance.onend=()=>{status.textContent='Finished announcing: '+spokenName};
     utterance.onerror=(event)=>{
       status.textContent='Audio could not play ('+(event.error||'speech error')+'). Check that your device is not muted and try the station again.';
     };
