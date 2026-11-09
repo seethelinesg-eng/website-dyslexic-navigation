@@ -829,7 +829,7 @@ body, body * {
     const matches=label=>rules.find(rule=>label.includes(rule.key));
     // First hide complete Illustrator groups when the label is grouped.
     svg.querySelectorAll('g').forEach(group=>{
-      const rule=matches(normalise(group.textContent));
+      const groupLabel=normalise(group.textContent);\n      const rule=rules.find(item=>groupLabel===item.key);
       if(!rule)return;
       const show=rule.visible;
       group.style.setProperty('display',show?'inline':'none','important');
