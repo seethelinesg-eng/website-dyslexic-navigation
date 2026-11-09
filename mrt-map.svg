@@ -8972,7 +8972,7 @@
       </g>
     </g>
   </g>
-  <g>
+  <g data-station-code="TE31" data-line="TEL" data-lines="TEL" style="cursor:pointer;pointer-events:all">
     <path class="st68" d="M956.85,590.41h-14.86c-.33-.3-2.65-2.45-2.48-5.82.15-2.95,2.08-4.75,2.48-5.1h14.86v10.92Z"/>
     <path class="st41" d="M956.85,590.41h15.15c.34-.3,2.7-2.45,2.53-5.82-.15-2.95-2.12-4.75-2.53-5.1h-15.15v10.92Z"/>
     <g class="st88">
@@ -8986,7 +8986,7 @@
       </g>
     </g>
   </g>
-  <g>
+  <g data-station-code="DT36" data-line="DTL" data-lines="DTL" style="cursor:pointer;pointer-events:all">
     <rect class="st41" x="969.5" y="551.5" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
     <g class="st88">
       <g class="st88">
@@ -9604,4 +9604,7 @@
     <path data-tanah-merah-border="true" class="st33" d="M906.49,468.35l-20.66.69c-1.9,1.03-3.44,4.87-3.86,9.77-.58,6.74,1.01,14.86,3.86,17.09h21.47"/>
     <path data-tanah-merah-border="true" class="st33" d="M906.19,495.88l20.66-.69c1.9-1.03,3.44-4.87,3.86-9.77.58-6.74-1.01-14.86-3.86-17.09h-21.47"/>
   </g>
+  <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT36"><text class="st93" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>
+  <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT37"><text class="st93" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
+  <g data-line="TEL" data-lines="TEL" data-station-label="true" data-station-code="TE31"><text class="st93" transform="translate(980 570) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
 </svg>
