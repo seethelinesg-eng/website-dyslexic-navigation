@@ -152,9 +152,13 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   .map-heading{align-items:flex-start;flex-direction:row;justify-content:space-between;gap:8px;margin-bottom:9px}
   .map-heading h2{font-size:1.2rem}
   .map-heading span{font-size:.68rem;white-space:nowrap}
-  .map-shell{width:100%;min-height:0;overflow-x:auto;overflow-y:hidden;border:1px solid var(--rule);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y}
-  #mapMount{width:100%;min-width:0;overflow:visible}
-  #mapMount svg{display:block;width:760px;min-width:760px;max-width:none;height:auto;margin:0}
+  .map-shell{position:relative;width:100%;height: min(68svh,680px);min-height:420px;overflow:hidden;border:1px solid var(--rule);touch-action:none;overscroll-behavior:contain;background:#fffdf8}
+  #mapMount{position:absolute;inset:0;width:100%;height:100%;min-width:0;overflow:hidden;touch-action:none}
+  #mapMount svg{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;object-fit:contain;transform-origin:center center;will-change:transform;touch-action:none;user-select:none;-webkit-user-select:none}
+  .map-zoom-controls{position:absolute;z-index:5;top:10px;right:10px;display:grid;grid-template-columns:44px 44px;gap:6px}
+  .map-zoom-controls button{min-width:44px;min-height:44px;padding:6px;text-align:center;background:#fffdf8;border:1px solid var(--ink);box-shadow:0 2px 8px #0002;font-size:1.15rem}
+  .map-zoom-controls #mapZoomReset{grid-column:1 / -1;font-size:.8rem}
+  .map-touch-hint{font-size:.84rem;line-height:1.5;color:var(--muted);margin:9px 0 0}
   .help{font-size:.88rem;margin-top:12px}
   button:hover{transform:none}
 }
@@ -228,7 +232,15 @@ body, body * {
       <div class="workspace">
       <section class="map-column" aria-label="Interactive MRT map">
         <div class="map-heading"><h2>Singapore MRT network</h2><span>Interactive map</span></div>
-        <div class="map-shell"><div id="mapMount"></div></div>
+        <div class="map-shell" id="mapViewport" aria-label="Map viewing area">
+          <div class="map-zoom-controls" aria-label="Map zoom controls">
+            <button type="button" id="mapZoomIn" aria-label="Zoom in">+</button>
+            <button type="button" id="mapZoomOut" aria-label="Zoom out">−</button>
+            <button type="button" id="mapZoomReset" aria-label="Reset map view">Reset</button>
+          </div>
+          <div id="mapMount"></div>
+        </div>
+        <p class="map-touch-hint">On a phone: pinch to zoom in or out, then drag to move around the map. Tap a station or coloured line to interact.</p>
         <p class="help">Choose a coloured line button to show only that route and reveal its station list. Select a station to hear its name.</p>
       </section>
         <section id="stationPanel" aria-live="polite" aria-label="Stations on selected line">
@@ -463,7 +475,92 @@ body, body * {
 
     const status=document.getElementById('status');
   const mount=document.getElementById('mapMount');
+  const mapViewport=document.getElementById('mapViewport');
   const stationPanel=document.getElementById('stationPanel');
+  let mobileMapZoom=1,mobileMapPanX=0,mobileMapPanY=0;
+  let touchGesture=null,mouseGesture=null,lastMapDragAt=0;
+  const isPhoneMap=()=>window.matchMedia('(max-width: 700px)').matches;
+  function applyMobileMapTransform(){
+    const svg=mount.querySelector('svg');
+    if(!svg||!isPhoneMap())return;
+    svg.style.transformOrigin='center center';
+    svg.style.transform='translate('+mobileMapPanX+'px, '+mobileMapPanY+'px) scale('+mobileMapZoom+')';
+  }
+  function setMobileMapZoom(nextZoom){
+    mobileMapZoom=Math.max(1,Math.min(4,nextZoom));
+    if(mobileMapZoom===1){mobileMapPanX=0;mobileMapPanY=0;}
+    applyMobileMapTransform();
+  }
+  function resetMobileMapView(){
+    mobileMapZoom=1;mobileMapPanX=0;mobileMapPanY=0;
+    applyMobileMapTransform();
+  }
+  function touchDistance(a,b){return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);}
+  if(mapViewport){
+    mapViewport.addEventListener('touchstart',event=>{
+      if(!isPhoneMap())return;
+      if(event.touches.length===2){
+        const a=event.touches[0],b=event.touches[1];
+        touchGesture={mode:'pinch',distance:touchDistance(a,b),zoom:mobileMapZoom,panX:mobileMapPanX,panY:mobileMapPanY,midX:(a.clientX+b.clientX)/2,midY:(a.clientY+b.clientY)/2};
+      }else if(event.touches.length===1){
+        const t=event.touches[0];
+        touchGesture={mode:'pan',x:t.clientX,y:t.clientY,panX:mobileMapPanX,panY:mobileMapPanY};
+      }
+    },{passive:true});
+    mapViewport.addEventListener('touchmove',event=>{
+      if(!isPhoneMap()||!touchGesture)return;
+      if(touchGesture.mode==='pinch'&&event.touches.length===2){
+        event.preventDefault();
+        const a=event.touches[0],b=event.touches[1];
+        const midpointX=(a.clientX+b.clientX)/2,midpointY=(a.clientY+b.clientY)/2;
+        const ratio=touchDistance(a,b)/Math.max(1,touchGesture.distance);
+        mobileMapZoom=Math.max(1,Math.min(4,touchGesture.zoom*ratio));
+        mobileMapPanX=touchGesture.panX+(midpointX-touchGesture.midX);
+        mobileMapPanY=touchGesture.panY+(midpointY-touchGesture.midY);
+        if(mobileMapZoom===1){mobileMapPanX=0;mobileMapPanY=0;}
+        applyMobileMapTransform();
+      }else if(touchGesture.mode==='pan'&&event.touches.length===1&&mobileMapZoom>1){
+        event.preventDefault();
+        const t=event.touches[0];
+        mobileMapPanX=touchGesture.panX+(t.clientX-touchGesture.x);
+        mobileMapPanY=touchGesture.panY+(t.clientY-touchGesture.y);
+        applyMobileMapTransform();
+      }
+    },{passive:false});
+    mapViewport.addEventListener('touchend',event=>{
+      if(event.touches.length===1){
+        const t=event.touches[0];
+        touchGesture={mode:'pan',x:t.clientX,y:t.clientY,panX:mobileMapPanX,panY:mobileMapPanY};
+      }else if(event.touches.length===0)touchGesture=null;
+    },{passive:true});
+    mapViewport.addEventListener('touchcancel',()=>{touchGesture=null;},{passive:true});
+    mapViewport.addEventListener('pointerdown',event=>{
+      if(!isPhoneMap()||event.pointerType!=='mouse')return;
+      mouseGesture={x:event.clientX,y:event.clientY,panX:mobileMapPanX,panY:mobileMapPanY,moved:false};
+    });
+    mapViewport.addEventListener('pointermove',event=>{
+      if(!mouseGesture||event.pointerType!=='mouse')return;
+      const dx=event.clientX-mouseGesture.x,dy=event.clientY-mouseGesture.y;
+      if(Math.hypot(dx,dy)>5)mouseGesture.moved=true;
+      if(mouseGesture.moved){
+        mobileMapPanX=mouseGesture.panX+dx;mobileMapPanY=mouseGesture.panY+dy;
+        applyMobileMapTransform();
+      }
+    });
+    const finishMousePan=()=>{
+      if(mouseGesture&&mouseGesture.moved)lastMapDragAt=Date.now();
+      mouseGesture=null;
+    };
+    mapViewport.addEventListener('pointerup',finishMousePan);
+    mapViewport.addEventListener('pointercancel',finishMousePan);
+    mapViewport.addEventListener('click',event=>{
+      if(Date.now()-lastMapDragAt<350){event.preventDefault();event.stopPropagation();lastMapDragAt=0;}
+    },true);
+    document.getElementById('mapZoomIn').addEventListener('click',()=>setMobileMapZoom(mobileMapZoom*1.35));
+    document.getElementById('mapZoomOut').addEventListener('click',()=>setMobileMapZoom(mobileMapZoom/1.35));
+    document.getElementById('mapZoomReset').addEventListener('click',resetMobileMapView);
+    window.addEventListener('resize',()=>{if(!isPhoneMap())resetMobileMapView();});
+  }
   const stationHeading=document.getElementById('stationHeading');
   const stationList=document.getElementById('stationList');
   const lineControls=document.getElementById('lineControls');
@@ -999,6 +1096,7 @@ body, body * {
   }
   function showAll(){
     selected=null;
+    resetMobileMapView();
     stationPanel.classList.remove('visible');
     mount.classList.remove('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed','false'));
@@ -1221,6 +1319,7 @@ body, body * {
     svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map');
     const imported=document.importNode(svg,true);
     mount.replaceChildren(imported);
+    applyMobileMapTransform();
     // Force the requested accessible typeface on every imported SVG label.
     imported.querySelectorAll('text,tspan').forEach(label=>{
       label.style.setProperty('font-family','"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif','important');
