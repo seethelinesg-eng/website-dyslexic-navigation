@@ -816,6 +816,25 @@ body, body * {
       });
     });
   }
+  function applyDestinationVisibility(svg,code){
+    if(!svg)return;
+    const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
+    // Marina South Pier is NS28 on the North-South Line only. Sentosa is a
+    // separate destination, not an MRT station, so hide it in every line view.
+    const labels=[
+      {key:'marinasouthpier',visible:code==='NSL'},
+      {key:'sentosa',visible:!code}
+    ];
+    svg.querySelectorAll('g,text,tspan').forEach(el=>{
+      const label=normalise(el.textContent);
+      const rule=labels.find(item=>label.includes(item.key));
+      if(!rule)return;
+      el.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+      el.style.setProperty('display',rule.visible?'initial':'none','important');
+      el.style.setProperty('visibility',rule.visible?'visible':'hidden','important');
+      el.style.setProperty('opacity',rule.visible?'1':'0','important');
+    });
+  }
   function highlightStation(stationName,code){
     const svg=mount.querySelector('svg');
     if(!svg)return;
@@ -1092,6 +1111,7 @@ body, body * {
     });
     // Hide interchange gradient boxes and unrelated LRT corner labels.
     mount.querySelectorAll('[data-gradient-route],[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
+    applyDestinationVisibility(mount.querySelector('svg'),code);
     speak(names[code]+' selected');
   }
   function showAll(){
@@ -1211,7 +1231,7 @@ body, body * {
     installMap(fullMapRaw);
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     const svg=mount.querySelector('svg');
-    if(svg)applyLineEmphasis(svg,code);
+    if(svg){applyLineEmphasis(svg,code);applyDestinationVisibility(svg,code);}
     speak(names[code]);
     status.textContent=names[code]+' selected. Other MRT lines are translucent.';
   }
