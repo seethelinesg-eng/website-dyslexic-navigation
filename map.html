@@ -258,7 +258,7 @@ body, body * {
     // Station-code labels sit inside fixed Illustrator pill shapes. Keep their
     // original SVG text metrics instead of splitting them into bionic spans,
     // which can widen interchange codes beyond their coloured boxes.
-    const stationCodePattern = /^\\s*(?:(?:NS|EW|NE|CC|DT|TE|CG|BP|ST|PTC|EWL|NSL|NEL|CCL|DTL|TEL)\\s*\\d+\\s*)+$/i;
+        const stationCodePattern = /^\s*(?:(?:NS|EW|NE|CC|DT|TE|CG|BP|ST|PTC|EWL|NSL|NEL|CCL|DTL|TEL)\s*\d+\s*)+$/i;
     if (stationCodePattern.test(textElement.textContent || '')) {
       textElement.classList.add('station-code-label');
       textElement.setAttribute('data-bionicized', 'true');
