@@ -1352,10 +1352,34 @@ body, body * {
     // complete Illustrator label, including names split across text fragments.
     svg.querySelectorAll('[data-station-label="true"]').forEach(el=>{
       el.style.setProperty('cursor','pointer','important');
+      el.style.setProperty('pointer-events','all','important');
       el.setAttribute('tabindex','0');
       el.setAttribute('role','button');
       const station=stationForTarget(el);
       if(station)el.setAttribute('aria-label','Hear and highlight '+station.stationName);
+    });
+    // Marina South Pier is split into five separate SVG text fragments. Give
+    // each fragment its own direct hit handler so the label remains clickable
+    // even when Illustrator's nested text groups prevent parent hit detection.
+    svg.querySelectorAll('[data-destination-label="marina-south-pier"]').forEach(el=>{
+      const activate=event=>{
+        event.preventDefault();
+        event.stopPropagation();
+        const station={stationCode:'NS28',stationName:'Marina South Pier',line:'NSL'};
+        highlightStation(station.stationName,station.line);
+        speak(station.stationName);
+      };
+      el.style.setProperty('pointer-events','all','important');
+      el.style.setProperty('cursor','pointer','important');
+      el.setAttribute('tabindex','0');
+      el.setAttribute('role','button');
+      el.setAttribute('aria-label','Hear and highlight Marina South Pier, NS28');
+      el.addEventListener('click',activate);
+      el.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){
+          activate(event);
+        }
+      });
     });
     // Sentosa is labelled separately from the rail-station list in the SVG.
     // Give its text the same pointer and keyboard accessibility as station labels.
