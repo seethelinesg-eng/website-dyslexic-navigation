@@ -628,7 +628,7 @@ body, body * {
     });
   }
   const lineSvgFiles={"NSL":"red line corrected 6.svg","EWL":"green line corrected 5 svg.svg","NEL":"purple line corrct 6.svg","CCL":"yellow line corrected 5.svg","DTL":"blue line corrected 6 svg.svg","TEL":"brown line correction 6.svg"};
-  const unavailableLabels=new Set(['NS6','CC18','NS6','CC18','TE10','TE21','TE30','TE31','Sungei Kadut','Bukit Brown','Sungei Kadut','Bukit Brown','Mount Pleasant','Marina South','Bedok South']);
+  const unavailableLabels=new Set(['NS6','CC18','TE10','TE21','TE30','Sungei Kadut','Bukit Brown','Mount Pleasant','Marina South','Bedok South']);
   function speak(text){
     lastAnnouncement=text;
     if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){
