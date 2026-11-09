@@ -9534,7 +9534,7 @@
     <path data-tanah-merah-border="true" class="st33" d="M906.49,468.35l-20.66.69c-1.9,1.03-3.44,4.87-3.86,9.77-.58,6.74,1.01,14.86,3.86,17.09h21.47"/>
     <path data-tanah-merah-border="true" class="st33" d="M906.19,495.88l20.66-.69c1.9-1.03,3.44-4.87,3.86-9.77.58-6.74-1.01-14.86-3.86-17.09h-21.47"/>
   </g>
-  <g data-line="DTL" data-lines="DTL"><text class="st93" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>  <g data-line="DTL" data-lines="DTL TEL"><text class="st93" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>  <g data-station-code="TE30" data-line="TEL" data-lines="TEL">
+  <g data-line="DTL" data-lines="DTL"><text class="st93" transform="translate(1018.6013 559.0973) scale(1.0529 1)"><tspan x="0" y="0">Xilin</tspan></text></g>  <g data-line="DTL" data-lines="DTL TEL"><text class="st93" transform="translate(1010.5261 586.2233) scale(1.0529 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>  <g data-station-code="TE30" data-line="TEL" data-lines="TEL">
     <rect class="st68" x="954.36" y="604.24" width="19.64" height="10.91" rx="3.19" ry="3.19"/>
     <text class="station-code-original" transform="translate(956.97 611.25) scale(1.05 1)"><tspan x="0" y="0">TE 30</tspan></text>
   </g>
