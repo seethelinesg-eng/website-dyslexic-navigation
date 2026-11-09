@@ -1083,6 +1083,30 @@ body, body * {
         }
       }    }
 
+    // Sengkang and Punggol are outlined Illustrator artwork, not <text> nodes.
+    // Highlight their existing station-name boxes directly in SVG viewBox coordinates.
+    if(!highlighted){
+      const outlinedStationBoxes={
+        'Sengkang':{x:808.5,y:247.5,width:61.5,height:19.5},
+        'Punggol':{x:874.5,y:189.2,width:49.5,height:19.5}
+      };
+      const box=outlinedStationBoxes[stationName];
+      if(box){
+        const marker=document.createElementNS(ns,'rect');
+        marker.setAttribute('class','station-label-highlight');
+        marker.setAttribute('x',box.x);marker.setAttribute('y',box.y);
+        marker.setAttribute('width',box.width);marker.setAttribute('height',box.height);
+        marker.setAttribute('rx','3');
+        marker.setAttribute('fill',routeColours[code].glow);
+        marker.setAttribute('fill-opacity','.28');
+        marker.setAttribute('stroke',routeColours[code].glow);
+        marker.setAttribute('stroke-width','1.2');
+        marker.setAttribute('pointer-events','none');
+        svg.appendChild(marker);
+        highlighted++;
+      }
+    }
+
     if(!highlighted){
       status.textContent=stationName+' selected and announced. I could not locate its label in the SVG artwork.';
     }else{
@@ -1117,7 +1141,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261109-final-sticker-alignment');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261109-sengkang-punggol-highlight');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -1768,7 +1792,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261109-final-sticker-alignment')
+  fetch('./mrt-map.svg?v=20261109-sengkang-punggol-highlight')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
