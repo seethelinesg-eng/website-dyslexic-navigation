@@ -863,6 +863,21 @@ body, body * {
           el.style.removeProperty('display');
         }
       });
+    // Boon Keng is split into four Illustrator text objects inside nested
+    // groups. Tag its exact fragments as NEL so it fades on every other line.
+    ['566.59 475.43','578.36 475.43','592.32 475.43','604.16 475.43'].forEach(position=>{
+      svg.querySelectorAll('text').forEach(el=>{
+        const transform=el.getAttribute('transform')||'';
+        if(transform.includes('translate('+position+')')){
+          el.setAttribute('data-lines','NEL');
+          el.setAttribute('data-line','NEL');
+          el.setAttribute('data-station-label','true');
+          el.classList.remove('focus-text-hidden','dimmed');
+          el.style.removeProperty('display');
+        }
+      });
+    });
+
     });
   }
   function applyDestinationVisibility(svg,code){
