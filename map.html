@@ -818,7 +818,7 @@ body, body * {
   }
   function applyDestinationVisibility(svg,code){
     if(!svg)return;
-    const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
+    const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
     // Marina South Pier is NS28 on the North-South Line only. Sentosa is a
     // separate destination, not an MRT station, so hide it in every line view.
     const labels=[
@@ -827,7 +827,7 @@ body, body * {
     ];
     svg.querySelectorAll('g,text,tspan').forEach(el=>{
       const label=normalise(el.textContent);
-      const rule=labels.find(item=>label.includes(item.key));
+      const rule=labels.find(item=>label===item.key);
       if(!rule)return;
       el.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
       el.style.setProperty('display',rule.visible?'initial':'none','important');
