@@ -1083,28 +1083,29 @@ body, body * {
         }
       }    }
 
-    // Sengkang and Punggol are outlined Illustrator artwork, not <text> nodes.
-    // Highlight their existing station-name boxes directly in SVG viewBox coordinates.
-    if(!highlighted){
+    // These two labels are split into outlined Illustrator fragments in the
+    // Purple Line artwork. Use their actual positions in that file, not the
+    // coordinates from the full-network map. Always replace any generic match
+    // with one correctly positioned highlight.
+    if(stationName==='Sengkang'||stationName==='Punggol'){
+      svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
       const outlinedStationBoxes={
-        'Sengkang':{x:808.5,y:247.5,width:61.5,height:19.5},
-        'Punggol':{x:874.5,y:189.2,width:49.5,height:19.5}
+        'Sengkang':{x:797.5,y:250.5,width:54.5,height:17},
+        'Punggol':{x:864.5,y:188.5,width:58.5,height:17}
       };
       const box=outlinedStationBoxes[stationName];
-      if(box){
-        const marker=document.createElementNS(ns,'rect');
-        marker.setAttribute('class','station-label-highlight');
-        marker.setAttribute('x',box.x);marker.setAttribute('y',box.y);
-        marker.setAttribute('width',box.width);marker.setAttribute('height',box.height);
-        marker.setAttribute('rx','3');
-        marker.setAttribute('fill',routeColours[code].glow);
-        marker.setAttribute('fill-opacity','.28');
-        marker.setAttribute('stroke',routeColours[code].glow);
-        marker.setAttribute('stroke-width','1.2');
-        marker.setAttribute('pointer-events','none');
-        svg.appendChild(marker);
-        highlighted++;
-      }
+      const marker=document.createElementNS(ns,'rect');
+      marker.setAttribute('class','station-label-highlight');
+      marker.setAttribute('x',box.x);marker.setAttribute('y',box.y);
+      marker.setAttribute('width',box.width);marker.setAttribute('height',box.height);
+      marker.setAttribute('rx','3');
+      marker.setAttribute('fill',routeColours[code].glow);
+      marker.setAttribute('fill-opacity','.28');
+      marker.setAttribute('stroke',routeColours[code].glow);
+      marker.setAttribute('stroke-width','1.2');
+      marker.setAttribute('pointer-events','none');
+      svg.appendChild(marker);
+      highlighted=1;
     }
 
     if(!highlighted){
@@ -1141,7 +1142,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261109-sengkang-punggol-highlight');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261109-purple-label-position-fix');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
