@@ -604,6 +604,29 @@ body, body * {
     TEL:[['TE1','Woodlands North'],['TE2','Woodlands'],['TE3','Woodlands South'],['TE4','Springleaf'],['TE5','Lentor'],['TE6','Mayflower'],['TE7','Bright Hill'],['TE8','Upper Thomson'],['TE9','Caldecott'],['TE11','Stevens'],['TE12','Napier'],['TE13','Orchard Boulevard'],['TE14','Orchard'],['TE15','Great World'],['TE16','Havelock'],['TE17','Outram Park'],['TE18','Maxwell'],['TE19','Shenton Way'],['TE20','Marina Bay'],['TE22','Gardens by the Bay'],['TE23','Tanjong Rhu'],['TE24','Katong Park'],['TE25','Tanjong Katong'],['TE26','Marine Parade'],['TE27','Marine Terrace'],['TE28','Siglap'],['TE29','Bayshore']]
   }
   let selected=null,lastAnnouncement='',fullMapRaw=null;
+  // Lock one voice for the whole session so asynchronous Safari voice loading
+  // cannot switch between different speakers from one announcement to another.
+  let consistentSpeechVoice=null;
+  function chooseConsistentSpeechVoice(){
+    if(consistentSpeechVoice||!('speechSynthesis' in window))return consistentSpeechVoice;
+    const voices=window.speechSynthesis.getVoices();
+    if(!voices.length)return null;
+    const ranked=voices.map(voice=>{
+      const lang=(voice.lang||'').replace('_','-').toLowerCase();
+      const score=lang==='en-sg'?0:lang==='en-my'?1:lang==='en-au'?2:lang==='en-gb'?3:lang.startsWith('en-')?4:lang==='en'?5:99;
+      return {voice,score};
+    }).filter(item=>item.score<99)
+      .sort((a,b)=>a.score-b.score||a.voice.name.localeCompare(b.voice.name));
+    consistentSpeechVoice=(ranked[0]||{voice:voices.slice().sort((a,b)=>a.name.localeCompare(b.name))[0]}).voice;
+    return consistentSpeechVoice;
+  }
+  if('speechSynthesis' in window){
+    chooseConsistentSpeechVoice();
+    window.speechSynthesis.addEventListener('voiceschanged',()=>{
+      // Select only once, when Safari finishes loading its voice list.
+      chooseConsistentSpeechVoice();
+    });
+  }
   const lineSvgFiles={"NSL":"red line corrected 6.svg","EWL":"green line corrected 5 svg.svg","NEL":"purple line corrct 6.svg","CCL":"yellow line corrected 5.svg","DTL":"blue line corrected 6 svg.svg","TEL":"brown line correction 6.svg"};
   const unavailableLabels=new Set(['NS6','CC18','DT36','DT37','TE10','TE21','TE30','TE31','Sungei Kadut','Bukit Brown','Xilin','Sungei Bedok','Mount Pleasant','Marina South','Bedok South']);
   function speak(text){
@@ -636,14 +659,7 @@ body, body * {
     utterance.onerror=(event)=>{
       status.textContent='Audio could not play ('+(event.error||'speech error')+'). Check that your device is not muted and try the station again.';
     };
-    const voices=window.speechSynthesis.getVoices();
-    // Prefer a Singapore English voice when the device provides one.
-    // If unavailable, use the closest available English regional voice.
-    const voice=voices.find(v=>/^en[-_]SG$/i.test(v.lang))
-      ||voices.find(v=>/^en[-_]MY$/i.test(v.lang))
-      ||voices.find(v=>/^en[-_]AU$/i.test(v.lang))
-      ||voices.find(v=>/^en[-_]GB/i.test(v.lang))
-      ||voices.find(v=>/^en/i.test(v.lang));
+    const voice=chooseConsistentSpeechVoice();
     if(voice){
       utterance.voice=voice;
       utterance.lang=voice.lang||'en-SG';
