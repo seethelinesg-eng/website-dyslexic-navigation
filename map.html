@@ -184,7 +184,17 @@ body, body * {
 #legendZoomViewport svg text, #legendZoomViewport svg tspan {
   font-family: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Arial, sans-serif !important;
   font-weight: 600 !important;
-  letter-spacing: 0.75pt !important;
+  letter-spacing: 0 !important;
+}
+
+/* Prevent the global bionic letter spacing from pushing SVG label fragments
+   into neighbouring words. Keep the Illustrator positions and artwork intact. */
+#mapMount svg text:not(.station-code-label),
+#mapMount svg text:not(.station-code-label) tspan,
+#legendZoomViewport svg text:not(.station-code-label),
+#legendZoomViewport svg text:not(.station-code-label) tspan {
+  letter-spacing: 0 !important;
+  word-spacing: normal !important;
 }
 
 /* Keep station-code lettering compact so every interchange code stays
