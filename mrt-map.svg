@@ -1801,29 +1801,8 @@
       </g>
     </g>
   </g>
-  <g class="st88">
-    <g class="st88">
-      <g class="st88">
-        <g class="st88">
-          <g class="st88">
-            <g class="st88">
-              <text class="st73" transform="translate(879.92 514.79) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
-            </g>
-          </g>
-        </g>
-      </g>
-    </g>
-    <g class="st88">
-      <g class="st88">
-        <g class="st88">
-          <g class="st88">
-            <g class="st88">
-              <text class="st75" transform="translate(891.57 514.79) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
-            </g>
-          </g>
-        </g>
-      </g>
-    </g>
+  <g class="st88" data-station-label="true" data-station-name="Bedok" data-line="EWL" data-lines="EWL">
+    <text class="st73" transform="translate(879.92 514.79) scale(1.05 1)"><tspan x="0" y="0">Bedok</tspan></text>
   </g>
   <path class="st26" d="M944.98,507.55v14.91c.08,1,.36,2.46,1.28,4.11.95,1.69,2.21,2.92,3.14,3.7h93.91"/>
   <path class="st21" d="M944.91,512.06v13.79c.08.57.34,1.4,1.23,2.33.91.96,2.13,1.65,3.03,2.1h90.43"/>
@@ -9604,6 +9583,6 @@
     <path data-tanah-merah-border="true" class="st33" d="M906.49,468.35l-20.66.69c-1.9,1.03-3.44,4.87-3.86,9.77-.58,6.74,1.01,14.86,3.86,17.09h21.47"/>
     <path data-tanah-merah-border="true" class="st33" d="M906.19,495.88l20.66-.69c1.9-1.03,3.44-4.87,3.86-9.77.58-6.74-1.01-14.86-3.86-17.09h-21.47"/>
   </g>
-  <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT36"><text class="st93" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>
-  <g data-line="DTL" data-lines="DTL TEL" data-station-label="true"><text class="st93" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
+  <g class="st88" data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT36" data-station-name="Xilin"><text class="st73" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>
+  <g class="st88" data-line="DTL" data-lines="DTL TEL" data-station-label="true" data-station-name="Sungei Bedok"><text class="st73" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
 </svg>
