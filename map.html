@@ -1090,8 +1090,8 @@ body, body * {
     if(stationName==='Sengkang'||stationName==='Punggol'){
       svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
       const outlinedStationBoxes={
-        'Sengkang':{x:797.5,y:250.5,width:54.5,height:17},
-        'Punggol':{x:864.5,y:188.5,width:58.5,height:17}
+        'Sengkang':{x:808.5,y:250.5,width:61.5,height:17},
+        'Punggol':{x:870.5,y:188.5,width:58.5,height:17}
       };
       const box=outlinedStationBoxes[stationName];
       const marker=document.createElementNS(ns,'rect');
@@ -1142,7 +1142,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261109-purple-label-position-fix');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261109-purple-label-centering-v2');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
