@@ -1892,13 +1892,12 @@
     </g>
   </g>
   <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT36" data-station-name="Xilin">
-    <text class="station-label-original-heavy" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xi</tspan></text>
-    <text class="station-label-original-semibold" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">lin</tspan></text>
+    <text class="station-label-original-semibold" text-anchor="middle" transform="translate(914 604) scale(1.03 1)">Xilin</text>
   </g>
   <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT37" data-station-name="Sungei Bedok">
-    <text class="station-label-original-heavy" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Su</tspan></text>
-    <text class="station-label-original-semibold" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">ngei</tspan></text>
-    <text class="station-label-original-heavy" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Be</tspan></text>
-    <text class="station-label-original-semibold" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">dok</tspan></text>
+    <text class="station-label-original-semibold" text-anchor="middle" transform="translate(982 559) scale(1.03 1)">
+      <tspan x="0" y="0">Sungei</tspan>
+      <tspan x="0" dy="9">Bedok</tspan>
+    </text>
   </g>
 </svg>
