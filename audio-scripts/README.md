@@ -22,3 +22,15 @@ The map is being prepared to prefer these MP3 recordings when their filenames ar
 ```
 
 If a station is not in the manifest or its MP3 is unavailable, the map will continue using its existing browser speech fallback. Do not upload API keys or credentials to this public GitHub repository.
+
+ 
+## Automated generation with Azure Speech
+A manual GitHub Actions workflow is available at **Actions → Generate Singapore MRT station audio → Run workflow**.
+
+Before running it, an adult helping with the project should:
+1. Create an Azure Speech resource and check the current pricing.
+2. In the repository, open **Settings → Secrets and variables → Actions → New repository secret**.
+3. Add `AZURE_SPEECH_KEY` with the Speech resource key and `AZURE_SPEECH_REGION` with the resource region.
+4. Keep both values private. Never put them in website files, CSVs, commits, or chat messages.
+
+The workflow uses the `en-SG-LunaNeural` voice and the existing `luna_text` pronunciation column. It creates one MP3 per distinct station, updates the manifest, and commits the generated files to the repository. By default it keeps existing MP3s; the optional regenerate setting replaces them.
