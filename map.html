@@ -1142,7 +1142,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261109-add-xilin-sungei-bedok-v1');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261109-interchange-codes-clickable-v2');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -1369,6 +1369,12 @@ body, body * {
           return stationEntries.find(item=>item.stationCode==='NS28')||
             {stationCode:'NS28',stationName:'Marina South Pier',line:'NSL'};
         }
+        const codeNode=node.closest('[data-station-code]');
+        if(codeNode){
+          const code=codeNode.getAttribute('data-station-code');
+          const byCode=stationEntries.find(item=>item.stationCode===code);
+          if(byCode)return byCode;
+        }
         const textNode=node.closest('text,tspan');
         if(textNode)node=textNode;
       }
@@ -1408,6 +1414,16 @@ body, body * {
       const el=target&&target.closest?target.closest(selector):null;
       return el?el.getAttribute('data-line'):null;
     };
+    // New interchange code boxes are clickable as a whole, including their
+    // number text; resolve them to the matching station name and line.
+    svg.querySelectorAll('[data-station-code]').forEach(el=>{
+      el.style.setProperty('cursor','pointer','important');
+      el.style.setProperty('pointer-events','all','important');
+      el.setAttribute('tabindex','0');
+      el.setAttribute('role','button');
+      const station=stationEntries.find(item=>item.stationCode===el.getAttribute('data-station-code'));
+      if(station)el.setAttribute('aria-label','Hear and highlight '+station.stationName+' ('+station.stationCode+')');
+    });
     // Station labels are independently clickable: announce and highlight the
     // complete Illustrator label, including names split across text fragments.
     svg.querySelectorAll('[data-station-label="true"]').forEach(el=>{
@@ -1793,7 +1809,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261109-sengkang-border-right-v3')
+  fetch('./mrt-map.svg?v=20261109-interchange-codes-clickable-v2')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
