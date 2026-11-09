@@ -1304,9 +1304,11 @@
   <g class="st27">
     <text class="st28" transform="translate(598.75 835.24) scale(1.02 1)"><tspan x="0" y="0">TE 20</tspan></text>
   </g>
+  <g data-station-code="TE31" data-line="TEL" data-lines="TEL" style="cursor:pointer;pointer-events:all">
   <rect class="st20" x="957.11" y="575.83" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st27">
     <text class="st29" transform="translate(959.66 582.85) scale(1.02 1)"><tspan x="0" y="0">TE 31</tspan></text>
+  </g>
   </g>
   <g class="st27">
     <text class="st32" transform="translate(294.19 526.77) scale(1.03 1)"><tspan x="0" y="0">Bou</tspan></text>
@@ -1314,5 +1316,5 @@
   <g class="st27">
     <text class="st32" transform="translate(323.76 526.77) scale(1.03 1)"><tspan x="0" y="0">levard</tspan></text>
   </g>
-  <g class="st27"><text class="st32" transform="translate(980 570) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
+  <g class="st27" data-station-label="true" data-station-code="TE31" data-line="TEL" data-lines="TEL"><text class="st32" transform="translate(980 570) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
 </svg>
