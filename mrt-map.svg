@@ -9605,6 +9605,5 @@
     <path data-tanah-merah-border="true" class="st33" d="M906.19,495.88l20.66-.69c1.9-1.03,3.44-4.87,3.86-9.77.58-6.74-1.01-14.86-3.86-17.09h-21.47"/>
   </g>
   <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT36"><text class="st93" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>
-  <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT37"><text class="st93" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
-  <g data-line="TEL" data-lines="TEL" data-station-label="true" data-station-code="TE31"><text class="st93" transform="translate(980 570) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
+  <g data-line="DTL" data-lines="DTL TEL" data-station-label="true"><text class="st93" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
 </svg>
