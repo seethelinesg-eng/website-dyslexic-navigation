@@ -1763,7 +1763,7 @@
       </g>
     </g>
   </g>
-  <g>
+  <g data-station-code="DT37" data-line="DTL" data-lines="DTL" style="cursor:pointer;pointer-events:all">
     <rect class="st15" x="961.77" y="566.27" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
     <g class="st30">
       <g class="st30">
@@ -1879,7 +1879,7 @@
       </g>
     </g>
   </g>
-  <g>
+  <g data-station-code="DT36" data-line="DTL" data-lines="DTL" style="cursor:pointer;pointer-events:all">
     <rect class="st15" x="940.65" y="611.14" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
     <g class="st30">
       <g class="st30">
@@ -1889,6 +1889,6 @@
       </g>
     </g>
   </g>
-  <g class="st30"><text class="st32" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>
-  <g class="st30"><text class="st32" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
+  <g class="st30" data-station-label="true" data-station-code="DT36" data-line="DTL" data-lines="DTL"><text class="st32" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>
+  <g class="st30" data-station-label="true" data-station-code="DT37" data-line="DTL" data-lines="DTL"><text class="st32" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
 </svg>
