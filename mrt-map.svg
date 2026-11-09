@@ -8973,16 +8973,16 @@
     </g>
   </g>
   <g data-station-code="TE31" data-line="TEL" data-lines="TEL" style="cursor:pointer;pointer-events:all">
-    <path class="st68" d="M956.85,590.41h-14.86c-.33-.3-2.65-2.45-2.48-5.82.15-2.95,2.08-4.75,2.48-5.1h14.86v10.92Z"/>
-    <path class="st41" d="M956.85,590.41h15.15c.34-.3,2.7-2.45,2.53-5.82-.15-2.95-2.12-4.75-2.53-5.1h-15.15v10.92Z"/>
+    <path class="st68" d="M956.85,590.41h-16.86c-.33-.3-2.65-2.45-2.48-5.82.15-2.95,2.08-4.75,2.48-5.1h16.86v10.92Z"/>
+    <path class="st41" d="M956.85,590.41h17.15c.34-.3,2.7-2.45,2.53-5.82-.15-2.95-2.12-4.75-2.53-5.1h-17.15v10.92Z"/>
     <g class="st88">
       <g class="st88">
-        <text class="st97" transform="translate(941.76 586.47) scale(1.02 1)"><tspan x="0" y="0">TE 31</tspan></text>
+        <text class="st97" transform="translate(948.42 586.47) scale(1.02 1)" text-anchor="middle" style="fill:#fff;font-size:5px"><tspan x="0" y="0">TE 31</tspan></text>
       </g>
     </g>
     <g class="st88">
       <g class="st88">
-        <text class="st97" transform="translate(957.45 586.61) scale(1.02 1)"><tspan x="0" y="0">DT 37</tspan></text>
+        <text class="st97" transform="translate(965.425 586.61) scale(1.02 1)" text-anchor="middle" style="fill:#fff;font-size:5px"><tspan x="0" y="0">DT 37</tspan></text>
       </g>
     </g>
   </g>
@@ -8994,7 +8994,7 @@
           <g class="st88">
             <g class="st88">
               <g class="st88">
-                <text class="st93" transform="translate(971.51 558.35) scale(1.05 1)"><tspan x="0" y="0">DT 36</tspan></text>
+                <text class="st93" transform="translate(979.12 558.35) scale(1.02 1)" text-anchor="middle" style="fill:#fff;font-size:5px"><tspan x="0" y="0">DT 36</tspan></text>
               </g>
             </g>
           </g>
