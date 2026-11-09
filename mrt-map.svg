@@ -9575,17 +9575,7 @@
     <path data-tanah-merah-border="true" class="st33" d="M906.49,468.35l-20.66.69c-1.9,1.03-3.44,4.87-3.86,9.77-.58,6.74,1.01,14.86,3.86,17.09h21.47"/>
     <path data-tanah-merah-border="true" class="st33" d="M906.19,495.88l20.66-.69c1.9-1.03,3.44-4.87,3.86-9.77.58-6.74-1.01-14.86-3.86-17.09h-21.47"/>
   </g>
-  <g data-line="DTL" data-lines="DTL" data-station-name="Xilin">
-    <text class="station-label-original-heavy" transform="translate(1018.6013 559.0973) scale(1.05 1)"><tspan x="0" y="0">Xi</tspan></text>
-    <text class="station-label-original-semibold" transform="translate(1028.5984 559.0983) scale(1.05 1)"><tspan x="0" y="0">lin</tspan></text>
-  </g>
-  <g data-line="DTL" data-lines="DTL TEL" data-station-name="Sungei Bedok">
-    <text class="station-label-original-heavy" transform="translate(1010.5261 586.2233) scale(1.05 1)"><tspan x="0" y="0">Su</tspan></text>
-    <text class="station-label-original-semibold" transform="translate(1021.862 586.2233) scale(1.05 1)"><tspan x="0" y="0">ngei</tspan></text>
-    <text class="station-label-original-heavy" transform="translate(1044.28 586.2233) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
-    <text class="station-label-original-semibold" transform="translate(1055.9324 586.2233) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
-  </g>
-  <g data-station-code="TE30" data-line="TEL" data-lines="TEL">
+  <g><text transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>  <g><text transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>  <g data-station-code="TE30" data-line="TEL" data-lines="TEL">
     <rect class="st68" x="954.36" y="604.24" width="19.64" height="10.91" rx="3.19" ry="3.19"/>
     <text class="station-code-original" transform="translate(956.97 611.25) scale(1.05 1)"><tspan x="0" y="0">TE 30</tspan></text>
   </g>
