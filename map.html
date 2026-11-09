@@ -119,6 +119,54 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 @media(max-width:900px){.workspace{grid-template-columns:1fr}.map-sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.map-sidebar>.panel:first-child{grid-row:span 2}.toolbar{grid-template-columns:1fr}#stationPanel{position:static;max-height:none}#stationList{grid-template-columns:repeat(2,minmax(0,1fr));max-height:360px;flex:initial}}
 @media(max-width:620px){.sitebar{align-items:flex-start;flex-direction:column;gap:5px}.page-intro:after{right:-120px;opacity:.35}.map-sidebar{display:flex}.station-panel-heading{align-items:flex-start;flex-direction:column;gap:6px}#stationList{grid-template-columns:1fr;max-height:360px}.map-shell{min-height:300px}#mapMount svg{width:100%;max-width:100%;margin-left:0}.map-heading{align-items:start;flex-direction:column;gap:4px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}}
+/* Phone layout: keep every feature available, with touch-sized controls and a pannable map. */
+@media(max-width:700px){
+  main{padding:16px 12px 42px}
+  .page-intro{padding:28px 18px 24px}
+  .page-intro h1{font-size:clamp(2.35rem,11vw,3.7rem);line-height:1}
+  .page-intro p{font-size:1rem;max-width:38rem}
+  .sitebar{padding:14px 18px}
+  .sitebar-note{font-size:.72rem;letter-spacing:.06em}
+  .route-selector-panel{padding:17px 14px;margin-bottom:14px}
+  .route-selector-panel h2{font-size:1.25rem}
+  .route-selector-panel .panel-copy{margin-bottom:12px}
+  #lineControls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  #lineControls button{
+    min-height:60px;padding:10px 9px;text-align:center;
+    display:flex;align-items:center;justify-content:center;
+    font-size:.9rem;line-height:1.25;overflow-wrap:anywhere;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent
+  }
+  #lineControls button[aria-pressed=true]{outline:3px solid var(--ink);outline-offset:2px}
+  .map-actions{display:flex;flex-direction:column;align-items:stretch;gap:12px;margin-bottom:16px}
+  .map-actions .toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
+  .map-actions .toolbar button{min-height:50px;padding:10px;font-size:.88rem;text-align:center}
+  .map-actions .status{width:100%;min-width:0;min-height:54px}
+  .workspace{display:flex;flex-direction:column;gap:18px}
+  .map-column{width:100%;order:1}
+  #stationPanel{width:100%;order:2;padding:17px 14px;min-height:0}
+  .station-panel-heading{align-items:flex-start;flex-direction:column;gap:6px;margin-bottom:12px}
+  #stationList{grid-template-columns:repeat(2,minmax(0,1fr));max-height:420px;gap:8px}
+  #stationList button{grid-template-columns:1fr;gap:3px;min-height:64px;padding:10px;font-size:.92rem}
+  #stationList .station-code{font-size:.78rem}
+  .map-heading{align-items:flex-start;flex-direction:row;justify-content:space-between;gap:8px;margin-bottom:9px}
+  .map-heading h2{font-size:1.2rem}
+  .map-heading span{font-size:.68rem;white-space:nowrap}
+  .map-shell{width:100%;min-height:0;overflow-x:auto;overflow-y:hidden;border:1px solid var(--rule);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y}
+  #mapMount{width:100%;min-width:0;overflow:visible}
+  #mapMount svg{display:block;width:760px;min-width:760px;max-width:none;height:auto;margin:0}
+  .help{font-size:.88rem;margin-top:12px}
+  button:hover{transform:none}
+}
+@media(max-width:380px){
+  #lineControls button{font-size:.82rem;padding:9px 6px}
+  #stationList{grid-template-columns:1fr}
+  .map-actions .toolbar button{font-size:.82rem}
+}
+@media(hover:none){
+  button:hover{box-shadow:none;filter:none}
+  #lineControls button:hover{box-shadow:none;filter:none}
+}
 
 /* Site-wide Bionic typography: Atkinson Hyperlegible Next, 800/600 weights. */
 body, body * {
