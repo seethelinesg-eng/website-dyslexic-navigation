@@ -462,7 +462,28 @@
       .st38 {
         stroke: #ed1c24;
       }
-    </style>
+    
+      .station-label-original-heavy {
+        font-family: AtkinsonHyperlegibleNext-ExtraBold, 'Atkinson Hyperlegible Next';
+        font-weight: 700;
+        font-size: 7.99px;
+        fill: #231f20;
+        letter-spacing: .07em;
+      }
+      .station-label-original-semibold {
+        font-family: AtkinsonHyperlegibleNext-SemiBold, 'Atkinson Hyperlegible Next';
+        font-weight: 600;
+        font-size: 7.99px;
+        fill: #231f20;
+        letter-spacing: .07em;
+      }
+      .station-code-original {
+        font-family: AtkinsonHyperlegibleNext-SemiBold, 'Atkinson Hyperlegible Next';
+        font-weight: 600;
+        font-size: 4.99px;
+        fill: #fff;
+      }
+</style>
     <clipPath id="clippath">
       <rect class="st0" x="944.47" y="925.94" width="45.35" height="51.02"/>
     </clipPath>
@@ -1785,24 +1806,13 @@
       </g>
     </g>
   </g>
-  <g>
-    <rect class="st46" x="884.81" y="520.06" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
-    <g class="st88">
-      <g class="st88">
-        <g class="st88">
-          <g class="st88">
-            <g class="st88">
-              <g class="st88">
-                <text class="st94" transform="translate(887.83 526.92) scale(1.05 1)"><tspan x="0" y="0">EW 5</tspan></text>
-              </g>
-            </g>
-          </g>
-        </g>
-      </g>
-    </g>
+  <g data-station-code="EW5" data-line="EWL" data-lines="EWL" style="cursor:pointer;pointer-events:all">
+    <rect class="st46" x="903.32" y="519.42" width="19.64" height="10.91" rx="3.19" ry="3.19"/>
+    <text class="station-code-original" transform="translate(906.4 526.27) scale(1.05 1)"><tspan x="0" y="0">EW 5</tspan></text>
   </g>
-  <g class="st88" data-station-label="true" data-station-name="Bedok" data-line="EWL" data-lines="EWL">
-    <text class="st73" transform="translate(879.92 514.79) scale(1.05 1)"><tspan x="0" y="0">Bedok</tspan></text>
+  <g data-station-label="true" data-station-name="Bedok" data-line="EWL" data-lines="EWL">
+    <text class="station-label-original-heavy" transform="translate(898.33 514.15) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(909.98 514.15) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
   </g>
   <path class="st26" d="M944.98,507.55v14.91c.08,1,.36,2.46,1.28,4.11.95,1.69,2.21,2.92,3.14,3.7h93.91"/>
   <path class="st21" d="M944.91,512.06v13.79c.08.57.34,1.4,1.23,2.33.91.96,2.13,1.65,3.03,2.1h90.43"/>
@@ -8952,34 +8962,16 @@
     </g>
   </g>
   <g data-station-code="TE31" data-line="TEL" data-lines="TEL" style="cursor:pointer;pointer-events:all">
-    <path class="st68" d="M956.85,590.41h-16.86c-.33-.3-2.65-2.45-2.48-5.82.15-2.95,2.08-4.75,2.48-5.1h16.86v10.92Z"/>
-    <path class="st41" d="M956.85,590.41h17.15c.34-.3,2.7-2.45,2.53-5.82-.15-2.95-2.12-4.75-2.53-5.1h-17.15v10.92Z"/>
-    <g class="st88">
-      <g class="st88">
-        <text class="st97" transform="translate(948.42 586.47) scale(1.02 1)" text-anchor="middle" style="fill:#fff;font-size:5px"><tspan x="0" y="0">TE 31</tspan></text>
-      </g>
-    </g>
-    <g class="st88" data-station-code="DT37" data-line="DTL" data-lines="DTL" style="cursor:pointer;pointer-events:all">
-      <g class="st88">
-        <text class="st97" transform="translate(965.425 586.61) scale(1.02 1)" text-anchor="middle" style="fill:#fff;font-size:5px"><tspan x="0" y="0">DT 37</tspan></text>
-      </g>
+    <path class="st68" d="M976.87,589.68h-15.17c-.34-.3-2.71-2.45-2.53-5.81.15-2.95,2.12-4.74,2.53-5.09h15.17v10.91Z"/>
+    <path class="st41" d="M976.87,589.68h15.47c.35-.3,2.76-2.45,2.58-5.81-.15-2.95-2.16-4.74-2.58-5.09h-15.47v10.91Z"/>
+    <text class="station-code-original" transform="translate(961.46 585.74) scale(1.02 1)"><tspan x="0" y="0">TE 31</tspan></text>
+    <g data-station-code="DT37" data-line="DTL" data-lines="DTL" style="cursor:pointer;pointer-events:all">
+      <text class="station-code-original" transform="translate(977.48 585.88) scale(1.02 1)"><tspan x="0" y="0">DT 37</tspan></text>
     </g>
   </g>
   <g data-station-code="DT36" data-line="DTL" data-lines="DTL" style="cursor:pointer;pointer-events:all">
-    <rect class="st41" x="969.5" y="551.5" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
-    <g class="st88">
-      <g class="st88">
-        <g class="st88">
-          <g class="st88">
-            <g class="st88">
-              <g class="st88">
-                <text class="st93" transform="translate(979.12 558.35) scale(1.02 1)" text-anchor="middle" style="fill:#fff;font-size:5px"><tspan x="0" y="0">DT 36</tspan></text>
-              </g>
-            </g>
-          </g>
-        </g>
-      </g>
-    </g>
+    <rect class="st41" x="989.78" y="550.82" width="19.64" height="10.91" rx="3.19" ry="3.19"/>
+    <text class="station-code-original" transform="translate(991.83 557.66) scale(1.05 1)"><tspan x="0" y="0">DT 36</tspan></text>
   </g>
   <path class="st60" d="M948.95,388.61c-1.6-1.66-3.2-3.32-4.8-4.98l2.12-2.01c2.12,2.24,4.23,4.47,6.35,6.71-1.23.09-2.45.19-3.68.28h.01Z"/>
   <rect class="st61" x="929.82" y="374.32" width="17.94" height="10.58" rx="4.07" ry="4.07"/>
@@ -9583,6 +9575,24 @@
     <path data-tanah-merah-border="true" class="st33" d="M906.49,468.35l-20.66.69c-1.9,1.03-3.44,4.87-3.86,9.77-.58,6.74,1.01,14.86,3.86,17.09h21.47"/>
     <path data-tanah-merah-border="true" class="st33" d="M906.19,495.88l20.66-.69c1.9-1.03,3.44-4.87,3.86-9.77.58-6.74-1.01-14.86-3.86-17.09h-21.47"/>
   </g>
-  <g class="st88" data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT36" data-station-name="Xilin"><text class="st73" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>
-  <g class="st88" data-line="DTL" data-lines="DTL TEL" data-station-label="true" data-station-name="Sungei Bedok"><text class="st73" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
+  <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT36" data-station-name="Xilin">
+    <text class="station-label-original-heavy" transform="translate(1018.6013 559.0973) scale(1.05 1)"><tspan x="0" y="0">Xi</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(1028.5984 559.0983) scale(1.05 1)"><tspan x="0" y="0">lin</tspan></text>
+  </g>
+  <g data-line="DTL" data-lines="DTL TEL" data-station-label="true" data-station-name="Sungei Bedok">
+    <text class="station-label-original-heavy" transform="translate(1010.5261 586.2233) scale(1.05 1)"><tspan x="0" y="0">Su</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(1021.862 586.2233) scale(1.05 1)"><tspan x="0" y="0">ngei</tspan></text>
+    <text class="station-label-original-heavy" transform="translate(1044.28 586.2233) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(1055.9324 586.2233) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
+  </g>
+  <g data-station-code="TE30" data-line="TEL" data-lines="TEL" style="cursor:pointer;pointer-events:all">
+    <rect class="st68" x="954.36" y="604.24" width="19.64" height="10.91" rx="3.19" ry="3.19"/>
+    <text class="station-code-original" transform="translate(956.97 611.25) scale(1.05 1)"><tspan x="0" y="0">TE 30</tspan></text>
+  </g>
+  <g data-line="TEL" data-lines="TEL" data-station-label="true" data-station-code="TE30" data-station-name="Bedok South">
+    <text class="station-label-original-heavy" transform="translate(980.01 612) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(991.67 612) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
+    <text class="station-label-original-heavy" transform="translate(1010.7908 612.0026) scale(1.05 1)"><tspan x="0" y="0">So</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(1022.1218 612.0026) scale(1.05 1)"><tspan x="0" y="0">uth</tspan></text>
+  </g>
 </svg>
