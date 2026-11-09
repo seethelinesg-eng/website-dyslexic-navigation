@@ -818,19 +818,54 @@ body, body * {
   }
   function applyDestinationVisibility(svg,code){
     if(!svg)return;
-    const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
-    // Marina South Pier is NS28 on the North-South Line only. Sentosa is a
-    // separate destination, not an MRT station, so hide it in every line view.
-    const labels=[
-      {key:'marinasouthpier',visible:code==='NSL'},
-      {key:'sentosa',visible:!code}
+    const normalise=value=>String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();
+    // These destinations belong to specific rail corridors. Keep them on the
+    // full map, and only on their related line when a line is focused.
+    const rules=[
+      {key:'marinasouthpier',visible:!code||code==='NSL'},
+      {key:'bedoksouth',visible:!code||code==='TEL'},
+      {key:'sentosa',visible:!code||code==='NEL'||code==='CCL'}
     ];
-    svg.querySelectorAll('g,text,tspan').forEach(el=>{
-      const label=normalise(el.textContent);
-      const rule=labels.find(item=>label===item.key);
+    const matches=label=>rules.find(rule=>label.includes(rule.key));
+    // First hide complete Illustrator groups when the label is grouped.
+    svg.querySelectorAll('g').forEach(group=>{
+      const rule=matches(normalise(group.textContent));
+      if(!rule)return;
+      const show=rule.visible;
+      group.style.setProperty('display',show?'inline':'none','important');
+      group.style.setProperty('visibility',show?'visible':'hidden','important');
+      group.style.setProperty('opacity',show?'1':'0','important');
+    });
+    // Illustrator may split a single label over multiple neighbouring text
+    // elements. Match concatenated runs as well, so fragments cannot escape
+    // the line filter just because no individual <text> contains the full name.
+    const texts=[...svg.querySelectorAll('text')];
+    for(let start=0;start<texts.length;start++){
+      let combined='';
+      const run=[];
+      for(let end=start;end<Math.min(texts.length,start+10);end++){
+        run.push(texts[end]);
+        combined+=normalise(texts[end].textContent);
+        const rule=matches(combined);
+        if(rule){
+          const show=rule.visible;
+          run.forEach(part=>{
+            part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+            part.style.setProperty('display',show?'inline':'none','important');
+            part.style.setProperty('visibility',show?'visible':'hidden','important');
+            part.style.setProperty('opacity',show?'1':'0','important');
+          });
+          break;
+        }
+        if(rules.every(rule=>!rule.key.startsWith(combined)&&!rule.key.includes(combined)))break;
+      }
+    }
+    // Also handle an intact label carried by a single text/tspan element.
+    svg.querySelectorAll('text,tspan').forEach(el=>{
+      const rule=matches(normalise(el.textContent));
       if(!rule)return;
       el.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
-      el.style.setProperty('display',rule.visible?'initial':'none','important');
+      el.style.setProperty('display',rule.visible?'inline':'none','important');
       el.style.setProperty('visibility',rule.visible?'visible':'hidden','important');
       el.style.setProperty('opacity',rule.visible?'1':'0','important');
     });
