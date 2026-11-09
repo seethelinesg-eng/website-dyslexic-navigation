@@ -619,7 +619,7 @@ body, body * {
   let stationAudioManifest=new Set();
   // A manifest is populated only after the matching Luna MP3 files are uploaded.
   // Until then, the existing browser speech remains the fallback.
-  fetch('./audio/stations/manifest.json?v=20261109-luna-audio-v1')
+  fetch('./audio/stations/manifest.json?v='+Date.now(),{cache:'no-store'})
     .then(response=>response.ok?response.json():[])
     .then(files=>{if(Array.isArray(files))stationAudioManifest=new Set(files);})
     .catch(()=>{});
