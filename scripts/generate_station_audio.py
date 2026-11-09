@@ -74,7 +74,7 @@ def main() -> int:
 
     # Include only MP3s that actually exist, so the website never expects a missing file.
     available = sorted(path.stem for path in OUTPUT_DIR.glob("*.mp3") if path.is_file())
-    MANIFEST_PATH.write_text(json.dumps(available, indent=2) + "\\n", encoding="utf-8")
+    MANIFEST_PATH.write_text(json.dumps(available, indent=2) + "\n", encoding="utf-8")
     print(f"Manifest updated with {len(available)} MP3 files.")
     return 0
 
