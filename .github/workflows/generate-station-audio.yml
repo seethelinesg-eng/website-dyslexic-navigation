@@ -1,0 +1,52 @@
+name: Generate Singapore MRT station audio
+
+on:
+  workflow_dispatch:
+    inputs:
+      regenerate_all:
+        description: "Regenerate every station recording (otherwise keep existing MP3s)"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Azure Speech SDK
+        run: python -m pip install --upgrade pip azure-cognitiveservices-speech
+
+      - name: Generate station MP3 files with Luna
+        env:
+          AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}
+          AZURE_SPEECH_REGION: ${{ secrets.AZURE_SPEECH_REGION }}
+        run: |
+          if [ "${{ inputs.regenerate_all }}" = "true" ]; then
+            python scripts/generate_station_audio.py --force
+          else
+            python scripts/generate_station_audio.py
+          fi
+
+      - name: Commit generated MP3 files and manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add audio/stations
+          if git diff --cached --quiet; then
+            echo "No new audio files to commit."
+          else
+            git commit -m "Generate Singapore MRT station audio with Luna"
+            git push
+          fi
