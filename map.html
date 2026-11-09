@@ -20,7 +20,7 @@ body,button{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Ari
 .page-intro h1{font-size:clamp(2.6rem,6vw,5.6rem);line-height:.94;letter-spacing:-.065em;max-width:850px;margin:0 0 16px;position:relative;z-index:1}
 .page-intro p{font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.6;color:#555149;max-width:690px;margin:0;position:relative;z-index:1}
 main{width:100%;max-width:none;margin:0;padding:clamp(18px,2.5vw,36px) clamp(12px,2vw,30px) 64px}
-.route-selector-panel{margin:24px 0 0}.scroll-map-hint{margin-top:12px!important;font-weight:700;color:#a34b34!important;letter-spacing:.01em}.controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.controls button{min-width:0;text-align:center;padding:12px 8px;font-size:.94rem;line-height:1.25}.map-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.map-actions .toolbar{display:flex;flex-wrap:wrap;gap:8px}.map-actions .toolbar button{min-height:44px}.map-actions .status{flex:1;min-width:180px}.workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:start}
+.route-selector-panel{margin:0 0 24px}.scroll-map-hint{margin-top:12px!important;font-weight:700;color:#a34b34!important;letter-spacing:.01em}.controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.controls button{min-width:0;text-align:center;padding:12px 8px;font-size:.94rem;line-height:1.25}.map-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.map-actions .toolbar{display:flex;flex-wrap:wrap;gap:8px}.map-actions .toolbar button{min-height:44px}.map-actions .status{flex:1;min-width:180px}.workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:start}
 .map-sidebar{display:flex;flex-direction:column;gap:16px;min-width:0}
 .panel{background:var(--white);border:1px solid var(--rule);padding:22px;box-shadow:5px 5px 0 #1919190c}
 .panel-kicker{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:#a34b34;font-weight:700;margin:0 0 9px}
@@ -214,10 +214,23 @@ body, body * {
     <p class="eyebrow">Explore the network</p>
     <h1>Find your line.<br>Follow your journey.</h1>
     <p>Select an MRT line to focus on its route. Choose a station to hear its name spoken aloud, and use the full-map control whenever you want to see the whole network again.</p>
-    <p class="scroll-map-hint">Scroll down to view the Singapore MRT map.</p>
   </section>
   <div id="mapApp">
     <main>
+      <section class="panel route-selector-panel">
+        <p class="panel-kicker">01 / Select a route</p>
+        <h2>Choose an MRT line</h2>
+        <p class="panel-copy">Select one line to highlight it on the map.</p>
+        <div class="controls" id="lineControls" aria-label="MRT lines">
+          <button type="button" data-select-line="NSL" aria-pressed="false">North-South Line</button>
+          <button type="button" data-select-line="EWL" aria-pressed="false">East-West Line</button>
+          <button type="button" data-select-line="NEL" aria-pressed="false">North-East Line</button>
+          <button type="button" data-select-line="CCL" aria-pressed="false">Circle Line</button>
+          <button type="button" data-select-line="DTL" aria-pressed="false">Downtown Line</button>
+          <button type="button" data-select-line="TEL" aria-pressed="false">Thomson-East Coast Line</button>
+        </div>
+        <p class="scroll-map-hint">Next, scroll down to see the Singapore MRT map. Select a coloured line above to highlight its route.</p>
+      </section>
       <div class="map-actions">
       <div class="toolbar">
         <button type="button" id="backHome">← Back to home</button>
@@ -248,19 +261,7 @@ body, body * {
           <div id="stationList"><p class="panel-copy">Choose an MRT line below to see its station buttons here.</p></div>
         </section>
       </div>
-      <section class="panel route-selector-panel">
-        <p class="panel-kicker">01 / Select a route</p>
-        <h2>Choose an MRT line</h2>
-        <p class="panel-copy">Select one line to highlight it on the map.</p>
-        <div class="controls" id="lineControls" aria-label="MRT lines">
-          <button type="button" data-select-line="NSL" aria-pressed="false">North-South Line</button>
-          <button type="button" data-select-line="EWL" aria-pressed="false">East-West Line</button>
-          <button type="button" data-select-line="NEL" aria-pressed="false">North-East Line</button>
-          <button type="button" data-select-line="CCL" aria-pressed="false">Circle Line</button>
-          <button type="button" data-select-line="DTL" aria-pressed="false">Downtown Line</button>
-          <button type="button" data-select-line="TEL" aria-pressed="false">Thomson-East Coast Line</button>
-        </div>
-      </section>
+
     </main>
   </div>
   <section id="legendGuide" hidden role="dialog" aria-modal="true" aria-labelledby="legendGuideTitle">
