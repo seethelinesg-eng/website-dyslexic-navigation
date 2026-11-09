@@ -271,7 +271,10 @@
       .st24 {
         fill: #9d9d9e;
       }
-    </style>
+    
+      .station-label-original-heavy { font-family: AtkinsonHyperlegibleNext-ExtraBold, 'Atkinson Hyperlegible Next'; font-weight: 700; font-size: 7.99px; fill: #231f20; letter-spacing: .07em; }
+      .station-label-original-semibold { font-family: AtkinsonHyperlegibleNext-SemiBold, 'Atkinson Hyperlegible Next'; font-weight: 600; font-size: 7.99px; fill: #231f20; letter-spacing: .07em; }
+</style>
     <clipPath id="clippath">
       <rect class="st0" x="943.63" y="944.16" width="47.02" height="52.48"/>
     </clipPath>
@@ -1007,11 +1010,11 @@
   <g class="st27">
     <text class="st28" transform="translate(937.36 612.01) scale(1.05 1)"><tspan x="0" y="0">TE 30</tspan></text>
   </g>
-  <g class="st27">
-    <text class="st34" transform="translate(960.33 614.54) scale(1.0529 1)"><tspan x="0" y="0">Be</tspan></text>
-  </g>
-  <g class="st27">
-    <text class="st35" transform="translate(971.98 614.54) scale(1.0529 1)"><tspan x="0" y="0">dok</tspan></text>
+  <g class="st27" data-station-label="true" data-station-code="TE30" data-line="TEL" data-lines="TEL" data-station-name="Bedok South">
+    <text class="station-label-original-heavy" transform="translate(960.33 614.54) scale(1.0529 1)"><tspan x="0" y="0">Be</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(971.98 614.54) scale(1.0529 1)"><tspan x="0" y="0">dok</tspan></text>
+    <text class="station-label-original-heavy" transform="translate(991.11 614.54) scale(1.0529 1)"><tspan x="0" y="0">So</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(1002.44 614.54) scale(1.0529 1)"><tspan x="0" y="0">uth</tspan></text>
   </g>
   <g class="st27">
     <text class="st34" transform="translate(1015.7998 614.5396) scale(1.03 1)"><tspan x="0" y="0">So</tspan></text>
@@ -1316,5 +1319,5 @@
   <g class="st27">
     <text class="st32" transform="translate(323.76 526.77) scale(1.03 1)"><tspan x="0" y="0">levard</tspan></text>
   </g>
-  <g class="st27" data-station-label="true" data-station-code="TE31" data-line="TEL" data-lines="TEL"><text class="st32" transform="translate(980 570) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
+  <g class="st27" data-station-label="true" data-station-code="TE31" data-line="TEL" data-lines="TEL" data-station-name="Sungei Bedok"><text class="station-label-original-semibold" transform="translate(980 570) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
 </svg>
