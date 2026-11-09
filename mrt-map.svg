@@ -1806,11 +1806,11 @@
       </g>
     </g>
   </g>
-  <g data-station-code="EW5" data-line="EWL" data-lines="EWL" style="cursor:pointer;pointer-events:all">
+  <g data-station-code="EW5" data-line="EWL" data-lines="EWL">
     <rect class="st46" x="903.32" y="519.42" width="19.64" height="10.91" rx="3.19" ry="3.19"/>
     <text class="station-code-original" transform="translate(906.4 526.27) scale(1.05 1)"><tspan x="0" y="0">EW 5</tspan></text>
   </g>
-  <g data-station-label="true" data-station-name="Bedok" data-line="EWL" data-lines="EWL">
+  <g data-station-name="Bedok" data-line="EWL" data-lines="EWL">
     <text class="station-label-original-heavy" transform="translate(898.33 514.15) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
     <text class="station-label-original-semibold" transform="translate(909.98 514.15) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
   </g>
@@ -8961,15 +8961,15 @@
       </g>
     </g>
   </g>
-  <g data-station-code="TE31" data-line="TEL" data-lines="TEL" style="cursor:pointer;pointer-events:all">
+  <g data-line="TEL" data-lines="TEL">
     <path class="st68" d="M976.87,589.68h-15.17c-.34-.3-2.71-2.45-2.53-5.81.15-2.95,2.12-4.74,2.53-5.09h15.17v10.91Z"/>
     <path class="st41" d="M976.87,589.68h15.47c.35-.3,2.76-2.45,2.58-5.81-.15-2.95-2.16-4.74-2.58-5.09h-15.47v10.91Z"/>
     <text class="station-code-original" transform="translate(961.46 585.74) scale(1.02 1)"><tspan x="0" y="0">TE 31</tspan></text>
-    <g data-station-code="DT37" data-line="DTL" data-lines="DTL" style="cursor:pointer;pointer-events:all">
+    <g data-line="DTL" data-lines="DTL">
       <text class="station-code-original" transform="translate(977.48 585.88) scale(1.02 1)"><tspan x="0" y="0">DT 37</tspan></text>
     </g>
   </g>
-  <g data-station-code="DT36" data-line="DTL" data-lines="DTL" style="cursor:pointer;pointer-events:all">
+  <g data-line="DTL" data-lines="DTL">
     <rect class="st41" x="989.78" y="550.82" width="19.64" height="10.91" rx="3.19" ry="3.19"/>
     <text class="station-code-original" transform="translate(991.83 557.66) scale(1.05 1)"><tspan x="0" y="0">DT 36</tspan></text>
   </g>
@@ -9575,21 +9575,21 @@
     <path data-tanah-merah-border="true" class="st33" d="M906.49,468.35l-20.66.69c-1.9,1.03-3.44,4.87-3.86,9.77-.58,6.74,1.01,14.86,3.86,17.09h21.47"/>
     <path data-tanah-merah-border="true" class="st33" d="M906.19,495.88l20.66-.69c1.9-1.03,3.44-4.87,3.86-9.77.58-6.74-1.01-14.86-3.86-17.09h-21.47"/>
   </g>
-  <g data-line="DTL" data-lines="DTL" data-station-label="true" data-station-code="DT36" data-station-name="Xilin">
+  <g data-line="DTL" data-lines="DTL" data-station-name="Xilin">
     <text class="station-label-original-heavy" transform="translate(1018.6013 559.0973) scale(1.05 1)"><tspan x="0" y="0">Xi</tspan></text>
     <text class="station-label-original-semibold" transform="translate(1028.5984 559.0983) scale(1.05 1)"><tspan x="0" y="0">lin</tspan></text>
   </g>
-  <g data-line="DTL" data-lines="DTL TEL" data-station-label="true" data-station-name="Sungei Bedok">
+  <g data-line="DTL" data-lines="DTL TEL" data-station-name="Sungei Bedok">
     <text class="station-label-original-heavy" transform="translate(1010.5261 586.2233) scale(1.05 1)"><tspan x="0" y="0">Su</tspan></text>
     <text class="station-label-original-semibold" transform="translate(1021.862 586.2233) scale(1.05 1)"><tspan x="0" y="0">ngei</tspan></text>
     <text class="station-label-original-heavy" transform="translate(1044.28 586.2233) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
     <text class="station-label-original-semibold" transform="translate(1055.9324 586.2233) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
   </g>
-  <g data-station-code="TE30" data-line="TEL" data-lines="TEL" style="cursor:pointer;pointer-events:all">
+  <g data-station-code="TE30" data-line="TEL" data-lines="TEL">
     <rect class="st68" x="954.36" y="604.24" width="19.64" height="10.91" rx="3.19" ry="3.19"/>
     <text class="station-code-original" transform="translate(956.97 611.25) scale(1.05 1)"><tspan x="0" y="0">TE 30</tspan></text>
   </g>
-  <g data-line="TEL" data-lines="TEL" data-station-label="true" data-station-code="TE30" data-station-name="Bedok South">
+  <g data-line="TEL" data-lines="TEL" data-station-code="TE30" data-station-name="Bedok South">
     <text class="station-label-original-heavy" transform="translate(980.01 612) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
     <text class="station-label-original-semibold" transform="translate(991.67 612) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
     <text class="station-label-original-heavy" transform="translate(1010.7908 612.0026) scale(1.05 1)"><tspan x="0" y="0">So</tspan></text>
