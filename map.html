@@ -1142,7 +1142,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261109-interchange-code-alignment-v3');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261109-station-label-consistency-v4');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -1368,6 +1368,15 @@ body, body * {
         if(marinaFragment){
           return stationEntries.find(item=>item.stationCode==='NS28')||
             {stationCode:'NS28',stationName:'Marina South Pier',line:'NSL'};
+        }
+        const namedStationNode=node.closest('[data-station-name]');
+        if(namedStationNode){
+          const explicitName=namedStationNode.getAttribute('data-station-name');
+          const explicitMatch=stationEntries.find(item=>
+            normalise(item.stationName)===normalise(explicitName)&&
+            (!selected||item.line===selected)
+          );
+          if(explicitMatch)return explicitMatch;
         }
         const codeNode=node.closest('[data-station-code]');
         if(codeNode){
