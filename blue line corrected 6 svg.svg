@@ -285,7 +285,9 @@
       .st24 {
         fill: #9d9d9e;
       }
-    </style>
+    
+      .station-label-original-semibold { font-family: AtkinsonHyperlegibleNext-SemiBold, 'Atkinson Hyperlegible Next'; font-weight: 600; font-size: 7.99px; fill: #231f20; letter-spacing: .07em; }
+</style>
     <clipPath id="clippath">
       <rect class="st0" x="943.63" y="944.16" width="47.02" height="52.48"/>
     </clipPath>
@@ -1889,6 +1891,6 @@
       </g>
     </g>
   </g>
-  <g class="st30" data-station-label="true" data-station-code="DT36" data-line="DTL" data-lines="DTL"><text class="st32" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>
-  <g class="st30" data-station-label="true" data-station-code="DT37" data-line="DTL" data-lines="DTL"><text class="st32" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
+  <g class="st30" data-station-label="true" data-station-code="DT36" data-line="DTL" data-lines="DTL" data-station-name="Xilin"><text class="station-label-original-semibold" transform="translate(914 604) scale(1.03 1)"><tspan x="0" y="0">Xilin</tspan></text></g>
+  <g class="st30" data-station-label="true" data-station-code="DT37" data-line="DTL" data-lines="DTL" data-station-name="Sungei Bedok"><text class="station-label-original-semibold" transform="translate(982 559) scale(1.03 1)"><tspan x="0" y="0">Sungei Bedok</tspan></text></g>
 </svg>
