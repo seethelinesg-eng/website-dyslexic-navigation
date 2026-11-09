@@ -1011,10 +1011,10 @@
     <text class="st28" transform="translate(937.36 612.01) scale(1.05 1)"><tspan x="0" y="0">TE 30</tspan></text>
   </g>
   <g class="st27" data-station-code="TE30" data-line="TEL" data-lines="TEL" data-station-name="Bedok South">
-    <text class="station-label-original-heavy" transform="translate(960.33 614.54) scale(1.0529 1)"><tspan x="0" y="0">Be</tspan></text>
-    <text class="station-label-original-semibold" transform="translate(971.98 614.54) scale(1.0529 1)"><tspan x="0" y="0">dok</tspan></text>
-    <text class="station-label-original-heavy" transform="translate(991.11 614.54) scale(1.0529 1)"><tspan x="0" y="0">So</tspan></text>
-    <text class="station-label-original-semibold" transform="translate(1002.44 614.54) scale(1.0529 1)"><tspan x="0" y="0">uth</tspan></text>
+    <text class="station-label-original-heavy" transform="translate(980.01 612) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(991.67 612) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
+    <text class="station-label-original-heavy" transform="translate(1010.7908 612.0026) scale(1.0529 1)"><tspan x="0" y="0">So</tspan></text>
+    <text class="station-label-original-semibold" transform="translate(1022.1218 612.0026) scale(1.0529 1)"><tspan x="0" y="0">uth</tspan></text>
   </g>
   <rect class="st20" x="912.64" y="633.83" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st27">
