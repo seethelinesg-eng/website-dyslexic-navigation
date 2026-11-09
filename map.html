@@ -154,7 +154,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   .map-heading span{font-size:.68rem;white-space:nowrap}
   .map-shell{position:relative;width:100%;height: min(68svh,680px);min-height:420px;overflow:hidden;border:1px solid var(--rule);touch-action:none;overscroll-behavior:contain;background:#fffdf8}
   #mapMount{position:absolute;inset:0;width:100%;height:100%;min-width:0;overflow:hidden;touch-action:none}
-  #mapMount svg{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;object-fit:contain;transform-origin:center center;will-change:transform;touch-action:none;user-select:none;-webkit-user-select:none}
+  #mapMount svg{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;object-fit:contain;transform:none;touch-action:none;user-select:none;-webkit-user-select:none}
   .map-zoom-controls{position:absolute;z-index:5;top:10px;right:10px;display:grid;grid-template-columns:44px 44px;gap:6px}
   .map-zoom-controls button{min-width:44px;min-height:44px;padding:6px;text-align:center;background:#fffdf8;border:1px solid var(--ink);box-shadow:0 2px 8px #0002;font-size:1.15rem}
   .map-zoom-controls #mapZoomReset{grid-column:1 / -1;font-size:.8rem}
@@ -478,13 +478,32 @@ body, body * {
   const mapViewport=document.getElementById('mapViewport');
   const stationPanel=document.getElementById('stationPanel');
   let mobileMapZoom=1,mobileMapPanX=0,mobileMapPanY=0;
+  let mobileMapBaseViewBox=null;
   let touchGesture=null,mouseGesture=null,lastMapDragAt=0;
   const isPhoneMap=()=>window.matchMedia('(max-width: 700px)').matches;
   function applyMobileMapTransform(){
     const svg=mount.querySelector('svg');
-    if(!svg||!isPhoneMap())return;
-    svg.style.transformOrigin='center center';
-    svg.style.transform='translate('+mobileMapPanX+'px, '+mobileMapPanY+'px) scale('+mobileMapZoom+')';
+    if(!svg||!mobileMapBaseViewBox)return;
+    const [baseX,baseY,baseWidth,baseHeight]=mobileMapBaseViewBox;
+    if(!isPhoneMap()){
+      svg.setAttribute('viewBox',mobileMapBaseViewBox.join(' '));
+      svg.style.transform='none';
+      return;
+    }
+    // Zoom the vector artwork by changing its viewBox, not by scaling a
+    // composited CSS layer. Safari therefore redraws fine station text and
+    // route details at the new size instead of enlarging a blurry snapshot.
+    const zoom=Math.max(1,mobileMapZoom);
+    const viewWidth=baseWidth/zoom;
+    const viewHeight=baseHeight/zoom;
+    const viewportWidth=Math.max(1,mapViewport.clientWidth);
+    const viewportHeight=Math.max(1,mapViewport.clientHeight);
+    const panUnitsX=mobileMapPanX*viewWidth/viewportWidth;
+    const panUnitsY=mobileMapPanY*viewHeight/viewportHeight;
+    const viewX=baseX+(baseWidth-viewWidth)/2-panUnitsX;
+    const viewY=baseY+(baseHeight-viewHeight)/2-panUnitsY;
+    svg.setAttribute('viewBox',[viewX,viewY,viewWidth,viewHeight].join(' '));
+    svg.style.transform='none';
   }
   function setMobileMapZoom(nextZoom){
     mobileMapZoom=Math.max(1,Math.min(4,nextZoom));
@@ -1427,6 +1446,9 @@ body, body * {
     svg.removeAttribute('width');svg.removeAttribute('height');
     svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map');
     const imported=document.importNode(svg,true);
+    const sourceViewBox=(imported.getAttribute('viewBox')||'0 0 1077.17 1075.66').trim().split(/[ ,]+/).map(Number);
+    mobileMapBaseViewBox=sourceViewBox.length===4&&sourceViewBox.every(Number.isFinite)?sourceViewBox:[0,0,1077.17,1075.66];
+    imported.setAttribute('preserveAspectRatio','xMidYMid meet');
     mount.replaceChildren(imported);
     applyMobileMapTransform();
     // Force the requested accessible typeface on every imported SVG label.
