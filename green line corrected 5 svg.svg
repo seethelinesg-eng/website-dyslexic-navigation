@@ -380,7 +380,7 @@
     <g class="st29">
       <g class="st29">
         <g class="st29">
-          <text class="st49" transform="translate(166.14 962.93) scale(1.03 1)"><tspan x="0" y="0" xml:space="preserve">EW 24  NS 1</tspan></text>
+          <text class="st49" transform="translate(166.14 962.93) scale(1.05 1)"><tspan x="0" y="0" xml:space="preserve">EW 24  NS 1</tspan></text>
         </g>
       </g>
     </g>
@@ -398,7 +398,7 @@
     <g class="st29">
       <g class="st29">
         <g class="st29">
-          <text class="st42" transform="translate(208.87 1025.73) scale(1.03 1)"><tspan x="0" y="0">DT 11</tspan></text>
+          <text class="st42" transform="translate(208.87 1025.73) scale(1.05 1)"><tspan x="0" y="0">DT 11</tspan></text>
         </g>
       </g>
     </g>
@@ -409,7 +409,7 @@
     <g class="st29">
       <g class="st29">
         <g class="st29">
-          <text class="st42" transform="translate(155.27 1025.73) scale(1.03 1)"><tspan x="0" y="0">NS 21</tspan></text>
+          <text class="st42" transform="translate(155.27 1025.73) scale(1.05 1)"><tspan x="0" y="0">NS 21</tspan></text>
         </g>
       </g>
     </g>
@@ -642,7 +642,7 @@
     <g class="st29">
       <g class="st29">
         <g class="st29">
-          <text class="st28" transform="translate(30.98 993.59) scale(.97 1)"><tspan x="0" y="0">NS 1</tspan></text>
+          <text class="st28" transform="translate(30.98 993.59) scale(0.97 1)"><tspan x="0" y="0">NS 1</tspan></text>
         </g>
       </g>
     </g>
@@ -929,80 +929,80 @@
   </g>
   <path class="st7" d="M34.93,248.32c-3.08,203.27-3.12,353.11.38,370.77.93,4.67,3.66,16.75,12.65,21.64,2.3,1.25,8.1,1.57,8.1,1.57h245.16c87.24,67.09,119.64,95.67,130.23,107.92,2.19,2.53,10.15,12.12,23.92,19.51,6.86,3.69,14.37,6.4,25.67,8.62,21.41,4.21,51.64,10.15,77.74-5.28,6.27-3.71,17.62-10.65,21.12-23.71,1.52-5.67,1.08-10.73.49-14.02l-1.26-56.28c161-96.65,264.71-158.95,265.23-159.34,0,0,.02-.01.04-.03.16-.12.67-.5,1.37-.97,1.73-1.17,4.74-2.99,8.79-4.31,5.64-1.84,11.44-1.86,11.45-1.86,12.72-1.69,35.55-1.51,35.55-1.51,7.09-.42,17.27-.84,30.05-.75,1.19-.53,2.99-1.52,4.64-3.32,2.76-3,3.37-6.35,3.54-7.71-.29-71.53-.58-143.05-.87-214.58"/>
   <g class="st29">
-    <text class="st63" transform="translate(52.8 253.18) scale(1.03 1)"><tspan x="0" y="0">Tu</tspan></text>
+    <text class="st63" transform="translate(52.80 253.18) scale(1.05 1)"><tspan x="0" y="0">Tu</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(71.93 253.18) scale(1.03 1)"><tspan x="0" y="0">as</tspan></text>
+    <text class="st34" transform="translate(64.22 253.18) scale(1.05 1)"><tspan x="0" y="0">as</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(94.06 253.36) scale(1.03 1)"><tspan x="0" y="0">Li</tspan></text>
+    <text class="st63" transform="translate(77.42 253.18) scale(1.05 1)"><tspan x="0" y="0">Li</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(108.95 253.36) scale(1.03 1)"><tspan x="0" y="0">nk</tspan></text>
+    <text class="st34" transform="translate(86.12 253.18) scale(1.05 1)"><tspan x="0" y="0">nk</tspan></text>
   </g>
   <rect class="st24" x="24.78" y="293.43" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(25.41 300.16) scale(1.03 1)"><tspan x="0" y="0">EW 32</tspan></text>
+    <text class="st32" transform="translate(25.41 300.16) scale(1.05 1)"><tspan x="0" y="0">EW 32</tspan></text>
   </g>
   <rect class="st24" x="24.78" y="343.85" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(26.38 350.94) scale(1.03 1)"><tspan x="0" y="0">EW 31</tspan></text>
+    <text class="st32" transform="translate(26.38 350.94) scale(1.05 1)"><tspan x="0" y="0">EW 31</tspan></text>
   </g>
   <rect class="st24" x="23.03" y="398.48" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(24.78 405.73) scale(1.03 1)"><tspan x="0" y="0">EW 30</tspan></text>
+    <text class="st32" transform="translate(24.78 405.73) scale(1.05 1)"><tspan x="0" y="0">EW 30</tspan></text>
   </g>
   <rect class="st24" x="23.03" y="459.28" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(24.78 466.69) scale(1.03 1)"><tspan x="0" y="0">EW 29</tspan></text>
+    <text class="st32" transform="translate(24.78 466.69) scale(1.05 1)"><tspan x="0" y="0">EW 29</tspan></text>
   </g>
   <rect class="st24" x="22.5" y="501.66" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(23.8 508.86) scale(1.03 1)"><tspan x="0" y="0">EW 28</tspan></text>
+    <text class="st32" transform="translate(23.80 508.86) scale(1.05 1)"><tspan x="0" y="0">EW 28</tspan></text>
   </g>
   <rect class="st24" x="22.5" y="544.56" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(24.14 551.73) scale(1.03 1)"><tspan x="0" y="0">EW 27</tspan></text>
+    <text class="st32" transform="translate(24.14 551.73) scale(1.05 1)"><tspan x="0" y="0">EW 27</tspan></text>
   </g>
   <rect class="st24" x="23.03" y="585.35" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(24.48 592.3) scale(1.03 1)"><tspan x="0" y="0">EW 26</tspan></text>
+    <text class="st32" transform="translate(24.48 592.30) scale(1.05 1)"><tspan x="0" y="0">EW 26</tspan></text>
   </g>
   <rect class="st24" x="42.32" y="636.29" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(43.87 643.32) scale(1.03 1)"><tspan x="0" y="0">EW 25</tspan></text>
+    <text class="st32" transform="translate(43.87 643.32) scale(1.05 1)"><tspan x="0" y="0">EW 25</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(8.14 659.3) scale(1.03 1)"><tspan x="0" y="0">Ch</tspan></text>
+    <text class="st63" transform="translate(8.14 659.30) scale(1.05 1)"><tspan x="0" y="0">Ch</tspan></text>
   </g>
   <g class="st29">
-    <text class="st36" transform="translate(28.66 659.46) scale(1.11 1)"><tspan x="0" y="0" xml:space="preserve">inese              </tspan></text>
+    <text class="st36" transform="translate(19.91 659.30) scale(1.05 1)"><tspan x="0" y="0" xml:space="preserve">inese              </tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(12.93 673.2) scale(1.03 1)"><tspan x="0" y="0">Ga</tspan></text>
+    <text class="st63" transform="translate(9.88 668.89) scale(1.05 1)"><tspan x="0" y="0">Ga</tspan></text>
   </g>
   <g class="st29">
-    <text class="st35" transform="translate(34.34 673.37) scale(1.03 1)"><tspan x="0" y="0">rden</tspan></text>
+    <text class="st35" transform="translate(22.01 668.89) scale(1.05 1)"><tspan x="0" y="0">rden</tspan></text>
   </g>
   <g class="st29">
-    <text class="st64" transform="translate(86.96 662.08) scale(1.03 1)"><tspan x="0" y="0">Ju</tspan></text>
+    <text class="st64" transform="translate(86.96 662.08) scale(1.05 1)"><tspan x="0" y="0">Ju</tspan></text>
   </g>
   <g class="st29">
-    <text class="st35" transform="translate(106.12 662.08) scale(1.03 1)"><tspan x="0" y="0">rong</tspan></text>
+    <text class="st35" transform="translate(98.02 662.08) scale(1.05 1)"><tspan x="0" y="0">rong</tspan></text>
   </g>
   <g class="st29">
-    <text class="st64" transform="translate(98.16 678.15) scale(1.03 1)"><tspan x="0" y="0">Ea</tspan></text>
+    <text class="st64" transform="translate(121.24 662.08) scale(1.05 1)"><tspan x="0" y="0">Ea</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(117.22 678.15) scale(1.03 1)"><tspan x="0" y="0">st</tspan></text>
+    <text class="st34" transform="translate(132.37 662.08) scale(1.05 1)"><tspan x="0" y="0">st</tspan></text>
   </g>
   <rect class="st24" x="159.81" y="636.29" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(161.36 643.32) scale(1.03 1)"><tspan x="0" y="0">EW 23</tspan></text>
+    <text class="st32" transform="translate(161.36 643.32) scale(1.05 1)"><tspan x="0" y="0">EW 23</tspan></text>
   </g>
   <rect class="st24" x="200.45" y="636.29" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(202 643.32) scale(1.03 1)"><tspan x="0" y="0">EW 22</tspan></text>
+    <text class="st32" transform="translate(202.00 643.32) scale(1.05 1)"><tspan x="0" y="0">EW 22</tspan></text>
   </g>
   <g class="st29">
     <text class="st63" transform="translate(137.94 629.51) scale(1.03 1)"><tspan x="0" y="0">Cl</tspan></text>
@@ -1014,40 +1014,40 @@
     <text class="st34" transform="translate(179.05 629.34) scale(1.03 1)"><tspan x="0" y="0">enti</tspan></text>
   </g>
   <g class="st29">
-    <text class="st64" transform="translate(188.58 661.91) scale(1.03 1)"><tspan x="0" y="0">Do</tspan></text>
+    <text class="st64" transform="translate(188.58 661.91) scale(1.05 1)"><tspan x="0" y="0">Do</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(210.07 661.91) scale(1.03 1)"><tspan x="0" y="0">ver</tspan></text>
+    <text class="st34" transform="translate(200.70 662.00) scale(1.05 1)"><tspan x="0" y="0">ver</tspan></text>
   </g>
   <rect class="st24" x="292.93" y="637.08" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(293.48 644.11) scale(1.03 1)"><tspan x="0" y="0">EW 20</tspan></text>
+    <text class="st32" transform="translate(293.48 644.11) scale(1.05 1)"><tspan x="0" y="0">EW 20</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(322.9 644.17) scale(1.03 1)"><tspan x="0" y="0">Co</tspan></text>
+    <text class="st63" transform="translate(322.90 644.17) scale(1.05 1)"><tspan x="0" y="0">Co</tspan></text>
   </g>
   <g class="st29">
-    <text class="st35" transform="translate(342.52 644.11) scale(1.03 1)"><tspan x="0" y="0">mmon</tspan></text>
+    <text class="st35" transform="translate(334.51 644.17) scale(1.05 1)"><tspan x="0" y="0">mmon</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(389.22 644.11) scale(1.03 1)"><tspan x="0" y="0">wea</tspan></text>
+    <text class="st34" transform="translate(362.12 644.17) scale(1.05 1)"><tspan x="0" y="0">wea</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(419.22 644.34) scale(1.03 1)"><tspan x="0" y="0">lth</tspan></text>
+    <text class="st34" transform="translate(379.01 644.17) scale(1.05 1)"><tspan x="0" y="0">lth</tspan></text>
   </g>
   <rect class="st24" x="330.97" y="665.33" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(332.52 672.35) scale(1.03 1)"><tspan x="0" y="0">EW 19</tspan></text>
+    <text class="st32" transform="translate(332.52 672.35) scale(1.05 1)"><tspan x="0" y="0">EW 19</tspan></text>
   </g>
   <g class="st29">
-    <text class="st64" transform="translate(246.19 686.66) scale(1.03 1)"><tspan x="0" y="0">Qu</tspan></text>
+    <text class="st64" transform="translate(246.19 686.66) scale(1.05 1)"><tspan x="0" y="0">Qu</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(267.23 686.66) scale(1.03 1)"><tspan x="0" y="0">eenstown</tspan></text>
+    <text class="st34" transform="translate(258.78 686.66) scale(1.05 1)"><tspan x="0" y="0">eenstown</tspan></text>
   </g>
   <rect class="st24" x="361.61" y="690.47" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(363.16 697.5) scale(1.03 1)"><tspan x="0" y="0">EW 18</tspan></text>
+    <text class="st32" transform="translate(363.16 697.50) scale(1.05 1)"><tspan x="0" y="0">EW 18</tspan></text>
   </g>
   <g class="st29">
     <text class="st64" transform="translate(390.26 698.26) scale(1.03 1)"><tspan x="0" y="0">Re</tspan></text>
@@ -1060,35 +1060,35 @@
   </g>
   <rect class="st24" x="389.22" y="716.67" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(390.76 723.7) scale(1.03 1)"><tspan x="0" y="0">EW 17</tspan></text>
+    <text class="st32" transform="translate(390.76 723.70) scale(1.05 1)"><tspan x="0" y="0">EW 17</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(287.64 727.76) scale(1.03 1)"><tspan x="0" y="0">Ti</tspan></text>
+    <text class="st63" transform="translate(287.64 727.76) scale(1.05 1)"><tspan x="0" y="0">Ti</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(303.72 727.93) scale(1.03 1)"><tspan x="0" y="0">ong</tspan></text>
+    <text class="st34" transform="translate(296.92 727.76) scale(1.05 1)"><tspan x="0" y="0">ong</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(338.25 727.76) scale(1.03 1)"><tspan x="0" y="0">Ba</tspan></text>
+    <text class="st34" transform="translate(316.42 727.76) scale(1.05 1)"><tspan x="0" y="0">Ba</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(358.32 727.59) scale(1.03 1)"><tspan x="0" y="0">hru</tspan></text>
+    <text class="st34" transform="translate(327.95 727.76) scale(1.05 1)"><tspan x="0" y="0">hru</tspan></text>
   </g>
   <g class="st29">
-    <text class="st64" transform="translate(323.22 759.2) scale(1.03 1)"><tspan x="0" y="0">Ou</tspan></text>
+    <text class="st64" transform="translate(323.22 759.20) scale(1.05 1)"><tspan x="0" y="0">Ou</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(344.4 759.04) scale(1.03 1)"><tspan x="0" y="0">tram</tspan></text>
+    <text class="st34" transform="translate(335.73 759.20) scale(1.05 1)"><tspan x="0" y="0">tram</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(384.7 759.04) scale(1.03 1)"><tspan x="0" y="0">Pa</tspan></text>
+    <text class="st34" transform="translate(359.44 759.20) scale(1.05 1)"><tspan x="0" y="0">Pa</tspan></text>
   </g>
   <g class="st29">
-    <text class="st35" transform="translate(403.78 759.04) scale(1.03 1)"><tspan x="0" y="0">rk</tspan></text>
+    <text class="st35" transform="translate(370.87 759.20) scale(1.05 1)"><tspan x="0" y="0">rk</tspan></text>
   </g>
   <rect class="st24" x="472.49" y="771.32" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(474.04 778.35) scale(1.03 1)"><tspan x="0" y="0">EW 15</tspan></text>
+    <text class="st32" transform="translate(474.04 778.35) scale(1.05 1)"><tspan x="0" y="0">EW 15</tspan></text>
   </g>
   <g class="st29">
     <text class="st63" transform="translate(455.09 798.47) scale(1.03 1)"><tspan x="0" y="0">Ta</tspan></text>
@@ -1118,94 +1118,94 @@
     <text class="st40" transform="translate(647.59 694.36) scale(1.03 1)"><tspan x="0" y="0">ll</tspan></text>
   </g>
   <g class="st29">
-    <text class="st60" transform="translate(594.55 736.35) scale(1.03 1)"><tspan x="0" y="0">Ra</tspan></text>
+    <text class="st60" transform="translate(594.55 736.35) scale(1.05 1)"><tspan x="0" y="0">Ra</tspan></text>
   </g>
   <g class="st29">
-    <text class="st40" transform="translate(613.22 736.52) scale(1.03 1)"><tspan x="0" y="0">ffles</tspan></text>
+    <text class="st40" transform="translate(606.15 736.35) scale(1.05 1)"><tspan x="0" y="0">ffles</tspan></text>
   </g>
   <g class="st29">
-    <text class="st62" transform="translate(653.51 736.35) scale(1.03 1)"><tspan x="0" y="0">Pl</tspan></text>
+    <text class="st62" transform="translate(629.73 736.35) scale(1.05 1)"><tspan x="0" y="0">Pl</tspan></text>
   </g>
   <g class="st29">
-    <text class="st39" transform="translate(670.48 736.35) scale(1.03 1)"><tspan x="0" y="0">ace</tspan></text>
+    <text class="st39" transform="translate(639.37 736.35) scale(1.05 1)"><tspan x="0" y="0">ace</tspan></text>
   </g>
   <g class="st29">
-    <text class="st60" transform="translate(637.53 661.17) scale(1.03 1)"><tspan x="0" y="0">Bu</tspan></text>
+    <text class="st60" transform="translate(637.53 661.17) scale(1.05 1)"><tspan x="0" y="0">Bu</tspan></text>
   </g>
   <g class="st29">
-    <text class="st39" transform="translate(656.93 661.17) scale(1.03 1)"><tspan x="0" y="0">gis</tspan></text>
+    <text class="st39" transform="translate(649.21 661.17) scale(1.05 1)"><tspan x="0" y="0">gis</tspan></text>
   </g>
   <rect class="st24" x="673.58" y="610.06" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(675.11 617.09) scale(1.03 1)"><tspan x="0" y="0">EW 11</tspan></text>
+    <text class="st31" transform="translate(675.11 617.09) scale(1.05 1)"><tspan x="0" y="0">EW 11</tspan></text>
   </g>
   <g class="st29">
-    <text class="st62" transform="translate(621.08 601.53) scale(1.03 1)"><tspan x="0" y="0">La</tspan></text>
+    <text class="st62" transform="translate(621.08 601.53) scale(1.05 1)"><tspan x="0" y="0">La</tspan></text>
   </g>
   <g class="st29">
-    <text class="st39" transform="translate(638.31 601.36) scale(1.03 1)"><tspan x="0" y="0">vender</tspan></text>
+    <text class="st39" transform="translate(631.76 601.53) scale(1.05 1)"><tspan x="0" y="0">vender</tspan></text>
   </g>
   <rect class="st24" x="708.86" y="590.44" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(710.83 597.91) scale(1.03 1)"><tspan x="0" y="0">EW 10</tspan></text>
+    <text class="st31" transform="translate(710.83 597.91) scale(1.05 1)"><tspan x="0" y="0">EW 10</tspan></text>
   </g>
   <rect class="st24" x="929.5" y="281.35" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(932.52 288.21) scale(1.03 1)"><tspan x="0" y="0">EW 1</tspan></text>
+    <text class="st31" transform="translate(932.52 288.21) scale(1.05 1)"><tspan x="0" y="0">EW 1</tspan></text>
   </g>
   <g class="st29">
-    <text class="st60" transform="translate(732.37 610.06) scale(1.03 1)"><tspan x="0" y="0">Ka</tspan></text>
+    <text class="st60" transform="translate(732.37 610.06) scale(1.05 1)"><tspan x="0" y="0">Ka</tspan></text>
   </g>
   <g class="st29">
-    <text class="st40" transform="translate(752.24 610.06) scale(1.03 1)"><tspan x="0" y="0">llang</tspan></text>
+    <text class="st40" transform="translate(744.09 610.06) scale(1.05 1)"><tspan x="0" y="0">llang</tspan></text>
   </g>
   <g class="st29">
-    <text class="st60" transform="translate(697.1 560.58) scale(1.03 1)"><tspan x="0" y="0">Al</tspan></text>
+    <text class="st60" transform="translate(697.10 560.58) scale(1.05 1)"><tspan x="0" y="0">Al</tspan></text>
   </g>
   <g class="st29">
-    <text class="st40" transform="translate(714.81 560.58) scale(1.03 1)"><tspan x="0" y="0">junied</tspan></text>
+    <text class="st40" transform="translate(707.18 560.58) scale(1.05 1)"><tspan x="0" y="0">junied</tspan></text>
   </g>
   <g class="st29">
-    <text class="st62" transform="translate(801.24 566.55) scale(1.03 1)"><tspan x="0" y="0">Pa</tspan></text>
+    <text class="st62" transform="translate(801.24 566.55) scale(1.05 1)"><tspan x="0" y="0">Pa</tspan></text>
   </g>
   <g class="st29">
-    <text class="st40" transform="translate(820.08 566.72) scale(1.03 1)"><tspan x="0" y="0">ya</tspan></text>
+    <text class="st40" transform="translate(812.67 566.55) scale(1.05 1)"><tspan x="0" y="0">ya</tspan></text>
   </g>
   <g class="st29">
-    <text class="st60" transform="translate(836.36 566.55) scale(1.03 1)"><tspan x="0" y="0" xml:space="preserve"> Le</tspan></text>
+    <text class="st60" transform="translate(822.70 566.55) scale(1.05 1)"><tspan x="0" y="0" xml:space="preserve"> Le</tspan></text>
   </g>
   <g class="st29">
-    <text class="st39" transform="translate(859.77 566.55) scale(1.03 1)"><tspan x="0" y="0">bar</tspan></text>
+    <text class="st39" transform="translate(836.91 566.55) scale(1.05 1)"><tspan x="0" y="0">bar</tspan></text>
   </g>
   <rect class="st24" x="807.33" y="528.98" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(810.35 535.84) scale(1.03 1)"><tspan x="0" y="0">EW 7</tspan></text>
+    <text class="st31" transform="translate(810.35 535.84) scale(1.05 1)"><tspan x="0" y="0">EW 7</tspan></text>
   </g>
   <g class="st29">
-    <text class="st59" transform="translate(771.37 524.41) scale(1.02 1)"><tspan x="0" y="0">Eu</tspan></text>
+    <text class="st59" transform="translate(771.37 524.41) scale(1.05 1)"><tspan x="0" y="0">Eu</tspan></text>
   </g>
   <g class="st29">
-    <text class="st38" transform="translate(790.32 524.41) scale(1.02 1)"><tspan x="0" y="0">nos</tspan></text>
+    <text class="st38" transform="translate(782.67 524.41) scale(1.05 1)"><tspan x="0" y="0">nos</tspan></text>
   </g>
   <rect class="st24" x="843.62" y="508.8" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(846.64 515.66) scale(1.03 1)"><tspan x="0" y="0">EW 6</tspan></text>
+    <text class="st31" transform="translate(846.64 515.66) scale(1.05 1)"><tspan x="0" y="0">EW 6</tspan></text>
   </g>
   <g class="st29">
-    <text class="st60" transform="translate(803.71 498.91) scale(1.03 1)"><tspan x="0" y="0">Kem</tspan></text>
+    <text class="st60" transform="translate(803.71 498.91) scale(1.05 1)"><tspan x="0" y="0">Kem</tspan></text>
   </g>
   <g class="st29">
-    <text class="st39" transform="translate(836.38 498.91) scale(1.03 1)"><tspan x="0" y="0">bangan</tspan></text>
+    <text class="st39" transform="translate(823.74 498.91) scale(1.05 1)"><tspan x="0" y="0">bangan</tspan></text>
   </g>
   <rect class="st24" x="886.96" y="505.44" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(889.98 512.3) scale(1.03 1)"><tspan x="0" y="0">EW 5</tspan></text>
+    <text class="st31" transform="translate(889.98 512.30) scale(1.05 1)"><tspan x="0" y="0">EW 5</tspan></text>
   </g>
   <g class="st29">
-    <text class="st60" transform="translate(875.13 535.84) scale(1.03 1)"><tspan x="0" y="0">Be</tspan></text>
+    <text class="st60" transform="translate(875.13 535.84) scale(1.05 1)"><tspan x="0" y="0">Be</tspan></text>
   </g>
   <g class="st29">
-    <text class="st40" transform="translate(894.97 535.84) scale(1.03 1)"><tspan x="0" y="0">dok</tspan></text>
+    <text class="st40" transform="translate(886.78 535.84) scale(1.05 1)"><tspan x="0" y="0">dok</tspan></text>
   </g>
   <path class="st8" d="M947.13,492.93v14.91c.08,1,.36,2.46,1.28,4.11.95,1.69,2.21,2.92,3.14,3.7h93.91"/>
   <path class="st5" d="M947.06,497.44v13.79c.08.57.34,1.4,1.23,2.33.91.96,2.13,1.65,3.03,2.1h90.43"/>
@@ -1215,46 +1215,46 @@
     <text class="st30" transform="translate(925.45 495.24) scale(1.03 1)"><tspan x="0" y="0" xml:space="preserve"> EW 4   CG</tspan></text>
   </g>
   <g class="st29">
-    <text class="st62" transform="translate(954.24 462.06) scale(1.03 1)"><tspan x="0" y="0">Ta</tspan></text>
+    <text class="st62" transform="translate(954.24 462.06) scale(1.05 1)"><tspan x="0" y="0">Ta</tspan></text>
   </g>
   <g class="st29">
-    <text class="st39" transform="translate(972.14 462.06) scale(1.03 1)"><tspan x="0" y="0">nah</tspan></text>
+    <text class="st39" transform="translate(965.50 462.06) scale(1.05 1)"><tspan x="0" y="0">nah</tspan></text>
   </g>
   <g class="st29">
-    <text class="st62" transform="translate(954.47 476.13) scale(1.03 1)"><tspan x="0" y="0">Me</tspan></text>
+    <text class="st62" transform="translate(953.96 471.64) scale(1.05 1)"><tspan x="0" y="0">Me</tspan></text>
   </g>
   <g class="st29">
-    <text class="st39" transform="translate(977.02 476.13) scale(1.03 1)"><tspan x="0" y="0">rah</tspan></text>
+    <text class="st39" transform="translate(967.45 471.64) scale(1.05 1)"><tspan x="0" y="0">rah</tspan></text>
   </g>
   <rect class="st24" x="929.4" y="414.17" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(932.42 421.03) scale(1.03 1)"><tspan x="0" y="0">EW 3</tspan></text>
+    <text class="st31" transform="translate(932.42 421.03) scale(1.05 1)"><tspan x="0" y="0">EW 3</tspan></text>
   </g>
   <g class="st29">
-    <text class="st62" transform="translate(955.68 366.82) scale(1.03 1)"><tspan x="0" y="0">Ta</tspan></text>
+    <text class="st62" transform="translate(955.68 366.82) scale(1.05 1)"><tspan x="0" y="0">Ta</tspan></text>
   </g>
   <g class="st29">
-    <text class="st40" transform="translate(974.03 366.99) scale(1.03 1)"><tspan x="0" y="0">mpines</tspan></text>
+    <text class="st40" transform="translate(966.94 366.82) scale(1.0529 1)"><tspan x="0" y="0">mpines</tspan></text>
   </g>
   <g class="st29">
-    <text class="st62" transform="translate(955.79 290.72) scale(1.03 1)"><tspan x="0" y="0">Pa</tspan></text>
+    <text class="st62" transform="translate(955.79 290.72) scale(1.05 1)"><tspan x="0" y="0">Pa</tspan></text>
   </g>
   <g class="st29">
-    <text class="st39" transform="translate(975.32 290.72) scale(1.03 1)"><tspan x="0" y="0">sir</tspan></text>
+    <text class="st39" transform="translate(967.21 290.72) scale(1.05 1)"><tspan x="0" y="0">sir</tspan></text>
   </g>
   <g class="st29">
-    <text class="st60" transform="translate(1000.19 290.9) scale(1.03 1)"><tspan x="0" y="0">Ri</tspan></text>
+    <text class="st60" transform="translate(981.97 290.72) scale(1.0529 1)"><tspan x="0" y="0">Ri</tspan></text>
   </g>
   <g class="st29">
-    <text class="st39" transform="translate(1017.17 290.9) scale(1.03 1)"><tspan x="0" y="0">s</tspan></text>
+    <text class="st39" transform="translate(991.58 290.72) scale(1.0529 1)"><tspan x="0" y="0">s</tspan></text>
   </g>
   <rect class="st24" x="743.84" y="570.93" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(746.38 577.96) scale(1.03 1)"><tspan x="0" y="0">EW 9</tspan></text>
+    <text class="st31" transform="translate(746.38 577.96) scale(1.05 1)"><tspan x="0" y="0">EW 9</tspan></text>
   </g>
   <rect class="st24" x="1040.85" y="510.59" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st33" transform="translate(1043.86 517.45) scale(1.03 1)"><tspan x="0" y="0">CG 2</tspan></text>
+    <text class="st33" transform="translate(1043.86 517.45) scale(1.0536 1)"><tspan x="0" y="0">CG 2</tspan></text>
   </g>
   <g class="st29">
     <text class="st61" transform="translate(1022.26 486.04) scale(1.03 1)"><tspan x="0" y="0">Ch</tspan></text>
@@ -1269,38 +1269,38 @@
     <text class="st37" transform="translate(1037.5 500.21) scale(1.03 1)"><tspan x="0" y="0">rport</tspan></text>
   </g>
   <g class="st29">
-    <text class="st62" transform="translate(971.95 534.6) scale(1.03 1)"><tspan x="0" y="0">Ex</tspan></text>
+    <text class="st62" transform="translate(971.95 534.60) scale(1.05 1)"><tspan x="0" y="0">Ex</tspan></text>
   </g>
   <g class="st29">
-    <text class="st39" transform="translate(991.29 534.6) scale(1.03 1)"><tspan x="0" y="0">po</tspan></text>
+    <text class="st39" transform="translate(983.13 534.60) scale(1.05 1)"><tspan x="0" y="0">po</tspan></text>
   </g>
   <rect class="st24" x="25.41" y="243.67" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(26.56 250.54) scale(1.03 1)"><tspan x="0" y="0">EW 33</tspan></text>
+    <text class="st32" transform="translate(26.56 250.54) scale(1.05 1)"><tspan x="0" y="0">EW 33</tspan></text>
   </g>
   <rect class="st68" x="1046.08" y="523.81" width="8.77" height="8.5" rx="1.68" ry="1.68"/>
   <path class="st70" d="M1049.95,528.2l-2.69.62v-.37l2.69-1.55v-.87c-.03-.46.29-.78.51-.78s.53.32.5.78c.02.29.03.57.05.86l2.66,1.55v.38l-2.71-.64-.09,1.63.82.82-.03.2-1-.36v.22c0,.11-.09.19-.19.18-.09,0-.17-.09-.16-.19,0-.07-.02-.14-.02-.22l-.97.37-.03-.22.83-.73-.16-1.67h-.01Z"/>
   <rect class="st21" x="931.97" y="359.7" width="17.94" height="10.58" rx="4.07" ry="4.07"/>
   <g class="st29">
-    <text class="st31" transform="translate(934.18 366.82) scale(1.03 1)"><tspan x="0" y="0">EW 2</tspan></text>
+    <text class="st31" transform="translate(934.18 366.82) scale(1.05 1)"><tspan x="0" y="0">EW 2</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(53.03 302.65) scale(1.03 1)"><tspan x="0" y="0">Tu</tspan></text>
+    <text class="st63" transform="translate(53.03 302.65) scale(1.05 1)"><tspan x="0" y="0">Tu</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(72.31 302.65) scale(1.03 1)"><tspan x="0" y="0">as</tspan></text>
+    <text class="st34" transform="translate(64.45 302.65) scale(1.05 1)"><tspan x="0" y="0">as</tspan></text>
   </g>
   <g class="st29">
-    <text class="st64" transform="translate(94.15 302.65) scale(1.03 1)"><tspan x="0" y="0">We</tspan></text>
+    <text class="st64" transform="translate(77.65 302.65) scale(1.05 1)"><tspan x="0" y="0">We</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(116.71 302.65) scale(1.03 1)"><tspan x="0" y="0">st</tspan></text>
+    <text class="st34" transform="translate(91.33 302.65) scale(1.05 1)"><tspan x="0" y="0">st</tspan></text>
   </g>
   <g class="st29">
-    <text class="st64" transform="translate(135.82 302.65) scale(1.03 1)"><tspan x="0" y="0">Ro</tspan></text>
+    <text class="st64" transform="translate(103.11 302.65) scale(1.05 1)"><tspan x="0" y="0">Ro</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(156.23 302.65) scale(1.03 1)"><tspan x="0" y="0">ad</tspan></text>
+    <text class="st34" transform="translate(115.04 302.65) scale(1.05 1)"><tspan x="0" y="0">ad</tspan></text>
   </g>
   <g class="st29">
     <text class="st63" transform="translate(53.26 353.14) scale(1.03 1)"><tspan x="0" y="0">Tu</tspan></text>
@@ -1312,34 +1312,34 @@
     <text transform="translate(94.8 353.14) scale(1.03 1)"><tspan class="st63">Cre</tspan><tspan class="st34">scent</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(52.62 409.4) scale(1.03 1)"><tspan x="0" y="0">Gu</tspan></text>
+    <text class="st63" transform="translate(52.62 409.40) scale(1.05 1)"><tspan x="0" y="0">Gu</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(73.6 409.4) scale(1.03 1)"><tspan x="0" y="0">l</tspan></text>
+    <text class="st34" transform="translate(64.91 409.40) scale(1.05 1)"><tspan x="0" y="0">l</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(85.49 409.4) scale(1.03 1)"><tspan x="0" y="0">Cir</tspan></text>
+    <text class="st63" transform="translate(71.25 409.40) scale(1.05 1)"><tspan x="0" y="0">Cir</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(109.31 409.4) scale(1.03 1)"><tspan x="0" y="0">cle</tspan></text>
+    <text class="st34" transform="translate(84.90 409.40) scale(1.05 1)"><tspan x="0" y="0">cle</tspan></text>
   </g>
   <g class="st29">
-    <text class="st64" transform="translate(51.71 468.96) scale(1.03 1)"><tspan x="0" y="0">Jo</tspan></text>
+    <text class="st64" transform="translate(51.71 468.96) scale(1.05 1)"><tspan x="0" y="0">Jo</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(70.52 469.13) scale(1.03 1)"><tspan x="0" y="0">o</tspan></text>
+    <text class="st34" transform="translate(62.85 468.96) scale(1.05 1)"><tspan x="0" y="0">o</tspan></text>
   </g>
   <g class="st29">
-    <text class="st64" transform="translate(86.12 468.96) scale(1.03 1)"><tspan x="0" y="0">Ko</tspan></text>
+    <text class="st64" transform="translate(71.43 468.96) scale(1.05 1)"><tspan x="0" y="0">Ko</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(105.63 468.96) scale(1.03 1)"><tspan x="0" y="0">on</tspan></text>
+    <text class="st34" transform="translate(83.39 468.96) scale(1.05 1)"><tspan x="0" y="0">on</tspan></text>
   </g>
   <g class="st29">
-    <text class="st64" transform="translate(51.75 511.39) scale(1.03 1)"><tspan x="0" y="0">Pio</tspan></text>
+    <text class="st64" transform="translate(51.75 511.39) scale(1.05 1)"><tspan x="0" y="0">Pio</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(77.45 511.39) scale(1.03 1)"><tspan x="0" y="0">neer</tspan></text>
+    <text class="st34" transform="translate(66.78 511.39) scale(1.05 1)"><tspan x="0" y="0">neer</tspan></text>
   </g>
   <g class="st29">
     <text class="st63" transform="translate(51.75 552.06) scale(1.03 1)"><tspan x="0" y="0">Bo</tspan></text>
@@ -1354,56 +1354,56 @@
     <text class="st34" transform="translate(117.9 551.73) scale(1.03 1)"><tspan x="0" y="0">y</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(51.75 596.27) scale(1.03 1)"><tspan x="0" y="0">La</tspan></text>
+    <text class="st63" transform="translate(51.75 596.27) scale(1.05 1)"><tspan x="0" y="0">La</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(69.4 596.27) scale(1.03 1)"><tspan x="0" y="0">keside</tspan></text>
+    <text class="st34" transform="translate(62.42 596.27) scale(1.05 1)"><tspan x="0" y="0">keside</tspan></text>
   </g>
   <g class="st29">
-    <text class="st62" transform="translate(882.17 422.26) scale(1.03 1)"><tspan x="0" y="0">Si</tspan></text>
+    <text class="st62" transform="translate(882.17 422.26) scale(1.05 1)"><tspan x="0" y="0">Si</tspan></text>
   </g>
   <g class="st29">
-    <text class="st40" transform="translate(897.44 422.43) scale(1.03 1)"><tspan x="0" y="0">mei</tspan></text>
+    <text class="st40" transform="translate(891.37 422.26) scale(1.05 1)"><tspan x="0" y="0">mei</tspan></text>
   </g>
   <rect class="st24" x="978.62" y="510.59" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st30" transform="translate(981.64 517.45) scale(1.03 1)"><tspan x="0" y="0">CG 1</tspan></text>
+    <text class="st30" transform="translate(981.64 517.45) scale(1.02 1)"><tspan x="0" y="0">CG 1</tspan></text>
   </g>
   <rect class="st24" x="777.5" y="549.66" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(780.52 556.52) scale(1.03 1)"><tspan x="0" y="0">EW 8</tspan></text>
+    <text class="st31" transform="translate(780.52 556.52) scale(1.02 1)"><tspan x="0" y="0">EW 8</tspan></text>
   </g>
   <rect class="st24" x="613.1" y="646.14" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(614.83 653.06) scale(1.03 1)"><tspan x="0" y="0">EW 12</tspan></text>
+    <text class="st31" transform="translate(614.83 653.06) scale(1.02 1)"><tspan x="0" y="0">EW 12</tspan></text>
   </g>
   <rect class="st24" x="423.5" y="748.2" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st32" transform="translate(425.04 755.22) scale(1.03 1)"><tspan x="0" y="0">EW 16</tspan></text>
+    <text class="st32" transform="translate(425.04 755.22) scale(1.02 1)"><tspan x="0" y="0">EW 16</tspan></text>
   </g>
   <rect class="st24" x="568.68" y="684.87" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(570.22 691.9) scale(1.03 1)"><tspan x="0" y="0">EW 13</tspan></text>
+    <text class="st31" transform="translate(570.22 691.90) scale(1.02 1)"><tspan x="0" y="0">EW 13</tspan></text>
   </g>
   <rect class="st24" x="569.43" y="727.8" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
-    <text class="st31" transform="translate(570.97 734.83) scale(1.03 1)"><tspan x="0" y="0">EW 14</tspan></text>
+    <text class="st31" transform="translate(570.97 734.83) scale(1.02 1)"><tspan x="0" y="0">EW 14</tspan></text>
   </g>
   <rect class="st24" x="247.99" y="636.29" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
     <text class="st32" transform="translate(249.54 643.32) scale(1.03 1)"><tspan x="0" y="0">EW 21</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(217.39 613.65) scale(1.03 1)"><tspan x="0" y="0">Bu</tspan></text>
+    <text class="st63" transform="translate(217.39 613.65) scale(1.05 1)"><tspan x="0" y="0">Bu</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(237 613.75) scale(1.03 1)"><tspan x="0" y="0">ona</tspan></text>
+    <text class="st34" transform="translate(229.07 613.65) scale(1.05 1)"><tspan x="0" y="0">ona</tspan></text>
   </g>
   <g class="st29">
-    <text class="st63" transform="translate(267.68 613.65) scale(1.03 1)"><tspan x="0" y="0">Vi</tspan></text>
+    <text class="st63" transform="translate(248.24 613.65) scale(1.05 1)"><tspan x="0" y="0">Vi</tspan></text>
   </g>
   <g class="st29">
-    <text class="st34" transform="translate(284.09 613.82) scale(1.03 1)"><tspan x="0" y="0">sta</tspan></text>
+    <text class="st34" transform="translate(257.88 613.65) scale(1.05 1)"><tspan x="0" y="0">sta</tspan></text>
   </g>
   <rect class="st24" x="105.43" y="636.29" width="19.24" height="10.92" rx="3.16" ry="3.16"/>
   <g class="st29">
