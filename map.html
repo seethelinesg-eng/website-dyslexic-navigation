@@ -1345,11 +1345,14 @@ body, body * {
     // Restore every matching node in the SVG, not only the capsule group:
     // inline !important dimming on the standalone text fragments otherwise
     // overrides the stylesheet and leaves "Bedok" translucent.
-    const matches=[...svg.querySelectorAll('[data-station-name="Sungei Bedok"]')];
+    // Restore ONLY the station-name text. The previous selector also
+    // matched the outer interchange group and both border paths, forcing the
+    // blue/brown border opaque even when an unrelated line was selected.
+    const matches=[...svg.querySelectorAll('text[data-station-name="Sungei Bedok"]')];
     const restore=new Set();
     matches.forEach(node=>{
       restore.add(node);
-      node.querySelectorAll('*').forEach(child=>restore.add(child));
+      node.querySelectorAll('tspan').forEach(child=>restore.add(child));
     });
     restore.forEach(part=>{
       part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
@@ -1848,29 +1851,9 @@ body, body * {
         path.style.setProperty('filter','none','important');
       });
     }
-    // Sungei Bedok's blue and green interchange borders are one shared
-    // TEL/DTL station unit. The blue border was being reclassified as EWL
-    // by its Illustrator colour class, so EWL selection made it opaque.
-    // Reassert ownership and opacity on BOTH border paths after generic
-    // route emphasis: opaque only for TEL or DTL, translucent otherwise.
-    const sungeiOwnerSelected=code==='TEL'||code==='DTL';
-    focusSvg?.querySelectorAll('[data-station-name="Sungei Bedok"]').forEach(node=>{
-      const borderNodes=[];
-      if(node.matches('path,rect,polygon,polyline'))borderNodes.push(node);
-      node.querySelectorAll('path,rect,polygon,polyline').forEach(shape=>borderNodes.push(shape));
-      borderNodes.forEach(shape=>{
-        shape.setAttribute('data-lines','TEL DTL');
-        shape.setAttribute('data-line','TEL');
-        shape.classList.toggle('dimmed',!sungeiOwnerSelected);
-        shape.classList.toggle('selected-line',sungeiOwnerSelected);
-        shape.style.setProperty('display','inline','important');
-        shape.style.setProperty('visibility','visible','important');
-        shape.style.setProperty('opacity',sungeiOwnerSelected?'1':'.16','important');
-        shape.style.setProperty('stroke-opacity',sungeiOwnerSelected?'1':'.16','important');
-        shape.style.setProperty('fill-opacity',sungeiOwnerSelected?'1':'.16','important');
-        shape.style.setProperty('filter','none','important');
-      });
-    });
+    // Border opacity is handled by applyLineEmphasis() using the shared
+    // TEL/DTL ownership rule. Do not restore border paths while restoring text.
+    restoreSungeiBedokLabel(focusSvg);
     // Final pass: single-line selection loads a separate SVG and applies
     // several independent text/shape filters. Restore the Changi Airport
     // legend label and its Illustrator ancestors only AFTER all those filters.
