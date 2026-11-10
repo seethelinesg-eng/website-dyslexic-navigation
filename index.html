@@ -27,8 +27,9 @@
 #instructionAudioButton{appearance:none;border:2px solid var(--ink);background:var(--accent);color:var(--ink);padding:12px 18px;min-height:46px;font:inherit;font-weight:700;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
 #instructionAudioButton:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
 #instructionAudioStatus{font-size:.92rem;color:#555149}
-.instructions ol{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.instructions li{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:center;background:#f3efe6;border:1px solid var(--rule);padding:16px}
+.instructions ol{list-style:none;padding:0;margin:0;counter-reset:instruction-step;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.instructions li{counter-increment:instruction-step;display:grid;grid-template-columns:42px 48px 1fr;gap:12px;align-items:center;background:#f3efe6;border:1px solid var(--rule);padding:16px}
+.instructions li::before{content:counter(instruction-step);display:grid;place-items:center;width:36px;height:36px;border:2px solid var(--ink);border-radius:50%;background:#fffdf8;font-size:1.05rem;font-weight:800;color:var(--ink)}
 .instruction-icon{display:grid;place-items:center;width:44px;height:44px;font-size:1.4rem;font-weight:700}.line-icon{color:#3153ad;background:#e8efff}.sound-icon{color:#7f2594;background:#f2e8fa}.sound-icon{color:#7f2594;background:#f2e8fa}.map-icon{color:#b85e00;background:#fff0df}
 .instructions li strong{font-size:1.04rem}.instructions li p{margin:4px 0 0;color:#555149;line-height:1.5}
 @media(max-width:700px){.instructions ol{grid-template-columns:1fr}.welcome-card{box-shadow:7px 7px 0 var(--ink)}.welcome-card:after{opacity:.45;right:-180px;top:-180px}}
