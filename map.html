@@ -110,7 +110,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
    border path from being restored to full opacity by generic line styling. */
 #mapMount.sungei-bedok-active svg g[data-station-name="Sungei Bedok"]{opacity:1!important;}
 #mapMount:not(.sungei-bedok-active) svg g[data-station-name="Sungei Bedok"]{opacity:.16!important;}
-#mapMount svg g[data-station-name="Sungei Bedok"] > path[data-sungei-bedok-border="true"]{opacity:1!important;stroke-opacity:1!important;fill-opacity:1!important;}
+#mapMount.sungei-bedok-active svg [data-sungei-bedok-border="true"]{opacity:1!important;stroke-opacity:1!important;fill-opacity:1!important;}
+#mapMount:not(.sungei-bedok-active) svg [data-sungei-bedok-border="true"]{opacity:.16!important;stroke-opacity:.16!important;fill-opacity:.16!important;}
   /* Keep the orange Circle Line geometry visually fixed: no glow filters, transforms, or animated effects on hover/selection. */
   #mapMount [data-line="CCL"],#mapMount [data-line="CCL"].dimmed,#mapMount [data-line="CCL"].selected-line{transform:none!important;animation:none!important;transition:opacity .16s ease!important}
 #mapMount .station-label-highlight{pointer-events:none}
@@ -2117,7 +2118,8 @@ body, body * {
         sungeiGroup.style.setProperty('visibility','visible','important');
         // The parent group itself must dim on unrelated lines; fading only
         // its child paths can be undone by generic selected-line styling.
-        sungeiGroup.style.setProperty('opacity',sungeiOwnerSelected?'1':'.16','important');
+        // Keep the wrapper neutral; each border half receives the focus opacity below.
+        sungeiGroup.style.setProperty('opacity','1','important');
         sungeiGroup.style.setProperty('stroke-opacity','1','important');
         sungeiGroup.style.setProperty('fill-opacity','1','important');
         sungeiGroup.style.setProperty('filter','none','important');
