@@ -1019,15 +1019,15 @@ body, body * {
     // Sungei Bedok is the shared TE31 (TEL/Brown) and DT37 (DTL/Blue)
     // interchange. Keep the complete station name opaque on either line.
     svg.querySelectorAll('[data-station-name="Sungei Bedok"]').forEach(group=>{
-      group.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
-      group.style.setProperty('display','inline','important');
-      group.style.setProperty('visibility','visible','important');
-      group.style.setProperty('opacity','1','important');
-      group.querySelectorAll('text,tspan').forEach(part=>{
+      // Clear focus/dimming from every nested SVG element, not only the text.
+      // The full-network artwork groups TE31 and DT37 together in one capsule.
+      [group,...group.querySelectorAll('*')].forEach(part=>{
         part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
         part.style.setProperty('display','inline','important');
         part.style.setProperty('visibility','visible','important');
         part.style.setProperty('opacity','1','important');
+        part.style.setProperty('stroke-opacity','1','important');
+        part.style.setProperty('fill-opacity','1','important');
       });
     });
   }
