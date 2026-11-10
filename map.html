@@ -2115,9 +2115,10 @@ body, body * {
         sungeiGroup.style.setProperty('filter','none','important');
       }
       svg.querySelectorAll('[data-sungei-bedok-border="true"]').forEach(border=>{
-        // Preserve each half's real line ownership: brown half = TEL,
-        // blue half = DTL. The shared interchange opacity is controlled
-        // separately, so selecting either owner keeps both halves visible.
+        // Reassert the individual half ownership AFTER colour-based tagging:
+        // the blue right half is DTL (st44), and the brown left half is TEL.
+        // Both halves share the interchange visibility rule.
+        border.setAttribute('data-line',border.classList.contains('st44')?'DTL':'TEL');
         border.setAttribute('data-lines','TEL DTL');
         border.classList.toggle('dimmed',!sungeiOwnerSelected);
         border.classList.toggle('selected-line',sungeiOwnerSelected);
@@ -2638,7 +2639,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261110-sungei-border-focus-v6')
+  fetch('./mrt-map.svg?v=20261110-sungei-border-focus-v7')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
