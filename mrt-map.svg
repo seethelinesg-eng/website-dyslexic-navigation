@@ -11032,13 +11032,13 @@
   <!-- Restored bottom transport legend labels. These are part of the full-network SVG,
        not the six individual line SVGs. Keep them above the artwork and independent
        from all MRT line-focus filters. -->
-  <g id="changi-airport-legend-vector" data-bottom-legend-fixed="true" aria-label="Changi Airport" style="fill:#ffffff;font-family:'Atkinson Hyperlegible Next',Arial,sans-serif;font-size:8px;font-weight:600;letter-spacing:.07em;">
-    <text x="780.52" y="992.37">Changi</text>
-    <text x="780.20" y="1001.97">Airport</text>
+  <g id="changi-airport-legend-vector" data-bottom-legend-fixed="true" aria-label="Changi Airport" style="fill:#ffffff;font-family:'Atkinson Hyperlegible Next',Arial,sans-serif;font-size:8px;font-weight:600;letter-spacing:.07em;text-anchor:middle;">
+    <text x="798.03" y="992.37">Changi</text>
+    <text x="798.03" y="1001.97">Airport</text>
   </g>
-  <g id="sentosa-express-legend-vector" data-bottom-legend-fixed="true" aria-label="Sentosa Express" style="fill:#ffffff;font-family:'Atkinson Hyperlegible Next',Arial,sans-serif;font-size:8px;font-weight:600;letter-spacing:.07em;">
-    <text x="779.96" y="1054.92">Sentosa</text>
-    <text x="780.28" y="1064.52">Express</text>
+  <g id="sentosa-express-legend-vector" data-bottom-legend-fixed="true" aria-label="Sentosa Express" style="fill:#ffffff;font-family:'Atkinson Hyperlegible Next',Arial,sans-serif;font-size:8px;font-weight:600;letter-spacing:.07em;text-anchor:middle;">
+    <text x="798.03" y="1054.92">Sentosa</text>
+    <text x="798.03" y="1064.52">Express</text>
   </g>
 
 </svg>
