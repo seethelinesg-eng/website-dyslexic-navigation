@@ -897,12 +897,19 @@ body, body * {
           ...gradientColours(svg,style.stroke),
           ...gradientColours(svg,style.fill)
         ];
-        const owners=Object.entries(routeColours)
-          .filter(([,route])=>colours.some(colour=>colourMatches(colour,route.rgb,42)))
-          .map(([line])=>line);
+        // A gradient may contain several colours because Illustrator uses
+        // gradients for both route strokes and interchange capsules. For a
+        // route segment, choose the line whose actual colour occurs most
+        // often in the gradient; do not assign every incidental colour stop
+        // as an owner (that incorrectly makes the CCL spur show on DTL focus).
+        const ownerScores=Object.entries(routeColours).map(([line,route])=>({
+          line,
+          score:colours.filter(colour=>colourMatches(colour,route.rgb,42)).length
+        })).filter(item=>item.score>0).sort((a,b)=>b.score-a.score);
+        const owners=ownerScores.length?[ownerScores[0].line]:[];
         el.setAttribute('data-gradient-route','true');
         if(owners.length){
-          el.setAttribute('data-lines',[...new Set(owners)].join(' '));
+          el.setAttribute('data-lines',owners.join(' '));
           el.setAttribute('data-line',owners[0]);
         }
       }
