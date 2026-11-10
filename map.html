@@ -2094,8 +2094,10 @@ body, body * {
         sungeiGroup.style.setProperty('filter','none','important');
       }
       svg.querySelectorAll('[data-sungei-bedok-border="true"]').forEach(border=>{
+        // Preserve each half's real line ownership: brown half = TEL,
+        // blue half = DTL. The shared interchange opacity is controlled
+        // separately, so selecting either owner keeps both halves visible.
         border.setAttribute('data-lines','TEL DTL');
-        border.setAttribute('data-line','TEL');
         border.classList.toggle('dimmed',!sungeiOwnerSelected);
         border.classList.toggle('selected-line',sungeiOwnerSelected);
         border.style.setProperty('display','inline','important');
