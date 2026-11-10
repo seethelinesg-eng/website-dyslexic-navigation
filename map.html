@@ -1633,22 +1633,27 @@ body, body * {
     });
   }
   function restoreBottomLegendTransportLabels(svg){
-    // Changi Airport is two separate SVG text objects ("Changi" and
-    // "Airport"). Route tagging can put dimmed on their nested parent
-    // groups, so restore the words AND their label-only ancestor groups.
-    const words=new Set(['changi','airport','sentosa','express']);
-    svg.querySelectorAll('text,tspan').forEach(node=>{
-      const word=String(node.textContent||'').replace(/\\s+/g,'').toLowerCase();
-      if(!words.has(word))return;
-      let current=node;
-      while(current&&current!==svg){
-        const label=String(current.textContent||'').replace(/\\s+/g,'').toLowerCase();
-        if(!words.has(label)&&label!=='changiairport'&&label!=='sentosaexpress')break;
-        current.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden','line-hover');
-        ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
-          current.style.setProperty(prop,prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1','important');
-        });
-        current=current.parentElement;
+    if(!svg)return;
+    // These two labels sit inside a shared Illustrator wrapper with the
+    // neighbouring ferry-terminal legend. Do not stop at the first wrapper:
+    // a hidden ancestor can still suppress the text even when the text itself
+    // has been restored. Clear hiding classes up the full ancestor chain,
+    // but only force opacity on the two Changi text objects themselves.
+    const targets=[...svg.querySelectorAll('text')].filter(el=>{
+      const label=String(el.textContent||'').replace(/\\s+/g,'').toLowerCase();
+      return label==='changi'||label==='airport';
+    });
+    targets.forEach(label=>{
+      label.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden','line-hover');
+      ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
+        label.style.setProperty(prop,prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1','important');
+      });
+      let parent=label.parentElement;
+      while(parent&&parent!==svg){
+        parent.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden','line-hover');
+        parent.style.setProperty('display','inline','important');
+        parent.style.setProperty('visibility','visible','important');
+        parent=parent.parentElement;
       }
     });
   }
