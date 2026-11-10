@@ -1004,6 +1004,33 @@ body, body * {
 
     });
   }
+  function protectChangiAirportLegend(svg){
+    if(!svg)return;
+    // These are the fixed Changi Airport legend text fragments in all six
+    // Illustrator line exports. Identify them by their stable SVG positions,
+    // not getBBox/getCTM (which vary across Safari and nested SVG groups).
+    const positions=['780.52 992.37','780.2002 1001.9703','780.2 1001.97'];
+    const restoreProps=['display','visibility','opacity','fill-opacity','stroke-opacity','filter'];
+    svg.querySelectorAll('text,tspan').forEach(label=>{
+      const value=String(label.textContent||'').replace(/\s+/g,'').toLowerCase();
+      const transform=label.getAttribute('transform')||'';
+      const isChangiWord=(value==='changi'&&transform.includes(positions[0]))||
+        (value==='airport'&&(transform.includes(positions[1])||transform.includes(positions[2])));
+      if(!isChangiWord)return;
+      let node=label;
+      while(node&&node!==svg){
+        node.setAttribute('data-changi-legend-fixed','true');
+        node.removeAttribute('data-line');
+        node.removeAttribute('data-lines');
+        node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
+        restoreProps.forEach(prop=>{
+          const val=prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1';
+          node.style.setProperty(prop,val,'important');
+        });
+        node=node.parentElement;
+      }
+    });
+  }
   function protectBottomLegendFromLineFocus(svg){
     if(!svg)return;
     // The bottom transport legend is fixed artwork, not part of any MRT line.
@@ -1587,7 +1614,7 @@ body, body * {
     // Final pass: single-line selection loads a separate SVG and applies
     // several independent text/shape filters. Restore the Changi Airport
     // legend label and its Illustrator ancestors only AFTER all those filters.
-    restoreBottomLegendTransportLabels(mount.querySelector('svg'));
+    protectChangiAirportLegend(mount.querySelector('svg'));\n    restoreBottomLegendTransportLabels(mount.querySelector('svg'));
     speak(names[code]+' selected');
   }
   function showAll(){
@@ -1920,6 +1947,7 @@ body, body * {
     });
     tagMapLines(imported);
     protectBottomLegendFromLineFocus(imported);
+    protectChangiAirportLegend(imported);
     addMapLineInteractions(imported);
     makeLegendInteractive(imported);
     const counts={};
