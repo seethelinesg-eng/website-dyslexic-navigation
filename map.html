@@ -55,6 +55,32 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #stationList button:hover,#stationList button:focus-visible{background:#fff0e9;border-color:var(--accent)}
 #stationList .station-code{font-size:.66rem;color:var(--muted);font-weight:700;letter-spacing:0;white-space:nowrap}
 #stationList button span:last-child{display:block;font-size:.76rem;line-height:1.2;font-weight:700;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal}
+/* Keep every station label inside its own card, including long interchange names. */
+#stationList button.station-number-button{
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  grid-template-columns:42px minmax(0,1fr)!important;
+  column-gap:5px!important;
+}
+#stationList button.station-number-button > .station-code{
+  min-width:0!important;
+  font-size:.62rem!important;
+  letter-spacing:0!important;
+}
+#stationList button.station-number-button > span:last-child{
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  font-size:.64rem!important;
+  line-height:1.15!important;
+  letter-spacing:0!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  hyphens:auto;
+}
 .map-column{min-width:0}
 .map-heading{display:flex;justify-content:space-between;align-items:end;gap:14px;margin:0 0 12px}
 .map-heading h2{font-size:1.35rem;letter-spacing:-.035em;margin:0}
@@ -171,6 +197,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   #stationList{grid-template-columns:repeat(2,minmax(0,1fr));max-height:420px;gap:8px}
   #stationList button{grid-template-columns:1fr;gap:2px;min-height:48px;padding:7px 8px;font-size:.72rem;line-height:1.15;overflow-wrap:anywhere}
   #stationList button span:last-child{font-size:.72rem;line-height:1.15}
+  #stationList button.station-number-button{grid-template-columns:1fr!important;overflow:hidden!important}
+  #stationList button.station-number-button > span:last-child{font-size:.64rem!important;letter-spacing:0!important;line-height:1.15!important;overflow-wrap:anywhere!important;word-break:break-word!important}
   #stationList .station-code{font-size:.64rem;line-height:1.1}
   .map-heading{align-items:flex-start;flex-direction:row;justify-content:space-between;gap:8px;margin-bottom:9px}
   .map-heading h2{font-size:1.2rem}
