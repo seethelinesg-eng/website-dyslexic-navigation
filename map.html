@@ -2076,29 +2076,23 @@ body, body * {
       restoreBottomLegendTransportLabels(svg);
       mount.classList.toggle('sungei-bedok-active',code==='TEL'||code==='DTL');
       if(code==='TEL'||code==='DTL')restoreSungeiBedokLabel(svg);
-      // Full-map toolbar override: both halves of the Sungei Bedok border
-      // belong to the shared TEL/DTL interchange, never to EWL.
+      // Sungei Bedok is a shared TEL/DTL interchange. Keep the outer
+      // station group fully opaque so it cannot multiply the opacity of its
+      // children. Apply the focus opacity directly to the two border paths.
       const sungeiOwnerSelected=code==='TEL'||code==='DTL';
       const sungeiGroup=svg.querySelector('g[data-station-name="Sungei Bedok"]');
       if(sungeiGroup){
-        [sungeiGroup,...sungeiGroup.querySelectorAll('*')].forEach(node=>{
-          if(node.matches('path,rect,polygon,polyline,line')){
-            node.setAttribute('data-lines','TEL DTL');
-            node.setAttribute('data-line','TEL');
-            node.classList.toggle('dimmed',!sungeiOwnerSelected);
-            node.classList.toggle('selected-line',sungeiOwnerSelected);
-          }
-          node.style.setProperty('display','inline','important');
-          node.style.setProperty('visibility','visible','important');
-          node.style.setProperty('opacity',sungeiOwnerSelected?'1':'.16','important');
-          node.style.setProperty('stroke-opacity',sungeiOwnerSelected?'1':'.16','important');
-          node.style.setProperty('fill-opacity',sungeiOwnerSelected?'1':'.16','important');
-          node.style.setProperty('filter','none','important');
-        });
+        sungeiGroup.setAttribute('data-lines','TEL DTL');
+        sungeiGroup.setAttribute('data-line','TEL');
+        sungeiGroup.classList.toggle('dimmed',!sungeiOwnerSelected);
+        sungeiGroup.classList.toggle('selected-line',sungeiOwnerSelected);
+        sungeiGroup.style.setProperty('display','inline','important');
+        sungeiGroup.style.setProperty('visibility','visible','important');
+        sungeiGroup.style.setProperty('opacity','1','important');
+        sungeiGroup.style.setProperty('stroke-opacity','1','important');
+        sungeiGroup.style.setProperty('fill-opacity','1','important');
+        sungeiGroup.style.setProperty('filter','none','important');
       }
-      // Final, explicit targeting of the two blue/brown capsule halves.
-      // These exact border paths are tagged in mrt-map.svg, so colour-based
-      // DTL detection cannot reverse their TEL/DTL shared ownership.
       svg.querySelectorAll('[data-sungei-bedok-border="true"]').forEach(border=>{
         border.setAttribute('data-lines','TEL DTL');
         border.setAttribute('data-line','TEL');
