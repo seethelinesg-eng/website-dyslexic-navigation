@@ -1461,7 +1461,11 @@ body, body * {
     installMap(fullMapRaw);
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     const svg=mount.querySelector('svg');
-    if(svg){applyLineEmphasis(svg,code);applyDestinationVisibility(svg,code);}
+    if(svg){
+      applyLineEmphasis(svg,code);
+      applyDestinationVisibility(svg,code);
+      if(code==='TEL'||code==='DTL')restoreSungeiBedokLabel(svg);
+    }
     speak(names[code]);
     status.textContent=names[code]+' selected. Other MRT lines are translucent.';
   }
