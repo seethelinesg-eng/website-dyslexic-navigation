@@ -342,7 +342,7 @@ body, body * {
             </div>
             <div id="mapMount"></div>
           </div>
-          <div id="standaloneLegendMount" aria-label="Independent transport legend panel"></div>
+          
         </div>
         <p class="map-touch-hint">On a laptop: use + and − to zoom, then drag the map to move around. On a phone: pinch to zoom and drag to move. Tap a station or coloured line to interact.</p>
         <p class="help">Choose a coloured line button to show only that route and reveal its station list. Select a station to hear its name.</p>
@@ -1449,7 +1449,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-changi-legend-independent-v5');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-integrated-legend-v1');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -1963,39 +1963,15 @@ body, body * {
     if(doc.querySelector('parsererror')||!doc.querySelector('svg'))throw new Error('Invalid SVG');
     const svg=doc.querySelector('svg');
     svg.removeAttribute('width');svg.removeAttribute('height');
-    svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map');
+    svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map with integrated transport legend');
     const imported=document.importNode(svg,true);
-    // Apply Bionic typography once to the imported SVG before wiring clicks.
     if(window.__bionicizeMrtSvg)window.__bionicizeMrtSvg(imported);
-    const sourceViewBox=(imported.getAttribute('viewBox')||'0 0 1105.51 1120').trim().split(/[ ,]+/).map(Number);
-    mobileMapBaseViewBox=sourceViewBox.length===4&&sourceViewBox.every(Number.isFinite)?sourceViewBox:[0,0,1105.51,1048.82];
-    const [viewX,viewY,viewWidth,viewHeight]=mobileMapBaseViewBox;
-    // The map artwork ends at y=920; begin the detached legend below it
-    // so no strip of the legend is left visible in the interactive viewport.
-    const legendTop=Math.min(viewY+920,viewY+viewHeight);
-    const legendHeight=Math.max(1,viewY+viewHeight-legendTop);
-    // Make a separate, unfiltered copy of the bottom artwork. It lives outside
-    // #mapMount, has its own SVG viewport and its own interaction layer.
-    const independentLegend=imported.cloneNode(true);
-    independentLegend.setAttribute('viewBox',[viewX,legendTop,viewWidth,legendHeight].join(' '));
-    independentLegend.setAttribute('role','group');
-    independentLegend.setAttribute('aria-label','Transport legend: bus, airport, ferry, cruise, Sentosa Express, cable car, map download and fare calculator');
-    independentLegend.setAttribute('preserveAspectRatio','xMidYMid meet');
-    independentLegend.style.setProperty('height','auto','important');
-    namespaceLegendSvgIds(independentLegend);
-    independentLegend.querySelectorAll('text,tspan').forEach(label=>{
-      label.style.setProperty('font-family','"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif','important');
-    });
-    legendMount.replaceChildren(independentLegend);
-    makeLegendInteractive(independentLegend);
-    // The interactive map ends at the exact seam above the legend band.
-    // Both SVGs sit inside one continuous frame, but only the detached copy
-    // is rendered below this boundary and is never touched by line filters.
-    const mapHeight=Math.max(1,legendTop-viewY);
-    // Keep the zoom/pan controller on the cropped map bounds; otherwise its
-    // next update would restore the original full-height viewBox and reattach
-    // the legend visually to the map.
-    mobileMapBaseViewBox=[viewX,viewY,viewWidth,mapHeight];
+    // Keep the map and bottom transport legend in ONE continuous SVG.
+    // Protect the bottom legend's vector artwork before any line-focus rules run.
+    mobileMapBaseViewBox=(imported.getAttribute('viewBox')||'0 0 1105.51 1120').trim().split(/[ ,]+/).map(Number);
+    if(mobileMapBaseViewBox.length!==4||!mobileMapBaseViewBox.every(Number.isFinite)){
+      mobileMapBaseViewBox=[0,0,1105.51,1120];
+    }
     imported.setAttribute('viewBox',mobileMapBaseViewBox.join(' '));
     imported.setAttribute('preserveAspectRatio','xMidYMid meet');
     mount.replaceChildren(imported);
@@ -2006,6 +1982,7 @@ body, body * {
     tagMapLines(imported);
     protectBottomLegendFromLineFocus(imported);
     protectChangiAirportLegend(imported);
+    makeLegendInteractive(imported);
     addMapLineInteractions(imported);
     const counts={};
     imported.querySelectorAll('[data-line]').forEach(el=>{const c=el.getAttribute('data-line');counts[c]=(counts[c]||0)+1});
