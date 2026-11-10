@@ -93,9 +93,6 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .map-shell{position:relative;width:100%;height:min(82vh,900px);min-height:560px;background:var(--white);border:0;padding:0;box-shadow:none;box-sizing:border-box;overflow:hidden}
 #mapMount{position:absolute;inset:0;width:100%;height:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;background:var(--white)}
 #mapMount svg{display:block;width:100%;max-width:100%;height:100%;max-height:100%;margin:0 auto;box-sizing:border-box;object-fit:contain}
-#standaloneLegendMount{position:relative;width:100%;margin:0;background:#080808;border:0;box-shadow:none;overflow:hidden;line-height:0}
-#standaloneLegendMount svg{display:block;width:100%;height:auto;max-width:100%;margin:0 auto;overflow:hidden}
-#standaloneLegendMount svg text,#standaloneLegendMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
 .map-zoom-controls{position:absolute;z-index:5;top:12px;right:12px;display:grid;grid-template-columns:48px 48px;gap:7px}
 .map-zoom-controls button{min-width:48px;min-height:48px;padding:6px;text-align:center;background:#fffdf8;border:1px solid var(--ink);box-shadow:0 2px 8px #0002;font-size:1.2rem}
 .map-zoom-controls #mapZoomReset{grid-column:1 / -1;font-size:.82rem}
@@ -290,9 +287,6 @@ body, body * {
   font-weight: 700 !important;
 }
 
-/* Keep the independently filtered legend visually joined to the map on every breakpoint. */
-#mapViewport{border:0!important;box-shadow:none!important}
-#standaloneLegendMount{margin:0!important;border:0!important;box-shadow:none!important}
 .map-display-frame{display:block;line-height:0}
 .map-touch-hint{line-height:1.5}
 </style>
@@ -581,7 +575,6 @@ body, body * {
 
     const status=document.getElementById('status');
   const mount=document.getElementById('mapMount');
-  const legendMount=document.getElementById('standaloneLegendMount');
   const mapViewport=document.getElementById('mapViewport');
   const stationPanel=document.getElementById('stationPanel');
   let mobileMapZoom=1,mobileMapPanX=0,mobileMapPanY=0;
