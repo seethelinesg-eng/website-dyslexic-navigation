@@ -10360,8 +10360,8 @@
     </g>
   </g>
   <g data-station-name="Sungei Bedok" data-lines="TEL DTL" data-line="TEL DTL">
-    <path class="st62" d="M976.87,589.68h-15.17c-.34-.3-2.71-2.45-2.53-5.81.15-2.95,2.12-4.74,2.53-5.09h15.17v10.91Z"/>
-    <path class="st44" d="M976.87,589.68h15.47c.35-.3,2.76-2.45,2.58-5.81-.15-2.95-2.16-4.74-2.58-5.09h-15.47v10.91Z"/>
+    <path data-sungei-bedok-border="true" data-station-border="true" data-station-name="Sungei Bedok" data-line="TEL" data-lines="TEL DTL" class="st62 d="M976.87,589.68h-15.17c-.34-.3-2.71-2.45-2.53-5.81.15-2.95,2.12-4.74,2.53-5.09h15.17v10.91Z"/>
+    <path data-sungei-bedok-border="true" data-station-border="true" data-station-name="Sungei Bedok" data-line="TEL" data-lines="TEL DTL" class="st44 d="M976.87,589.68h15.47c.35-.3,2.76-2.45,2.58-5.81-.15-2.95-2.16-4.74-2.58-5.09h-15.47v10.91Z"/>
     <g class="st84">
       <g class="st84">
         <g class="st84">
