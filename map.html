@@ -529,10 +529,11 @@ body, body * {
     [...root.childNodes].forEach(bionicizeTree);
   }
 
+  // Bionicise the static page once. Avoid observing the entire document:
+  // repeatedly walking thousands of newly inserted SVG fragments can delay
+  // map setup and leave the visible map unresponsive.
   bionicizeTree(document.body);
-  const observer = new MutationObserver(records =>
-    records.forEach(record => record.addedNodes.forEach(bionicizeTree)));
-  observer.observe(document.body, {childList:true, subtree:true});
+  window.__bionicizeMrtSvg = bionicizeTree;
 })()
 
     const status=document.getElementById('status');
@@ -1630,6 +1631,8 @@ body, body * {
     svg.removeAttribute('width');svg.removeAttribute('height');
     svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map');
     const imported=document.importNode(svg,true);
+    // Apply Bionic typography once to the imported SVG before wiring clicks.
+    if(window.__bionicizeMrtSvg)window.__bionicizeMrtSvg(imported);
     const sourceViewBox=(imported.getAttribute('viewBox')||'0 0 1105.51 1120').trim().split(/[ ,]+/).map(Number);
     mobileMapBaseViewBox=sourceViewBox.length===4&&sourceViewBox.every(Number.isFinite)?sourceViewBox:[0,0,1105.51,1048.82];
     imported.setAttribute('preserveAspectRatio','xMidYMid meet');
