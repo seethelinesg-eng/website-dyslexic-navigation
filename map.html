@@ -1020,6 +1020,10 @@ body, body * {
       let node=label;
       while(node&&node!==svg){
         node.setAttribute('data-changi-legend-fixed','true');
+        // The shape-focus pass exempts data-bottom-legend-fixed. Mark this
+        // exact Changi text branch as fixed as well, so neutral SVG artwork
+        // inside the legend cannot be hidden as unrelated map geometry.
+        node.setAttribute('data-bottom-legend-fixed','true');
         node.removeAttribute('data-line');
         node.removeAttribute('data-lines');
         node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
