@@ -1632,6 +1632,26 @@ body, body * {
       }
     });
   }
+  function restoreBottomLegendTransportLabels(svg){
+    // Changi Airport is two separate SVG text objects ("Changi" and
+    // "Airport"). Route tagging can put dimmed on their nested parent
+    // groups, so restore the words AND their label-only ancestor groups.
+    const words=new Set(['changi','airport','sentosa','express']);
+    svg.querySelectorAll('text,tspan').forEach(node=>{
+      const word=String(node.textContent||'').replace(/\\s+/g,'').toLowerCase();
+      if(!words.has(word))return;
+      let current=node;
+      while(current&&current!==svg){
+        const label=String(current.textContent||'').replace(/\\s+/g,'').toLowerCase();
+        if(!words.has(label)&&label!=='changiairport'&&label!=='sentosaexpress')break;
+        current.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden','line-hover');
+        ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
+          current.style.setProperty(prop,prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1','important');
+        });
+        current=current.parentElement;
+      }
+    });
+  }
   function selectLineOnFullMap(code){
     if(!names[code]||!fullMapRaw)return;
     selected=code;
@@ -1642,6 +1662,7 @@ body, body * {
     if(svg){
       applyLineEmphasis(svg,code);
       applyDestinationVisibility(svg,code);
+      restoreBottomLegendTransportLabels(svg);
       mount.classList.toggle('sungei-bedok-active',code==='TEL'||code==='DTL');
       if(code==='TEL'||code==='DTL')restoreSungeiBedokLabel(svg);
     }
