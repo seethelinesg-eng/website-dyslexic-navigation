@@ -23,9 +23,17 @@
 .start-hint{position:relative;z-index:1;color:#716c63;margin:17px 0 42px;font-size:.95rem}
 .instructions{position:relative;z-index:1;border-top:1px solid var(--rule);padding-top:24px}
 .instructions h2{font-size:clamp(1.5rem,2.8vw,2.1rem);letter-spacing:-.04em;margin:0 0 18px}
-.instruction-audio{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:0 0 18px}
+.instruction-audio{display:grid;gap:10px;max-width:560px;margin:0 0 18px;padding:14px 16px;background:#f3efe6;border:1px solid var(--rule)}
+.instruction-audio-controls{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+.instruction-audio-controls button{appearance:none;display:grid;place-items:center;min-width:42px;min-height:42px;padding:8px 12px;border:2px solid var(--ink);background:#fffdf8;color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.instruction-audio-controls button:hover{background:#e8e3da}
 #instructionAudioButton{appearance:none;border:2px solid var(--ink);background:#3153ad;color:#fff;padding:12px 18px;min-height:46px;font:inherit;font-weight:700;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
 #instructionAudioButton:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+#instructionAudioButton{background:#3153ad;color:#fff;box-shadow:3px 3px 0 var(--ink)}
+#instructionAudioButton:hover{background:#274696}
+.instruction-audio-timeline{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px}
+.instruction-audio-time{font-size:.78rem;font-variant-numeric:tabular-nums;color:#555149}
+#instructionProgress{width:100%;height:5px;margin:0;accent-color:#3153ad;cursor:pointer}
 #instructionAudioStatus{font-size:.92rem;color:#555149}
 .instructions ol{list-style:none;padding:0;margin:0;counter-reset:instruction-step;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .instructions li{counter-increment:instruction-step;display:grid;grid-template-columns:42px 48px 1fr;gap:12px;align-items:center;background:#f3efe6;border:1px solid var(--rule);padding:16px}
@@ -61,8 +69,17 @@ body, body * {
       <p class="start-hint">Press START to open the map.</p>
       <div class="instructions" aria-labelledby="instructionsTitle">
         <h2 id="instructionsTitle">How to use the map</h2>
-        <div class="instruction-audio">
-          <button id="instructionAudioButton" type="button" aria-pressed="false">▶ Play instructions</button>
+        <div class="instruction-audio" aria-label="How to use the map audio player">
+          <div class="instruction-audio-controls">
+            <button type="button" id="instructionRewind" aria-label="Rewind 10 seconds" title="Rewind 10 seconds">↶ 10</button>
+            <button type="button" id="instructionAudioButton" aria-pressed="false">▶ Play instructions</button>
+            <button type="button" id="instructionForward" aria-label="Forward 10 seconds" title="Forward 10 seconds">10 ↷</button>
+          </div>
+          <div class="instruction-audio-timeline">
+            <span class="instruction-audio-time" id="instructionCurrentTime">0:00</span>
+            <input id="instructionProgress" type="range" min="0" max="1000" value="0" step="1" aria-label="Instruction audio progress">
+            <span class="instruction-audio-time" id="instructionDuration">0:00</span>
+          </div>
           <span id="instructionAudioStatus" aria-live="polite">Listen to the instructions</span>
         </div>
         <ol>
@@ -136,52 +153,108 @@ body, body * {
 <script>
 (() => {
   const button = document.getElementById('instructionAudioButton');
+  const rewind = document.getElementById('instructionRewind');
+  const forward = document.getElementById('instructionForward');
+  const progress = document.getElementById('instructionProgress');
+  const currentTime = document.getElementById('instructionCurrentTime');
+  const duration = document.getElementById('instructionDuration');
   const status = document.getElementById('instructionAudioStatus');
-  if (!button || !('speechSynthesis' in window)) {
+  if (!button || !('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
     if (button) { button.disabled = true; button.textContent = 'Audio unavailable'; }
     if (status) status.textContent = 'Your browser does not support spoken instructions.';
     return;
   }
   const instructions = "How to use the map. Step one: Choose an MRT line. Click a coloured line button to focus on that route. Step two: Click a station name. Click any station name directly on the map. It will be highlighted and its name will be read aloud. Step three: Follow the selected line. The selected route stays fully visible in its original colour, while other lines fade into the background. Step four: See the whole network again. Click Back to full MRT map to return to all lines.";
+  const CHARS_PER_SECOND = 14;
   let utterance = null;
+  let charPosition = 0;
+  let charOffset = 0;
   let paused = false;
+  let active = false;
+  function formatTime(seconds) {
+    const safe = Math.max(0, Math.floor(seconds || 0));
+    return Math.floor(safe / 60) + ':' + String(safe % 60).padStart(2, '0');
+  }
+  function updateProgress() {
+    const length = Math.max(1, instructions.length);
+    charPosition = Math.min(length, Math.max(0, charPosition));
+    progress.value = String(Math.round(charPosition / length * 1000));
+    currentTime.textContent = formatTime(charPosition / CHARS_PER_SECOND);
+    duration.textContent = formatTime(length / CHARS_PER_SECOND);
+  }
   function reset() {
-    utterance = null; paused = false;
+    utterance = null; paused = false; active = false; charPosition = 0;
     button.textContent = '▶ Play instructions';
     button.setAttribute('aria-pressed', 'false');
+    updateProgress();
     status.textContent = 'Listen to the instructions';
   }
-  button.addEventListener('click', () => {
-    if (paused) {
-      window.speechSynthesis.resume(); paused = false;
-      button.textContent = 'Ⅱ Pause audio';
-      button.setAttribute('aria-pressed', 'false');
-      status.textContent = 'Playing instructions';
-      return;
-    }
-    if (window.speechSynthesis.speaking && utterance) {
-      window.speechSynthesis.pause(); paused = true;
-      button.textContent = '▶ Resume audio';
-      button.setAttribute('aria-pressed', 'true');
-      status.textContent = 'Instructions paused';
-      return;
-    }
+  function startAt(position) {
+    charOffset = Math.max(0, Math.min(instructions.length, position));
+    charPosition = charOffset;
+    const remaining = instructions.slice(charOffset);
+    if (!remaining.trim()) { reset(); return; }
     window.speechSynthesis.cancel();
-    utterance = new SpeechSynthesisUtterance(instructions);
-    utterance.lang = 'en-SG'; utterance.rate = 0.88; utterance.pitch = 1.02;
+    const nextUtterance = new SpeechSynthesisUtterance(remaining);
+    nextUtterance.lang = 'en-SG';
+    nextUtterance.rate = 0.88;
+    nextUtterance.pitch = 1.02;
     const voices = window.speechSynthesis.getVoices();
     const voice = voices.find(v => /^en-SG$/i.test(v.lang)) ||
       voices.find(v => /^en-MY$/i.test(v.lang)) ||
       voices.find(v => /^en-AU$/i.test(v.lang)) ||
       voices.find(v => /^en-GB$/i.test(v.lang)) ||
       voices.find(v => /^en/i.test(v.lang));
-    if (voice) utterance.voice = voice;
-    utterance.onend = reset; utterance.onerror = reset;
-    window.speechSynthesis.speak(utterance);
+    if (voice) nextUtterance.voice = voice;
+    utterance = nextUtterance; active = true; paused = false;
+    nextUtterance.onboundary = event => {
+      if (utterance !== nextUtterance) return;
+      charPosition = Math.min(instructions.length, charOffset + (event.charIndex || 0));
+      updateProgress();
+    };
+    nextUtterance.onend = () => {
+      if (utterance !== nextUtterance) return;
+      charPosition = instructions.length; updateProgress();
+      utterance = null; active = false; paused = false;
+      button.textContent = '▶ Play instructions';
+      button.setAttribute('aria-pressed', 'false');
+      status.textContent = 'Finished instructions';
+    };
+    nextUtterance.onerror = event => {
+      if (utterance !== nextUtterance) return;
+      utterance = null; active = false; paused = false;
+      button.textContent = '▶ Play instructions';
+      button.setAttribute('aria-pressed', 'false');
+      status.textContent = 'Audio could not play (' + (event.error || 'speech error') + ').';
+    };
+    updateProgress();
+    window.speechSynthesis.resume();
+    window.speechSynthesis.speak(nextUtterance);
     button.textContent = 'Ⅱ Pause audio';
     button.setAttribute('aria-pressed', 'false');
     status.textContent = 'Playing instructions';
+  }
+  button.addEventListener('click', () => {
+    if (active && paused) {
+      window.speechSynthesis.resume(); paused = false;
+      button.textContent = 'Ⅱ Pause audio';
+      button.setAttribute('aria-pressed', 'false');
+      status.textContent = 'Playing instructions';
+    } else if (active) {
+      window.speechSynthesis.pause(); paused = true;
+      button.textContent = '▶ Resume audio';
+      button.setAttribute('aria-pressed', 'true');
+      status.textContent = 'Instructions paused';
+    } else {
+      startAt(charPosition >= instructions.length ? 0 : charPosition);
+    }
   });
+  rewind.addEventListener('click', () => startAt(Math.max(0, charPosition - 10 * CHARS_PER_SECOND)));
+  forward.addEventListener('click', () => startAt(Math.min(instructions.length, charPosition + 10 * CHARS_PER_SECOND)));
+  progress.addEventListener('input', () => {
+    startAt(Math.round(Number(progress.value) / 1000 * instructions.length));
+  });
+  updateProgress();
   window.addEventListener('pagehide', () => window.speechSynthesis.cancel());
 })();
 </script>
