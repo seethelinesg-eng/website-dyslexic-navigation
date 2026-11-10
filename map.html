@@ -1030,7 +1030,8 @@ body, body * {
       });
     });
   }
-  function normaliseStationName(value){return String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();}\n  function highlightStation(stationName,code){
+  function normaliseStationName(value){return String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();}
+  function highlightStation(stationName,code){
     const svg=mount.querySelector('svg');
     if(!svg)return;
     if(normaliseStationName(stationName)==='sungeibedok')restoreSungeiBedokLabel(svg);
