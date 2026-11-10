@@ -1024,18 +1024,25 @@ body, body * {
   function restoreSungeiBedokLabel(svg){
     if(!svg)return;
     // Sungei Bedok is the shared TE31 (TEL/Brown) and DT37 (DTL/Blue)
-    // interchange. Keep the complete station name opaque on either line.
-    svg.querySelectorAll('[data-station-name="Sungei Bedok"]').forEach(group=>{
-      // Clear focus/dimming from every nested SVG element, not only the text.
-      // The full-network artwork groups TE31 and DT37 together in one capsule.
-      [group,...group.querySelectorAll('*')].forEach(part=>{
-        part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
-        part.style.setProperty('display','inline','important');
-        part.style.setProperty('visibility','visible','important');
-        part.style.setProperty('opacity','1','important');
-        part.style.setProperty('stroke-opacity','1','important');
-        part.style.setProperty('fill-opacity','1','important');
-      });
+    // interchange. Illustrator exports its name twice: as an overall capsule
+    // group AND as four independent text fragments (Su / ngei / Be / dok).
+    // Restore every matching node in the SVG, not only the capsule group:
+    // inline !important dimming on the standalone text fragments otherwise
+    // overrides the stylesheet and leaves "Bedok" translucent.
+    const matches=[...svg.querySelectorAll('[data-station-name="Sungei Bedok"]')];
+    const restore=new Set();
+    matches.forEach(node=>{
+      restore.add(node);
+      node.querySelectorAll('*').forEach(child=>restore.add(child));
+    });
+    restore.forEach(part=>{
+      part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+      part.style.setProperty('display','initial','important');
+      part.style.setProperty('visibility','visible','important');
+      part.style.setProperty('opacity','1','important');
+      part.style.setProperty('stroke-opacity','1','important');
+      part.style.setProperty('fill-opacity','1','important');
+      part.style.setProperty('filter','none','important');
     });
   }
   function normaliseStationName(value){return String(value||'').replace(/\s+/g,'').toLocaleLowerCase();}
