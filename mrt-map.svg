@@ -2431,7 +2431,7 @@
           <g class="st84">
             <g class="st84">
               <g class="st84">
-                <text class="st121" transform="translate(1010.5261 586.2233) scale(1.0529 1)"><tspan x="0" y="0">Su</tspan></text>
+                <text class="st121" transform="translate(1010.5261 586.2233) scale(1.0529 1)" data-line="TEL" data-lines="TEL DTL" data-station-name="Sungei Bedok" data-station-label="true"><tspan x="0" y="0">Su</tspan></text>
               </g>
             </g>
           </g>
@@ -2444,7 +2444,7 @@
           <g class="st84">
             <g class="st84">
               <g class="st84">
-                <text class="st109" transform="translate(1021.862 586.2233) scale(1.0529 1)"><tspan x="0" y="0">ngei</tspan></text>
+                <text class="st109" transform="translate(1021.862 586.2233) scale(1.0529 1)" data-line="TEL" data-lines="TEL DTL" data-station-name="Sungei Bedok" data-station-label="true"><tspan x="0" y="0">ngei</tspan></text>
               </g>
             </g>
           </g>
@@ -2457,7 +2457,7 @@
           <g class="st84">
             <g class="st84">
               <g class="st84">
-                <text class="st121" transform="translate(1044.28 586.2233) scale(1.0529 1)"><tspan x="0" y="0">Be</tspan></text>
+                <text class="st121" transform="translate(1044.28 586.2233) scale(1.0529 1)" data-line="TEL" data-lines="TEL DTL" data-station-name="Sungei Bedok" data-station-label="true"><tspan x="0" y="0">Be</tspan></text>
               </g>
             </g>
           </g>
@@ -2470,7 +2470,7 @@
           <g class="st84">
             <g class="st84">
               <g class="st84">
-                <text class="st109" transform="translate(1055.9324 586.2233) scale(1.0529 1)"><tspan x="0" y="0">dok</tspan></text>
+                <text class="st109" transform="translate(1055.9324 586.2233) scale(1.0529 1)" data-line="TEL" data-lines="TEL DTL" data-station-name="Sungei Bedok" data-station-label="true"><tspan x="0" y="0">dok</tspan></text>
               </g>
             </g>
           </g>
