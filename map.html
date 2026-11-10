@@ -1569,6 +1569,10 @@ body, body * {
         });
       });
     }
+    // Final pass: single-line selection loads a separate SVG and applies
+    // several independent text/shape filters. Restore the Changi Airport
+    // legend label and its Illustrator ancestors only AFTER all those filters.
+    restoreBottomLegendTransportLabels(mount.querySelector('svg'));
     speak(names[code]+' selected');
   }
   function showAll(){
@@ -1687,26 +1691,22 @@ body, body * {
   }
   function restoreBottomLegendTransportLabels(svg){
     if(!svg)return;
-    // These two labels sit inside a shared Illustrator wrapper with the
-    // neighbouring ferry-terminal legend. Do not stop at the first wrapper:
-    // a hidden ancestor can still suppress the text even when the text itself
-    // has been restored. Clear hiding classes up the full ancestor chain,
-    // but only force opacity on the two Changi text objects themselves.
+    // The line-specific SVGs contain the bottom transport legend too.
+    // Restore both Changi text fragments and every enclosing Illustrator
+    // group AFTER line-focus filtering, because an ancestor can hide them.
     const targets=[...svg.querySelectorAll('text')].filter(el=>{
       const label=String(el.textContent||'').replace(/\\s+/g,'').toLowerCase();
       return label==='changi'||label==='airport';
     });
     targets.forEach(label=>{
-      label.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden','line-hover');
-      ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
-        label.style.setProperty(prop,prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1','important');
-      });
-      let parent=label.parentElement;
-      while(parent&&parent!==svg){
-        parent.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden','line-hover');
-        parent.style.setProperty('display','inline','important');
-        parent.style.setProperty('visibility','visible','important');
-        parent=parent.parentElement;
+      let node=label;
+      while(node&&node!==svg){
+        node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
+        ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
+          const value=prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1';
+          node.style.setProperty(prop,value,'important');
+        });
+        node=node.parentElement;
       }
     });
   }
