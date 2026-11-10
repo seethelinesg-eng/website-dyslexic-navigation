@@ -162,6 +162,31 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   .help{font-size:.88rem;margin-top:12px}
   button:hover{transform:none}
 }
+/* Keep the entire square MRT artwork visible on narrow screens, including the far-right QR legend items. */
+@media(max-width:700px){
+  .map-shell{
+    width:100%;
+    height:auto;
+    min-height:0;
+    max-height:none;
+    aspect-ratio:1077.17 / 1075.29;
+    overflow:hidden;
+  }
+  #mapMount{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+  }
+  #mapMount svg{
+    width:100%;
+    height:100%;
+    max-width:none;
+    max-height:none;
+    object-fit:contain;
+  }
+}
 @media(max-width:380px){
   #lineControls button{font-size:.82rem;padding:9px 6px}
   #stationList{grid-template-columns:1fr}
