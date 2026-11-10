@@ -20,7 +20,7 @@ body,button{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Ari
 .page-intro h1{font-size:clamp(2.6rem,6vw,5.6rem);line-height:.94;letter-spacing:-.065em;max-width:850px;margin:0 0 16px;position:relative;z-index:1}
 .page-intro p{font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.6;color:#555149;max-width:690px;margin:0;position:relative;z-index:1}
 main{width:100%;max-width:none;margin:0;padding:clamp(18px,2.5vw,36px) clamp(12px,2vw,30px) 64px}
-.route-selector-panel{margin:0 0 24px}.scroll-map-hint{margin-top:12px!important;font-weight:700;color:#a34b34!important;letter-spacing:.01em}.controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.controls button{min-width:0;text-align:center;padding:12px 8px;font-size:.94rem;line-height:1.25}.map-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.map-actions .toolbar{display:flex;flex-wrap:wrap;gap:8px}.map-actions .toolbar button{min-height:44px}.map-actions .status{flex:1;min-width:180px}.workspace{display:grid;grid-template-columns:minmax(0,3fr) minmax(280px,.7fr);gap:16px;align-items:start}
+.route-selector-panel{margin:0;position:sticky;top:16px;align-self:start}.scroll-map-hint{margin-top:12px!important;font-weight:700;color:#a34b34!important;letter-spacing:.01em}.controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.controls button{min-width:0;text-align:center;padding:12px 8px;font-size:.94rem;line-height:1.25}.map-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.map-actions .toolbar{display:flex;flex-wrap:wrap;gap:8px}.map-actions .toolbar button{min-height:44px}.map-actions .status{flex:1;min-width:180px}.workspace{display:grid;grid-template-columns:minmax(190px,.62fr) minmax(0,3fr) minmax(260px,.82fr);gap:16px;align-items:start}
 .map-sidebar{display:flex;flex-direction:column;gap:16px;min-width:0}
 .panel{background:var(--white);border:1px solid var(--rule);padding:22px;box-shadow:5px 5px 0 #1919190c}
 .panel-kicker{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:#a34b34;font-weight:700;margin:0 0 9px}
@@ -138,8 +138,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #legendTopicHint{font-size:.86rem;color:var(--muted);margin:12px 0 0;line-height:1.5}
 @media(max-width:700px){.legend-explorer-layout{grid-template-columns:1fr}.legend-topic-list{grid-template-columns:repeat(2,minmax(0,1fr))}.legend-topic-button{padding:10px}.legend-explorer{max-height:96vh;padding:16px}#legendZoomViewport{height:210px}}
 @media(max-width:420px){.legend-topic-list{grid-template-columns:1fr 1fr}.legend-topic-button{font-size:.88rem}}
-@media(max-width:900px){.workspace{grid-template-columns:1fr}.map-sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.map-sidebar>.panel:first-child{grid-row:span 2}.toolbar{grid-template-columns:1fr}#stationPanel{position:static;max-height:none}#stationList{grid-template-columns:repeat(2,minmax(0,1fr));max-height:360px;flex:initial}}
-@media(max-width:620px){.sitebar{align-items:flex-start;flex-direction:column;gap:5px}.page-intro:after{right:-120px;opacity:.35}.map-sidebar{display:flex}.station-panel-heading{align-items:flex-start;flex-direction:column;gap:6px}#stationList{grid-template-columns:1fr;max-height:360px}.map-shell{min-height:300px}#mapMount svg{width:100%;max-width:100%;margin-left:0}.map-heading{align-items:start;flex-direction:column;gap:4px}}
+@media(max-width:1100px){.workspace{grid-template-columns:minmax(190px,.65fr) minmax(0,2fr)}.workspace>.route-selector-panel{position:static}.workspace>#stationPanel{grid-column:1 / -1;position:static;max-height:none}#stationList{grid-template-columns:repeat(3,minmax(0,1fr));max-height:300px}}\n@media(max-width:900px){.workspace{grid-template-columns:1fr}.map-sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.map-sidebar>.panel:first-child{grid-row:span 2}.toolbar{grid-template-columns:1fr}#stationPanel{position:static;max-height:none}#stationList{grid-template-columns:repeat(2,minmax(0,1fr));max-height:360px;flex:initial}}
+@media(max-width:620px){.workspace>.route-selector-panel{position:static}.sitebar{align-items:flex-start;flex-direction:column;gap:5px}.page-intro:after{right:-120px;opacity:.35}.map-sidebar{display:flex}.station-panel-heading{align-items:flex-start;flex-direction:column;gap:6px}#stationList{grid-template-columns:1fr;max-height:360px}.map-shell{min-height:300px}#mapMount svg{width:100%;max-width:100%;margin-left:0}.map-heading{align-items:start;flex-direction:column;gap:4px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}}
 /* Phone layout: keep every feature available, with touch-sized controls and a pannable map. */
 @media(max-width:700px){
@@ -151,7 +151,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   .sitebar-note{font-size:.72rem;letter-spacing:.06em}
   .route-selector-panel{padding:17px 14px;margin-bottom:14px}
   .route-selector-panel h2{font-size:1.25rem}
-  .route-selector-panel .panel-copy{margin-bottom:12px}
+  .route-selector-panel .panel-copy{margin-bottom:12px}.line-panel-guidance{line-height:1.55}
   #lineControls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
   #lineControls button{
     min-height:60px;padding:10px 9px;text-align:center;
@@ -274,6 +274,17 @@ body, body * {
   </section>
   <div id="mapApp">
     <main>
+
+      <div class="map-actions">
+      <div class="toolbar">
+        <button type="button" id="backHome">← Back to home</button>
+        <button type="button" id="backToMap">← Back to full MRT map</button>
+        <button type="button" id="repeatAudio">Repeat announcement</button>
+        <button type="button" id="legendGuideButton" aria-haspopup="dialog" aria-controls="legendGuide" aria-expanded="false">ⓘ Legend guide</button>
+      </div>
+      <p class="status" id="status" role="status" aria-live="polite">Loading the MRT map…</p>
+      </div>
+      <div class="workspace">
       <section class="panel route-selector-panel">
         <p class="panel-kicker">01 / Select a route</p>
         <h2>Choose an MRT line</h2>
@@ -286,18 +297,8 @@ body, body * {
           <button type="button" data-select-line="DTL" aria-pressed="false">Downtown Line</button>
           <button type="button" data-select-line="TEL" aria-pressed="false">Thomson-East Coast Line</button>
         </div>
-        <p class="scroll-map-hint">Next, scroll down to see the Singapore MRT map. Select a coloured line above to highlight its route.</p>
+        <p class="panel-copy line-panel-guidance">Choose a coloured line here. The map and station list stay beside this panel, so you do not need to scroll up and down between them.</p>
       </section>
-      <div class="map-actions">
-      <div class="toolbar">
-        <button type="button" id="backHome">← Back to home</button>
-        <button type="button" id="backToMap">← Back to full MRT map</button>
-        <button type="button" id="repeatAudio">Repeat announcement</button>
-        <button type="button" id="legendGuideButton" aria-haspopup="dialog" aria-controls="legendGuide" aria-expanded="false">ⓘ Legend guide</button>
-      </div>
-      <p class="status" id="status" role="status" aria-live="polite">Loading the MRT map…</p>
-      </div>
-      <div class="workspace">
       <section class="map-column" aria-label="Interactive MRT map">
         <div class="map-heading"><h2>Singapore MRT network</h2><span>Interactive map</span></div>
         <div class="map-shell" id="mapViewport" aria-label="Map viewing area">
