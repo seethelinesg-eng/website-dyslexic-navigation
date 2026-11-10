@@ -1231,7 +1231,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-sungei-bedok-te31-panel-v1');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-sungei-bedok-opacity-v2');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
