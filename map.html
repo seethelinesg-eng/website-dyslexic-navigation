@@ -1832,6 +1832,17 @@ body, body * {
         if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
     });
+    // Sungei Bedok's blue and brown capsule-border fragments belong to
+    // the shared TEL/DTL station. Hide the entire border outside those two
+    // selected lines; do not leave an unrelated blue fragment behind.
+    svg.querySelectorAll('[data-station-border="true"][data-station-name="Sungei Bedok"],[data-station-border="true"][data-sungei-bedok-border="true"]').forEach(el=>{
+      const show=!code||code==='TEL'||code==='DTL';
+      el.style.setProperty('display',show?'initial':'none','important');
+      el.style.setProperty('visibility',show?'visible':'hidden','important');
+      el.style.setProperty('opacity',show?'1':'0','important');
+      el.style.setProperty('stroke-opacity',show?'1':'0','important');
+      el.classList.toggle('dimmed',!show);
+    });
     // The two green vector strokes framing the Tanah Merah station label
     // are a label border, not route geometry. Keep them only on the full map
     // and when the East-West Line is selected.
@@ -2435,7 +2446,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261110-grey-station-borders-v3')
+  fetch('./mrt-map.svg?v=20261110-sungei-border-focus-v4')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
