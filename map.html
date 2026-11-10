@@ -1824,6 +1824,35 @@ body, body * {
     // text and destination filtering, reassert DTL as fully opaque and every
     // non-selected MRT route as translucent.
     applyLineEmphasis(mount.querySelector('svg'),code);
+    // Hard-set the Expo–Changi Airport connector AFTER every generic focus
+    // and destination rule. This paired green route stroke + white outline
+    // must belong exclusively to EWL in both the standalone EWL artwork and
+    // the full-network SVG; otherwise a colour-based pass can leave it tied
+    // to DTL and make it opaque when the blue line is selected.
+    const focusSvg=mount.querySelector('svg');
+    if(focusSvg){
+      const changiConnectorStarts=[
+        'M947.13,492.93v14.91',
+        'M947.06,497.44v13.79',
+        'M964.75,506.92v14.89',
+        'M964.68,511.43v13.77'
+      ];
+      focusSvg.querySelectorAll('path').forEach(path=>{
+        const d=(path.getAttribute('d')||'').replace(/\\s+/g,'');
+        if(!changiConnectorStarts.some(start=>d.startsWith(start)))return;
+        const isEwlSelected=code==='EWL';
+        path.setAttribute('data-lines','EWL');
+        path.setAttribute('data-line','EWL');
+        path.classList.toggle('dimmed',!isEwlSelected);
+        path.classList.toggle('selected-line',isEwlSelected);
+        path.style.setProperty('display','inline','important');
+        path.style.setProperty('visibility','visible','important');
+        path.style.setProperty('opacity',isEwlSelected?'1':'.16','important');
+        path.style.setProperty('stroke-opacity',isEwlSelected?'1':'.16','important');
+        path.style.setProperty('fill-opacity',isEwlSelected?'1':'.16','important');
+        path.style.setProperty('filter','none','important');
+      });
+    }
     // Final pass: single-line selection loads a separate SVG and applies
     // several independent text/shape filters. Restore the Changi Airport
     // legend label and its Illustrator ancestors only AFTER all those filters.
