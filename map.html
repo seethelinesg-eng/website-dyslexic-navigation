@@ -890,9 +890,21 @@ body, body * {
       if(owner){        el.setAttribute('data-line',owner);
         el.style.setProperty('--line-glow',routeColours[owner].glow);
       }else if((style.stroke||'').includes('url(')||(style.fill||'').includes('url(')){
-        // Interchange gradients combine multiple route colours. Hide them in
-        // focus mode rather than leaving fragments of other lines visible.
+        // Gradient route artwork must inherit the actual MRT lines represented
+        // by its colour stops. Do not leave every gradient visible in every
+        // focus view: the East-West/Changi spur must disappear on Downtown focus.
+        const colours=[
+          ...gradientColours(svg,style.stroke),
+          ...gradientColours(svg,style.fill)
+        ];
+        const owners=Object.entries(routeColours)
+          .filter(([,route])=>colours.some(colour=>colourMatches(colour,route.rgb,42)))
+          .map(([line])=>line);
         el.setAttribute('data-gradient-route','true');
+        if(owners.length){
+          el.setAttribute('data-lines',[...new Set(owners)].join(' '));
+          el.setAttribute('data-line',owners[0]);
+        }
       }
     });
     // Keep station labels belonging to the selected route; preserve their
@@ -1687,15 +1699,19 @@ body, body * {
         el.style.setProperty('fill-opacity','0','important');
         return;
       }
-      // Multicolour gradient outlines are the transfer-station borders.
-      // Keep every route colour visible at these stations in every focus mode.
+      // Gradient outlines belong only to the MRT lines represented by
+      // their colour stops. Keep a complete interchange border when one of
+      // its own lines is selected; hide it for unrelated lines.
       if(el.hasAttribute('data-gradient-route')){
-        el.classList.remove('dimmed','focus-shape-hidden');
-        el.style.setProperty('display','initial','important');
-        el.style.setProperty('visibility','visible','important');
-        el.style.setProperty('opacity','1','important');
-        el.style.setProperty('stroke-opacity','1','important');
-        el.style.setProperty('fill-opacity','1','important');
+        const owners=(el.getAttribute('data-lines')||'').split(/\\s+/).filter(Boolean);
+        const show=owners.includes(code);
+        el.classList.toggle('dimmed',!show);
+        el.classList.remove('focus-shape-hidden');
+        el.style.setProperty('display',show?'initial':'none','important');
+        el.style.setProperty('visibility',show?'visible':'hidden','important');
+        el.style.setProperty('opacity',show?'1':'0','important');
+        el.style.setProperty('stroke-opacity',show?'1':'0','important');
+        el.style.setProperty('fill-opacity',show?'1':'0','important');
         return;
       }
       if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
@@ -1727,12 +1743,15 @@ body, body * {
     // LRT corner labels during single-line focus.
     mount.querySelectorAll('[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
     mount.querySelectorAll('[data-gradient-route]').forEach(el=>{
-      el.classList.remove('dimmed','focus-shape-hidden');
-      el.style.setProperty('display','initial','important');
-      el.style.setProperty('visibility','visible','important');
-      el.style.setProperty('opacity','1','important');
-      el.style.setProperty('stroke-opacity','1','important');
-      el.style.setProperty('fill-opacity','1','important');
+      const owners=(el.getAttribute('data-lines')||'').split(/\\s+/).filter(Boolean);
+      const show=owners.includes(code);
+      el.classList.toggle('dimmed',!show);
+      el.classList.remove('focus-shape-hidden');
+      el.style.setProperty('display',show?'initial':'none','important');
+      el.style.setProperty('visibility',show?'visible':'hidden','important');
+      el.style.setProperty('opacity',show?'1':'0','important');
+      el.style.setProperty('stroke-opacity',show?'1':'0','important');
+      el.style.setProperty('fill-opacity',show?'1':'0','important');
     });
     applyDestinationVisibility(mount.querySelector('svg'),code);
     // Set the dedicated interchange state last, after ALL generic line and
