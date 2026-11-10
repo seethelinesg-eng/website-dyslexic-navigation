@@ -23,6 +23,10 @@
 .start-hint{position:relative;z-index:1;color:#716c63;margin:17px 0 42px;font-size:.95rem}
 .instructions{position:relative;z-index:1;border-top:1px solid var(--rule);padding-top:24px}
 .instructions h2{font-size:clamp(1.5rem,2.8vw,2.1rem);letter-spacing:-.04em;margin:0 0 18px}
+.instruction-audio{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:0 0 18px}
+#instructionAudioButton{appearance:none;border:2px solid var(--ink);background:var(--accent);color:var(--ink);padding:12px 18px;min-height:46px;font:inherit;font-weight:700;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+#instructionAudioButton:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+#instructionAudioStatus{font-size:.92rem;color:#555149}
 .instructions ol{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .instructions li{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:center;background:#f3efe6;border:1px solid var(--rule);padding:16px}
 .instruction-icon{display:grid;place-items:center;width:44px;height:44px;font-size:1.4rem;font-weight:700}.line-icon{color:#3153ad;background:#e8efff}.sound-icon{color:#7f2594;background:#f2e8fa}.sound-icon{color:#7f2594;background:#f2e8fa}.map-icon{color:#b85e00;background:#fff0df}
@@ -56,6 +60,10 @@ body, body * {
       <p class="start-hint">Press START to open the map.</p>
       <div class="instructions" aria-labelledby="instructionsTitle">
         <h2 id="instructionsTitle">How to use the map</h2>
+        <div class="instruction-audio">
+          <button id="instructionAudioButton" type="button" aria-pressed="false">▶ Play instructions</button>
+          <span id="instructionAudioStatus" aria-live="polite">Listen to the instructions</span>
+        </div>
         <ol>
           <li><span class="instruction-icon line-icon" aria-hidden="true">●</span><div><strong>Choose an MRT line</strong><p>Click a coloured line button to focus on that route.</p></div></li>
           <li><span class="instruction-icon sound-icon" aria-hidden="true">♫</span><div><strong>Click a station name</strong><p>Click any station name directly on the map. It will be highlighted and its name will be read aloud.</p></div></li>
@@ -122,6 +130,58 @@ body, body * {
   const observer = new MutationObserver(records =>
     records.forEach(record => record.addedNodes.forEach(bionicizeTree)));
   observer.observe(document.body, {childList:true, subtree:true});
+})();
+</script>
+<script>
+(() => {
+  const button = document.getElementById('instructionAudioButton');
+  const status = document.getElementById('instructionAudioStatus');
+  if (!button || !('speechSynthesis' in window)) {
+    if (button) { button.disabled = true; button.textContent = 'Audio unavailable'; }
+    if (status) status.textContent = 'Your browser does not support spoken instructions.';
+    return;
+  }
+  const instructions = "How to use the map. Step one: Choose an MRT line. Click a coloured line button to focus on that route. Step two: Click a station name. Click any station name directly on the map. It will be highlighted and its name will be read aloud. Step three: Follow the selected line. The selected route stays fully visible in its original colour, while other lines fade into the background. Step four: See the whole network again. Click Back to full MRT map to return to all lines.";
+  let utterance = null;
+  let paused = false;
+  function reset() {
+    utterance = null; paused = false;
+    button.textContent = '▶ Play instructions';
+    button.setAttribute('aria-pressed', 'false');
+    status.textContent = 'Listen to the instructions';
+  }
+  button.addEventListener('click', () => {
+    if (paused) {
+      window.speechSynthesis.resume(); paused = false;
+      button.textContent = 'Ⅱ Pause audio';
+      button.setAttribute('aria-pressed', 'false');
+      status.textContent = 'Playing instructions';
+      return;
+    }
+    if (window.speechSynthesis.speaking && utterance) {
+      window.speechSynthesis.pause(); paused = true;
+      button.textContent = '▶ Resume audio';
+      button.setAttribute('aria-pressed', 'true');
+      status.textContent = 'Instructions paused';
+      return;
+    }
+    window.speechSynthesis.cancel();
+    utterance = new SpeechSynthesisUtterance(instructions);
+    utterance.lang = 'en-SG'; utterance.rate = 0.88; utterance.pitch = 1.02;
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find(v => /^en-SG$/i.test(v.lang)) ||
+      voices.find(v => /^en-MY$/i.test(v.lang)) ||
+      voices.find(v => /^en-AU$/i.test(v.lang)) ||
+      voices.find(v => /^en-GB$/i.test(v.lang)) ||
+      voices.find(v => /^en/i.test(v.lang));
+    if (voice) utterance.voice = voice;
+    utterance.onend = reset; utterance.onerror = reset;
+    window.speechSynthesis.speak(utterance);
+    button.textContent = 'Ⅱ Pause audio';
+    button.setAttribute('aria-pressed', 'false');
+    status.textContent = 'Playing instructions';
+  });
+  window.addEventListener('pagehide', () => window.speechSynthesis.cancel());
 })();
 </script>
 </body>
