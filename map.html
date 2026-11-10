@@ -915,6 +915,20 @@ body, body * {
         }
       }
     });
+    // The East-West Line spur from Expo (CG1) to Changi Airport (CG2)
+    // is a pair of parallel SVG paths in the full-map artwork. Their stroke
+    // styling can be mistaken for Downtown Line blue by colour-based tagging.
+    // Bind these exact path geometries to EWL after colour detection so the
+    // entire airport connector follows the green-line selection state.
+    svg.querySelectorAll('path').forEach(el=>{
+      const d=(el.getAttribute('d')||'').replace(/\\s+/g,'');
+      if(d.startsWith('M964.75,506.92v14.89') ||
+         d.startsWith('M964.68,511.43v13.77')){
+        el.setAttribute('data-lines','EWL');
+        el.setAttribute('data-line','EWL');
+        el.classList.remove('dimmed','selected-line');
+      }
+    });
     // Keep station labels belonging to the selected route; preserve their
     // original SVG typography and appearance.
     const normalise=value=>String(value||'').replace(/\s+/g,'').trim().toLocaleLowerCase();
