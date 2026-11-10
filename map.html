@@ -823,7 +823,7 @@ body, body * {
     // fragment inside that group so focus mode does not hide the station name.
     svg.querySelectorAll('g').forEach(group=>{
       const label=normalise(group.textContent);
-      const owners=stationOwners.get(label)||codeOwners.get(label);
+      const owners=label==='sungeibedok'?new Set(['TEL','DTL']):(stationOwners.get(label)||codeOwners.get(label));
       // Punggol Cove is printed as four separate Illustrator text objects.
       // Tag the entire label group explicitly so every fragment survives NEL focus mode.
       const isPunggolCove=label==='punggolcove';
@@ -840,7 +840,7 @@ body, body * {
     });
     svg.querySelectorAll('text,tspan').forEach(el=>{
       const label=normalise(el.textContent);
-      const owners=stationOwners.get(label)||codeOwners.get(label);
+      const owners=label==='sungeibedok'?new Set(['TEL','DTL']):(stationOwners.get(label)||codeOwners.get(label));
       if(owners){
         // Interchange station labels can belong to several MRT lines.
         // Keep every applicable line association instead of letting the last
@@ -1352,8 +1352,22 @@ body, body * {
     applyDestinationVisibility(mount.querySelector('svg'),code);
     // Set the dedicated interchange state last, after ALL generic line and
     // destination visibility rules have finished modifying the SVG.
-    mount.classList.toggle('sungei-bedok-active',code==='TEL'||code==='DTL');
-    if(code==='TEL'||code==='DTL')restoreSungeiBedokLabel(mount.querySelector('svg'));
+    const sungeiActive=code==='TEL'||code==='DTL';
+    mount.classList.toggle('sungei-bedok-active',sungeiActive);
+    const sungeiSvg=mount.querySelector('svg');
+    if(sungeiSvg){
+      sungeiSvg.querySelectorAll('[data-station-name="Sungei Bedok"]').forEach(group=>{
+        [group,...group.querySelectorAll('text,tspan')].forEach(part=>{
+          part.setAttribute('data-line','TEL');
+          part.setAttribute('data-lines','TEL DTL');
+          part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+          part.style.setProperty('display','inline','important');
+          part.style.setProperty('visibility','visible','important');
+          part.style.setProperty('opacity',sungeiActive?'1':'0.16','important');
+          part.style.setProperty('fill-opacity',sungeiActive?'1':'0.16','important');
+        });
+      });
+    }
     speak(names[code]+' selected');
   }
   function showAll(){
