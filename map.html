@@ -813,12 +813,17 @@ body, body * {
       return rgbFromCss(stop.getAttribute('stop-color'))||rgbFromCss(inline&&inline[1]);
     }).filter(Boolean);
   }
+  function isFixedBottomLegendNode(node){
+    return !!(node && (node.id==='changi-airport-legend-vector' ||
+      (typeof node.closest==='function' && node.closest('#changi-airport-legend-vector,[data-bottom-legend-fixed="true"]'))));
+  }
   function tagMapLines(svg){
     // Class names in Illustrator exports are not reliable route identifiers:
     // many coloured route segments use separate classes. Read the actual SVG
     // stroke/fill colours so every segment of each route is tagged.
     const shapes=svg.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse');
     shapes.forEach(el=>{
+      if(isFixedBottomLegendNode(el))return;
       const style=getComputedStyle(el);
       const fill=rgbFromCss(style.fill);
       const stroke=rgbFromCss(style.stroke);
@@ -848,6 +853,7 @@ body, body * {
       }
     }
     svg.querySelectorAll('text').forEach(el=>{
+      if(isFixedBottomLegendNode(el))return;
       const label=normalise(el.textContent);
       if([...unavailableLabels].some(value=>normalise(value)===label))el.style.display='none';
     });
@@ -856,6 +862,7 @@ body, body * {
     // Match the combined text of each label group first, then tag every text
     // fragment inside that group so focus mode does not hide the station name.
     svg.querySelectorAll('g').forEach(group=>{
+      if(isFixedBottomLegendNode(group))return;
       const label=normalise(group.textContent);
       const owners=label==='sungeibedok'?new Set(['TEL','DTL']):(stationOwners.get(label)||codeOwners.get(label));
       // Punggol Cove is printed as four separate Illustrator text objects.
@@ -873,6 +880,7 @@ body, body * {
       }
     });
     svg.querySelectorAll('text,tspan').forEach(el=>{
+      if(isFixedBottomLegendNode(el))return;
       const label=normalise(el.textContent);
       const owners=label==='sungeibedok'?new Set(['TEL','DTL']):(stationOwners.get(label)||codeOwners.get(label));
       if(owners){
@@ -1006,33 +1014,29 @@ body, body * {
   }
   function protectChangiAirportLegend(svg){
     if(!svg)return;
-    // These are the fixed Changi Airport legend text fragments in all six
-    // Illustrator line exports. Identify them by their stable SVG positions,
-    // not getBBox/getCTM (which vary across Safari and nested SVG groups).
-    const positions=['780.52 992.37','780.2002 1001.9703','780.2 1001.97'];
-    const restoreProps=['display','visibility','opacity','fill-opacity','stroke-opacity','filter'];
-    svg.querySelectorAll('text,tspan').forEach(label=>{
-      const value=String(label.textContent||'').replace(/\s+/g,'').toLowerCase();
-      const transform=label.getAttribute('transform')||'';
-      const isChangiWord=(value==='changi'&&transform.includes(positions[0]))||
-        (value==='airport'&&(transform.includes(positions[1])||transform.includes(positions[2])));
-      if(!isChangiWord)return;
-      let node=label;
-      while(node&&node!==svg){
-        node.setAttribute('data-changi-legend-fixed','true');
-        // The shape-focus pass exempts data-bottom-legend-fixed. Mark this
-        // exact Changi text branch as fixed as well, so neutral SVG artwork
-        // inside the legend cannot be hidden as unrelated map geometry.
-        node.setAttribute('data-bottom-legend-fixed','true');
-        node.removeAttribute('data-line');
-        node.removeAttribute('data-lines');
-        node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
-        restoreProps.forEach(prop=>{
-          const val=prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1';
-          node.style.setProperty(prop,val,'important');
-        });
-        node=node.parentElement;
-      }
+    // This is a dedicated, root-level vector group in each line SVG. Protect
+    // this group only: never walk up to the SVG root or affect the map-side label.
+    const group=svg.querySelector('#changi-airport-legend-vector');
+    if(!group)return;
+    group.setAttribute('data-bottom-legend-fixed','true');
+    group.setAttribute('data-changi-legend-fixed','true');
+    group.removeAttribute('data-line');
+    group.removeAttribute('data-lines');
+    group.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
+    ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
+      const value=prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1';
+      group.style.setProperty(prop,value,'important');
+    });
+    group.querySelectorAll('*').forEach(node=>{
+      node.setAttribute('data-bottom-legend-fixed','true');
+      node.setAttribute('data-changi-legend-fixed','true');
+      node.removeAttribute('data-line');
+      node.removeAttribute('data-lines');
+      node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
+      ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
+        const value=prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1';
+        node.style.setProperty(prop,value,'important');
+      });
     });
   }
   function protectBottomLegendFromLineFocus(svg){
@@ -1088,6 +1092,7 @@ body, body * {
     // Apply destination visibility to the actual vector fragments, not
     // textContent matches: Illustrator split Marina South Pier across objects.
     svg.querySelectorAll('[data-destination-label="marina-south-pier"]').forEach(el=>{
+      if(isFixedBottomLegendNode(el))return;
       const show=!code||code==='NSL';
       // Keep all five Illustrator text fragments present. In non-NSL focus
       // they must use the same translucent opacity as other unselected labels,
@@ -1111,6 +1116,7 @@ body, body * {
     // Hide only a group whose own text is exactly the destination label;
     // never hide a larger parent group containing the whole map.
     svg.querySelectorAll('g').forEach(group=>{
+      if(isFixedBottomLegendNode(group))return;
       const groupLabel=normalise(group.textContent);
       const rule=rules.find(item=>groupLabel===item.key);
       if(!rule)return;
@@ -1120,7 +1126,7 @@ body, body * {
     });
     // Illustrator can split one name across adjacent <text> elements.
     // Match concatenated runs so every fragment receives the same visibility.
-    const texts=[...svg.querySelectorAll('text')];
+    const texts=[...svg.querySelectorAll('text')].filter(el=>!isFixedBottomLegendNode(el));
     for(let start=0;start<texts.length;start++){
       let combined='';
       const run=[];
@@ -1142,6 +1148,7 @@ body, body * {
     }
     // Also handle complete labels contained in a single text or tspan.
     svg.querySelectorAll('text,tspan').forEach(el=>{
+      if(isFixedBottomLegendNode(el))return;
       const rule=matches(normalise(el.textContent));
       if(!rule)return;
       el.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
@@ -1462,9 +1469,8 @@ body, body * {
     // explanatory words on the map background. Keep only station labels
     // assigned to the selected line (including shared interchange labels).
     mount.querySelectorAll('text').forEach(el=>{
-      // Changi Airport is static bottom-legend artwork: do not run any
-      // station ownership or focus-hiding logic against these fragments.
-      if(el.hasAttribute('data-changi-legend-fixed')||el.closest('[data-changi-legend-fixed]'))return;
+      // The dedicated bottom-panel vector group is completely outside MRT focus filtering.
+      if(isFixedBottomLegendNode(el))return;
       const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       const childOwners=[...el.querySelectorAll('tspan[data-lines],tspan[data-line]')]
         .flatMap(span=>(span.getAttribute('data-lines')||span.getAttribute('data-line')||'').split(/\s+/));
@@ -1529,7 +1535,7 @@ body, body * {
     // legend intact so its interactive transport icons remain available.
     mount.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
       // Never apply route/LRT hiding rules to the bottom transport legend.
-      if(el.hasAttribute('data-bottom-legend-fixed')||el.closest('[data-bottom-legend-fixed]'))return;
+      if(isFixedBottomLegendNode(el)||el.hasAttribute('data-bottom-legend-fixed')||el.closest('[data-bottom-legend-fixed]'))return;
       if(el.closest('#interactiveLegendTargets'))return;
       // Preserve the pale white Singapore island silhouette in every line-focus view.
       if(el.classList.contains('island-background')){el.classList.remove('focus-shape-hidden');return;}
@@ -1681,6 +1687,7 @@ body, body * {
   }
   function applyLineEmphasis(svg,code){
     svg.querySelectorAll('[data-line]').forEach(el=>{
+      if(isFixedBottomLegendNode(el))return;
       const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       const match=!!code&&owners.includes(code);
       el.classList.toggle('dimmed',!!code&&!match);
@@ -1704,7 +1711,7 @@ body, body * {
     // whenever an MRT line is selected; do not hide the Bukit Panjang LRT.
     // Identify routes by their grey stroke only; preserve filled legend artwork.
     svg.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
-      if(el.closest('#interactiveLegendTargets')||el.classList.contains('island-background'))return;
+      if(isFixedBottomLegendNode(el)||el.closest('#interactiveLegendTargets')||el.classList.contains('island-background'))return;
       if(!el.hasAttribute('data-tel-grey')){
         const style=getComputedStyle(el);
         // Protect solid-black map panels and legend rectangles from all LRT
@@ -1741,29 +1748,9 @@ body, body * {
   }
   function restoreBottomLegendTransportLabels(svg){
     if(!svg)return;
-    // Changi Airport is fixed artwork in the bottom legend, not an MRT label.
-    // Restore the actual text fragments, their tspans, and every wrapper group
-    // after all line-selection filters have run. Explicitly clear both CSS
-    // classes and inline hiding so this works with every Illustrator export.
-    const targets=[...svg.querySelectorAll('text,tspan')].filter(el=>{
-      const label=String(el.textContent||'').replace(/\s+/g,'').toLowerCase();
-      return label==='changi'||label==='airport';
-    });
-    const restore=new Set();
-    targets.forEach(label=>{
-      let node=label;
-      while(node&&node!==svg){
-        restore.add(node);
-        node=node.parentElement;
-      }
-    });
-    restore.forEach(node=>{
-      node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
-      ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
-        const value=prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1';
-        node.style.setProperty(prop,value,'important');
-      });
-    });
+    // Restore only the dedicated bottom-panel Changi Airport vector group.
+    // The separate map-side Changi label is deliberately not selected here.
+    protectChangiAirportLegend(svg);
   }
   function selectLineOnFullMap(code){
     if(!names[code]||!fullMapRaw)return;
