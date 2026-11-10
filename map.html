@@ -1052,6 +1052,9 @@ body, body * {
       marker.setAttribute('height',Math.max(1,bounds.bottom-bounds.y+padY*2));
       marker.setAttribute('rx','3');
       marker.setAttribute('fill',routeColours[code].glow);
+      marker.setAttribute('fill-opacity','.28');
+      marker.setAttribute('stroke',routeColours[code].glow);
+      marker.setAttribute('stroke-width','1.2');
       marker.setAttribute('pointer-events','none');
       parent.insertBefore(marker,elements[0]);
       return true;
@@ -1892,7 +1895,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261110-jes-corrected-map-v1')
+  fetch('./mrt-map.svg?v=20261110-station-highlight-opacity-v1')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
