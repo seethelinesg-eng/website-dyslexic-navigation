@@ -672,7 +672,12 @@ body, body * {
     // Send the real station name to Safari. Phonetic spellings such as
     // "PAH-seer" or all-caps syllables can be mistaken for individual letters.
     const spokenName=canonicalStationSpokenName(text);
-    const utterance=new SpeechSynthesisUtterance(spokenName);
+    // TTS pronunciation hint: render the station name normally, but guide
+    // browser speech to say "Sungei" as "Sung-eye".
+    const speechText=spokenName.toLocaleLowerCase('en')==='sungei bedok'
+      ? 'Sung-eye Bedok'
+      : spokenName;
+    const utterance=new SpeechSynthesisUtterance(speechText);
     utterance.lang='en-SG';
     utterance.rate=0.88;
     utterance.pitch=1.02;
