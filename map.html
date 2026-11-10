@@ -910,21 +910,22 @@ body, body * {
         });
       }
     }
-    // Marina South Pier is converted into five separate Illustrator text objects
-    // rather than one complete text label. Tag the exact five fragments so the
-    // station name follows the North-South Line during line-focus mode.
-    ['733.53 883.01','746.62 883.01','763.62 883.01','778.14 883.01','795.38 883.17'].forEach(position=>{
-      svg.querySelectorAll('text').forEach(el=>{
-        const transform=el.getAttribute('transform')||'';
-        if(transform.includes('translate('+position+')')){
-          el.setAttribute('data-lines','NSL');
-          el.setAttribute('data-line','NSL');
-          el.setAttribute('data-station-label','true');
-          el.setAttribute('data-destination-label','marina-south-pier');
-          el.classList.remove('focus-text-hidden','dimmed');
-          el.style.removeProperty('display');
-        }
-      });
+    // The current mrt-map.svg contains a single visible "Pier" text object
+    // at translate(812.02 882.08); the old five-fragment coordinates belonged
+    // to an earlier SVG export and therefore tagged nothing. Tag the live
+    // artwork object directly so it can be clicked and highlighted as NS28.
+    svg.querySelectorAll('text').forEach(el=>{
+      const transform=el.getAttribute('transform')||'';
+      if(transform.includes('translate(812.02 882.08)')&&normalise(el.textContent)==='pier'){
+        el.setAttribute('data-lines','NSL');
+        el.setAttribute('data-line','NSL');
+        el.setAttribute('data-station-label','true');
+        el.setAttribute('data-station-name','Marina South Pier');
+        el.setAttribute('data-station-code','NS28');
+        el.setAttribute('data-destination-label','marina-south-pier');
+        el.classList.remove('focus-text-hidden','dimmed');
+        el.style.removeProperty('display');
+      }
     });
     // These two Circle Line names are split into Illustrator text fragments
     // whose nested groups interrupt the normal adjacent-fragment matcher.
