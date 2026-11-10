@@ -2041,7 +2041,7 @@ body, body * {
         'M964.68,511.43v13.77'
       ];
       svg.querySelectorAll('path').forEach(path=>{
-        const d=(path.getAttribute('d')||'').replace(/\\s+/g,'');
+        const d=path.getAttribute('d')||'';
         if(!changiConnectorStarts.some(start=>d.startsWith(start)))return;
         const isEwlSelected=code==='EWL';
         path.setAttribute('data-lines','EWL');
