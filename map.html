@@ -103,6 +103,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   background-size:contain;
 }
 #mapMount svg{display:block;width:100%;max-width:100%;height:100%;max-height:100%;margin:0 auto;box-sizing:border-box;object-fit:contain}
+#standaloneLegendMount{position:relative;width:100%;margin:14px 0 0;background:#080808;border:1px solid #191919;box-shadow:8px 8px 0 #19191912;overflow:hidden}
+#standaloneLegendMount svg{display:block;width:100%;height:auto;max-width:100%;margin:0 auto;overflow:hidden}
+#standaloneLegendMount svg text,#standaloneLegendMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
 .map-zoom-controls{position:absolute;z-index:5;top:12px;right:12px;display:grid;grid-template-columns:48px 48px;gap:7px}
 .map-zoom-controls button{min-width:48px;min-height:48px;padding:6px;text-align:center;background:#fffdf8;border:1px solid var(--ink);box-shadow:0 2px 8px #0002;font-size:1.2rem}
 .map-zoom-controls #mapZoomReset{grid-column:1 / -1;font-size:.82rem}
@@ -342,6 +345,7 @@ body, body * {
           </div>
           <div id="mapMount"></div>
         </div>
+        <div id="standaloneLegendMount" aria-label="Independent transport legend panel"></div>
         <p class="map-touch-hint">On a laptop: use + and − to zoom, then drag the map to move around. On a phone: pinch to zoom and drag to move. Tap a station or coloured line to interact.</p>
         <p class="help">Choose a coloured line button to show only that route and reveal its station list. Select a station to hear its name.</p>
       </section>
@@ -579,6 +583,7 @@ body, body * {
 
     const status=document.getElementById('status');
   const mount=document.getElementById('mapMount');
+  const legendMount=document.getElementById('standaloneLegendMount');
   const mapViewport=document.getElementById('mapViewport');
   const stationPanel=document.getElementById('stationPanel');
   let mobileMapZoom=1,mobileMapPanX=0,mobileMapPanY=0;
@@ -1922,6 +1927,34 @@ body, body * {
       el.style.setProperty('cursor','pointer','important');
     });
   }
+  function namespaceLegendSvgIds(svg){
+    const prefix='transport-legend-';
+    const ids=new Map();
+    svg.querySelectorAll('[id]').forEach(el=>{
+      const oldId=el.getAttribute('id');
+      const newId=prefix+oldId;
+      ids.set(oldId,newId);
+      el.setAttribute('id',newId);
+    });
+    const referenceAttributes=['clip-path','mask','filter','fill','stroke','marker-start','marker-mid','marker-end','href','xlink:href','aria-labelledby','aria-describedby'];
+    svg.querySelectorAll('*').forEach(el=>{
+      referenceAttributes.forEach(name=>{
+        const value=el.getAttribute(name);
+        if(!value)return;
+        let next=value.replace(/url\(#([^)]+)\)/g,(match,id)=>ids.has(id)?'url(#'+ids.get(id)+')':match);
+        if((name==='href'||name==='xlink:href')&&next.startsWith('#')){
+          const id=next.slice(1);if(ids.has(id))next='#'+ids.get(id);
+        }
+        if(name==='aria-labelledby'||name==='aria-describedby')next=next.split(/\s+/).map(id=>ids.get(id)||id).join(' ');
+        if(next!==value)el.setAttribute(name,next);
+      });
+      const style=el.getAttribute('style');
+      if(style){const next=style.replace(/url\(#([^)]+)\)/g,(match,id)=>ids.has(id)?'url(#'+ids.get(id)+')':match);if(next!==style)el.setAttribute('style',next);}
+    });
+    svg.querySelectorAll('style').forEach(style=>{
+      style.textContent=style.textContent.replace(/url\(#([^)]+)\)/g,(match,id)=>ids.has(id)?'url(#'+ids.get(id)+')':match);
+    });
+  }
   function installMap(raw){
     const doc=new DOMParser().parseFromString(raw,'image/svg+xml');
     if(doc.querySelector('parsererror')||!doc.querySelector('svg'))throw new Error('Invalid SVG');
@@ -1933,10 +1966,30 @@ body, body * {
     if(window.__bionicizeMrtSvg)window.__bionicizeMrtSvg(imported);
     const sourceViewBox=(imported.getAttribute('viewBox')||'0 0 1105.51 1120').trim().split(/[ ,]+/).map(Number);
     mobileMapBaseViewBox=sourceViewBox.length===4&&sourceViewBox.every(Number.isFinite)?sourceViewBox:[0,0,1105.51,1048.82];
+    const [viewX,viewY,viewWidth,viewHeight]=mobileMapBaseViewBox;
+    const legendTop=Math.min(viewY+900,viewY+viewHeight);
+    const legendHeight=Math.max(1,viewY+viewHeight-legendTop);
+    // Make a separate, unfiltered copy of the bottom artwork. It lives outside
+    // #mapMount, has its own SVG viewport and its own interaction layer.
+    const independentLegend=imported.cloneNode(true);
+    independentLegend.setAttribute('viewBox',[viewX,legendTop,viewWidth,legendHeight].join(' '));
+    independentLegend.setAttribute('role','group');
+    independentLegend.setAttribute('aria-label','Transport legend: bus, airport, ferry, cruise, Sentosa Express, cable car, map download and fare calculator');
+    independentLegend.setAttribute('preserveAspectRatio','xMidYMid meet');
+    independentLegend.style.setProperty('height','auto','important');
+    namespaceLegendSvgIds(independentLegend);
+    independentLegend.querySelectorAll('text,tspan').forEach(label=>{
+      label.style.setProperty('font-family','"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif','important');
+    });
+    legendMount.replaceChildren(independentLegend);
+    makeLegendInteractive(independentLegend);
+    // The interactive map itself ends above the legend band. Consequently no
+    // map line-selection filter can reach or visually alter the separate panel.
+    const mapHeight=Math.max(1,legendTop-viewY);
+    imported.setAttribute('viewBox',[viewX,viewY,viewWidth,mapHeight].join(' '));
     imported.setAttribute('preserveAspectRatio','xMidYMid meet');
     mount.replaceChildren(imported);
     applyMobileMapTransform();
-    // Force the requested accessible typeface on every imported SVG label.
     imported.querySelectorAll('text,tspan').forEach(label=>{
       label.style.setProperty('font-family','"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif','important');
     });
@@ -1944,7 +1997,6 @@ body, body * {
     protectBottomLegendFromLineFocus(imported);
     protectChangiAirportLegend(imported);
     addMapLineInteractions(imported);
-    makeLegendInteractive(imported);
     const counts={};
     imported.querySelectorAll('[data-line]').forEach(el=>{const c=el.getAttribute('data-line');counts[c]=(counts[c]||0)+1});
     return counts;
