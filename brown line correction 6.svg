@@ -695,12 +695,12 @@
   <g class="st27">
     <g class="st27">
       <g class="st27">
-        <text class="st48" transform="translate(780.52 992.37) scale(1.03 1)"><tspan x="0" y="0">Changi</tspan></text>
+        
       </g>
     </g>
     <g class="st27">
       <g class="st27">
-        <text class="st45" transform="translate(780.2002 1001.9703) scale(1.03 1)"><tspan x="0" y="0">Airport</tspan></text>
+        
       </g>
     </g>
   </g>
@@ -1314,4 +1314,8 @@
     <text class="st32" transform="translate(326.76 526.77) scale(1.03 1)"><tspan x="0" y="0">levard</tspan></text>
   </g>
   <g class="st27 selected-line" data-line="TEL" data-lines="TEL DTL" data-station-label="true" data-station-name="Sungei Bedok"><text class="station-label-original-semibold selected-line" data-line="TEL" data-lines="TEL DTL" data-station-label="true" transform="translate(980 570) scale(1.03 1)"><tspan data-line="TEL" data-lines="TEL DTL" x="0" y="0">Sungei Bedok</tspan></text></g>
+<g id="changi-airport-legend-vector" data-bottom-legend-fixed="true" aria-label="Changi Airport">
+  <text class="st48" transform="translate(780.52 992.37) scale(1.03 1)"><tspan x="0" y="0">Changi</tspan></text>
+  <text class="st45" transform="translate(780.2002 1001.9703) scale(1.03 1)"><tspan x="0" y="0">Airport</tspan></text>
+</g>
 </svg>
