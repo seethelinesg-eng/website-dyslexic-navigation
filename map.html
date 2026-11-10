@@ -1066,11 +1066,10 @@ body, body * {
 
     });
 
-    // Preserve every coloured piece of a transfer-station name border.
-    // Illustrator exports these as separate route-coloured vector shapes,
-    // which would normally fade when their owning line is not selected.
-    const transferLabels=[...svg.querySelectorAll('text[data-lines]')]
-      .filter(label=>(label.getAttribute('data-lines')||'').trim().split(/\\s+/).length>1);
+    // Treat every station name and its complete coloured outline as one
+    // station unit, not just interchange labels. Every nearby border segment
+    // inherits the station's full set of line owners.
+    const stationLabels=[...svg.querySelectorAll('text[data-station-label="true"][data-lines]')];
     const toRootBox=node=>{
       try{
         const box=node.getBBox(),matrix=node.getCTM();
@@ -1081,14 +1080,13 @@ body, body * {
           top:Math.min(...points.map(p=>p.y)),bottom:Math.max(...points.map(p=>p.y))};
       }catch(_){return null;}
     };
-    const labelBoxes=transferLabels.map(toRootBox).filter(Boolean);
+    const labelBoxes=stationLabels.map(label=>({label,box:toRootBox(label)})).filter(item=>item.box);
     shapes.forEach(shape=>{
       if(!shape.hasAttribute('data-line')||isFixedBottomLegendNode(shape))return;
       const box=toRootBox(shape);
       if(!box||(box.right-box.left)>150||(box.bottom-box.top)>70)return;
-      const matchingLabel=transferLabels
-        .map(label=>({label,box:toRootBox(label)}))
-        .filter(item=>item.box&&
+      const matchingLabel=labelBoxes
+        .filter(item=>
           box.right>=item.box.left-10&&box.left<=item.box.right+10&&
           box.bottom>=item.box.top-10&&box.top<=item.box.bottom+10)
         .sort((a,b)=>{
@@ -2428,7 +2426,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261110-transfer-borders-v2')
+  fetch('./mrt-map.svg?v=20261110-all-station-borders-v1')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
