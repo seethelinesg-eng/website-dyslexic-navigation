@@ -1695,7 +1695,7 @@ body, body * {
     // Restore both Changi text fragments and every enclosing Illustrator
     // group AFTER line-focus filtering, because an ancestor can hide them.
     const targets=[...svg.querySelectorAll('text')].filter(el=>{
-      const label=String(el.textContent||'').replace(/\\s+/g,'').toLowerCase();
+      const label=String(el.textContent||'').replace(/\s+/g,'').toLowerCase();
       return label==='changi'||label==='airport';
     });
     targets.forEach(label=>{
