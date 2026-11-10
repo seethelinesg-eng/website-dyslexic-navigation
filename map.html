@@ -296,6 +296,8 @@ body, body * {
 #mapMount svg [data-bottom-legend-fixed="true"] *,
 #mapMount svg g#changi-airport-legend-vector,
 #mapMount svg g#changi-airport-legend-vector *,
+#mapMount svg g#sentosa-express-legend-vector,
+#mapMount svg g#sentosa-express-legend-vector *,
 #mapMount svg [data-changi-legend-fixed="true"],
 #mapMount svg [data-changi-legend-fixed="true"] *{
   display:inline!important;
@@ -826,8 +828,11 @@ body, body * {
     }).filter(Boolean);
   }
   function isFixedBottomLegendNode(node){
-    return !!(node && (node.id==='changi-airport-legend-vector' ||
-      (typeof node.closest==='function' && node.closest('#changi-airport-legend-vector,[data-bottom-legend-fixed="true"]'))));
+    return !!(node && (
+      node.id==='changi-airport-legend-vector' ||
+      node.id==='sentosa-express-legend-vector' ||
+      (typeof node.closest==='function' && node.closest('#changi-airport-legend-vector,#sentosa-express-legend-vector,[data-bottom-legend-fixed="true"]'))
+    ));
   }
   function tagMapLines(svg){
     // Class names in Illustrator exports are not reliable route identifiers:
@@ -1088,6 +1093,20 @@ body, body * {
         return minY>=900&&maxY<=1120;
       }catch(error){return false;}
     };
+    // Explicitly protect the two bottom-panel labels by stable SVG IDs.
+    // Sentosa Express is separate from the map-side Sentosa destination and
+    // must never depend on a coordinate/bounding-box test to stay visible.
+    ['#changi-airport-legend-vector','#sentosa-express-legend-vector'].forEach(selector=>{
+      const group=svg.querySelector(selector);
+      if(!group)return;
+      [group,...group.querySelectorAll('*')].forEach(node=>{
+        node.setAttribute('data-bottom-legend-fixed','true');
+        node.removeAttribute('data-line');
+        node.removeAttribute('data-lines');
+        node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
+        ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>node.style.removeProperty(prop));
+      });
+    });
     [...svg.querySelectorAll('*')].forEach(node=>{
       if(!isBottomLegend(node))return;
       node.setAttribute('data-bottom-legend-fixed','true');
