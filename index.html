@@ -40,6 +40,10 @@
 .instructions li::before{content:counter(instruction-step);display:grid;place-items:center;width:36px;height:36px;border:2px solid var(--ink);border-radius:50%;background:#fffdf8;font-size:1.05rem;font-weight:800;color:var(--ink)}
 .instruction-icon{display:grid;place-items:center;width:44px;height:44px;font-size:1.4rem;font-weight:700}.line-icon{color:#3153ad;background:#e8efff}.sound-icon{color:#7f2594;background:#f2e8fa}.sound-icon{color:#7f2594;background:#f2e8fa}.map-icon{color:#b85e00;background:#fff0df}
 .instructions li strong{font-size:1.04rem}.instructions li p{margin:4px 0 0;color:#555149;line-height:1.5}
+.step-audio-button{grid-column:3;justify-self:start;margin-top:10px;min-height:40px;padding:8px 13px;border:2px solid var(--ink);background:#3153ad;color:#fff;font:inherit;font-weight:700;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.step-audio-button:hover{background:#274696}
+.step-audio-button[aria-pressed="true"]{background:#274696}
+@media(max-width:700px){.step-audio-button{grid-column:2 / -1}}
 @media(max-width:700px){.instructions ol{grid-template-columns:1fr}.welcome-card{box-shadow:7px 7px 0 var(--ink)}.welcome-card:after{opacity:.45;right:-180px;top:-180px}}
 
 /* Site-wide Bionic typography: Atkinson Hyperlegible Next, 800/600 weights. */
@@ -69,24 +73,12 @@ body, body * {
       <p class="start-hint">Press START to open the map.</p>
       <div class="instructions" aria-labelledby="instructionsTitle">
         <h2 id="instructionsTitle">How to use the map</h2>
-        <div class="instruction-audio" aria-label="How to use the map audio player">
-          <div class="instruction-audio-controls">
-            <button type="button" id="instructionRewind" aria-label="Rewind 10 seconds" title="Rewind 10 seconds">↶ 10</button>
-            <button type="button" id="instructionAudioButton" aria-pressed="false">▶ Play instructions</button>
-            <button type="button" id="instructionForward" aria-label="Forward 10 seconds" title="Forward 10 seconds">10 ↷</button>
-          </div>
-          <div class="instruction-audio-timeline">
-            <span class="instruction-audio-time" id="instructionCurrentTime">0:00</span>
-            <input id="instructionProgress" type="range" min="0" max="1000" value="0" step="1" aria-label="Instruction audio progress">
-            <span class="instruction-audio-time" id="instructionDuration">0:00</span>
-          </div>
-          <span id="instructionAudioStatus" aria-live="polite">Listen to the instructions</span>
-        </div>
+div>
         <ol>
-          <li><span class="instruction-icon line-icon" aria-hidden="true">●</span><div><strong>Choose an MRT line</strong><p>Click a coloured line button to focus on that route.</p></div></li>
-          <li><span class="instruction-icon sound-icon" aria-hidden="true">♫</span><div><strong>Click a station name</strong><p>Click any station name directly on the map. It will be highlighted and its name will be read aloud.</p></div></li>
-          <li><span class="instruction-icon line-icon" aria-hidden="true">●</span><div><strong>Follow the selected line</strong><p>The selected route stays fully visible in its original colour, while other lines fade into the background.</p></div></li>
-          <li><span class="instruction-icon map-icon" aria-hidden="true">↗</span><div><strong>See the whole network again</strong><p>Click “Back to full MRT map” to return to all lines.</p></div></li>
+          <li><span class="instruction-icon line-icon" aria-hidden="true">●</span><div><strong>Choose an MRT line</strong><p>Click a coloured line button to focus on that route.</p></div><button type="button" class="step-audio-button" data-step-audio="0" aria-label="Click to hear Step 1">▶ Listen to this step</button></li>
+          <li><span class="instruction-icon sound-icon" aria-hidden="true">♫</span><div><strong>Click a station name</strong><p>Click any station name directly on the map. It will be highlighted and its name will be read aloud.</p></div><button type="button" class="step-audio-button" data-step-audio="1" aria-label="Click to hear Step 2">▶ Listen to this step</button></li>
+          <li><span class="instruction-icon line-icon" aria-hidden="true">●</span><div><strong>Follow the selected line</strong><p>The selected route stays fully visible in its original colour, while other lines fade into the background.</p></div><button type="button" class="step-audio-button" data-step-audio="2" aria-label="Click to hear Step 3">▶ Listen to this step</button></li>
+          <li><span class="instruction-icon map-icon" aria-hidden="true">↗</span><div><strong>See the whole network again</strong><p>Click “Back to full MRT map” to return to all lines.</p></div><button type="button" class="step-audio-button" data-step-audio="3" aria-label="Click to hear Step 4">▶ Listen to this step</button></li>
         </ol>
       </div>
     </div>
@@ -255,6 +247,74 @@ body, body * {
     startAt(Math.round(Number(progress.value) / 1000 * instructions.length));
   });
   updateProgress();
+  window.addEventListener('pagehide', () => window.speechSynthesis.cancel());
+})();
+</script>
+<script>
+(() => {
+  const buttons = Array.from(document.querySelectorAll('[data-step-audio]'));
+  if (!buttons.length) return;
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    buttons.forEach(button => { button.disabled = true; button.textContent = 'Audio unavailable'; });
+    return;
+  }
+  let activeButton = null;
+  let activeUtterance = null;
+  const resetButton = button => {
+    if (!button) return;
+    button.textContent = '▶ Listen to this step';
+    button.setAttribute('aria-pressed', 'false');
+  };
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      if (activeButton === button && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.pause();
+        button.textContent = '▶ Resume this step';
+        button.setAttribute('aria-pressed', 'true');
+        return;
+      }
+      if (activeButton === button && window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        button.textContent = 'Ⅱ Pause this step';
+        button.setAttribute('aria-pressed', 'false');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      resetButton(activeButton);
+      const item = button.closest('li');
+      const heading = item && item.querySelector('strong');
+      const description = item && item.querySelector('p');
+      const spokenText = [heading && heading.textContent, description && description.textContent].filter(Boolean).join('. ');
+      const utterance = new SpeechSynthesisUtterance(spokenText);
+      utterance.lang = 'en-SG';
+      utterance.rate = 0.88;
+      utterance.pitch = 1.02;
+      const voices = window.speechSynthesis.getVoices();
+      const voice = voices.find(v => /^en-SG$/i.test(v.lang)) ||
+        voices.find(v => /^en-MY$/i.test(v.lang)) ||
+        voices.find(v => /^en-AU$/i.test(v.lang)) ||
+        voices.find(v => /^en-GB$/i.test(v.lang)) ||
+        voices.find(v => /^en/i.test(v.lang));
+      if (voice) utterance.voice = voice;
+      activeButton = button;
+      activeUtterance = utterance;
+      utterance.onend = () => {
+        if (activeUtterance !== utterance) return;
+        resetButton(button);
+        activeButton = null;
+        activeUtterance = null;
+      };
+      utterance.onerror = () => {
+        if (activeUtterance !== utterance) return;
+        resetButton(button);
+        activeButton = null;
+        activeUtterance = null;
+      };
+      button.textContent = 'Ⅱ Pause this step';
+      button.setAttribute('aria-pressed', 'false');
+      window.speechSynthesis.speak(utterance);
+    });
+  });
   window.addEventListener('pagehide', () => window.speechSynthesis.cancel());
 })();
 </script>
