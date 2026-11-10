@@ -2032,6 +2032,29 @@ body, body * {
     if(svg){
       applyLineEmphasis(svg,code);
       applyDestinationVisibility(svg,code);
+      // The toolbar uses selectLineOnFullMap() and the composite mrt-map.svg,
+      // not selectLine() and the standalone line SVGs. Force the actual
+      // Expo–Changi EWL green stroke and its white outline to follow EWL here,
+      // after all generic line ownership and destination rules have run.
+      const changiConnectorStarts=[
+        'M964.75,506.92v14.89',
+        'M964.68,511.43v13.77'
+      ];
+      svg.querySelectorAll('path').forEach(path=>{
+        const d=(path.getAttribute('d')||'').replace(/\\s+/g,'');
+        if(!changiConnectorStarts.some(start=>d.startsWith(start)))return;
+        const isEwlSelected=code==='EWL';
+        path.setAttribute('data-lines','EWL');
+        path.setAttribute('data-line','EWL');
+        path.classList.toggle('dimmed',!isEwlSelected);
+        path.classList.toggle('selected-line',isEwlSelected);
+        path.style.setProperty('display','inline','important');
+        path.style.setProperty('visibility','visible','important');
+        path.style.setProperty('opacity',isEwlSelected?'1':'.16','important');
+        path.style.setProperty('stroke-opacity',isEwlSelected?'1':'.16','important');
+        path.style.setProperty('fill-opacity',isEwlSelected?'1':'.16','important');
+        path.style.setProperty('filter','none','important');
+      });
       restoreBottomLegendTransportLabels(svg);
       mount.classList.toggle('sungei-bedok-active',code==='TEL'||code==='DTL');
       if(code==='TEL'||code==='DTL')restoreSungeiBedokLabel(svg);
