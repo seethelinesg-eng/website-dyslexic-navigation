@@ -1086,6 +1086,23 @@ body, body * {
 
     });
 
+    // Dhoby Ghaut's three interchange codes are exported as one text object.
+    // Tag the combined code string with all three line owners so CC1 remains
+    // visible in Circle Line focus (and the complete code stays together).
+    svg.querySelectorAll('text').forEach(el=>{
+      const transform=el.getAttribute('transform')||'';
+      if(transform.includes('translate(496.6 644.7)') &&
+         normalise(el.textContent)==='ns24ne6cc1'){
+        el.setAttribute('data-lines','NSL NEL CCL');
+        el.setAttribute('data-line','NSL');
+        el.setAttribute('data-station-label','true');
+        el.setAttribute('data-station-name','Dhoby Ghaut');
+        el.classList.add('station-code-label');
+        el.classList.remove('focus-text-hidden','dimmed');
+        el.style.removeProperty('display');
+      }
+    });
+
     // Treat every station name and its complete coloured outline as one
     // station unit, not just interchange labels. Every nearby border segment
     // inherits the station's full set of line owners.
@@ -1106,7 +1123,10 @@ body, body * {
       // carry an MRT route colour, but they are still part of the station.
       if(isFixedBottomLegendNode(shape))return;
       const box=toRootBox(shape);
-      if(!box||(box.right-box.left)>150||(box.bottom-box.top)>70)return;
+      // Only small capsule-outline pieces can inherit station ownership.
+      // Longer/taller coloured paths are actual route segments, even when
+      // they pass close to an interchange label (e.g. DTL beside Expo).
+      if(!box||(box.right-box.left)>60||(box.bottom-box.top)>30)return;
       const matchingLabel=labelBoxes
         .filter(item=>
           box.right>=item.box.left-10&&box.left<=item.box.right+10&&
@@ -1861,22 +1881,8 @@ body, body * {
         if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
     });
-    // The Dhoby Ghaut–Promenade yellow connector is Circle Line (CCL)
-    // artwork. Explicitly bind its orange route stroke to CCL so an NSL/red
-    // selection can never leave this connector fully opaque.
-    svg.querySelectorAll('path.st7').forEach(el=>{
-      const match=!code||code==='CCL';
-      el.setAttribute('data-line','CCL');
-      el.setAttribute('data-lines','CCL');
-      el.classList.toggle('dimmed',!!code&&!match);
-      el.classList.toggle('selected-line',!!code&&match);
-      el.style.setProperty('display','initial','important');
-      el.style.setProperty('visibility','visible','important');
-      el.style.setProperty('opacity',match?'1':'.16','important');
-      el.style.setProperty('stroke-opacity',match?'1':'.16','important');
-      el.style.setProperty('fill-opacity',match?'1':'.16','important');
-      el.style.setProperty('filter','none','important');
-    });
+    // Route colours are assigned from the SVG's actual stroke colours above.
+    // Do not force every path sharing an Illustrator class to one MRT line.
     // Sungei Bedok's complete shared TEL/DTL capsule border follows the
     // same focus rule as the rest of the map: opaque for either owner,
     // translucent (never hidden) for unrelated line selections.
