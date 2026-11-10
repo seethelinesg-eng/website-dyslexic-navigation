@@ -99,7 +99,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .map-touch-hint{font-size:.84rem;line-height:1.5;color:var(--muted);margin:9px 0 0}
 #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
 #mapMount .dimmed{display:initial!important;visibility:visible!important;opacity:.16!important;filter:none!important}
-#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:none!important}
+#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:initial!important;visibility:visible!important;opacity:.16!important;filter:none!important}
 #mapMount [data-line].dimmed{display:initial!important;visibility:visible!important;opacity:.16!important;filter:none!important}#mapMount [data-line].selected-line{display:initial!important;visibility:visible!important;opacity:1!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
 #mapMount .selected-line{filter:none!important;opacity:1!important;animation:none!important}
@@ -1861,25 +1861,28 @@ body, body * {
         if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
     });
-    // Sungei Bedok's blue and brown capsule-border fragments belong to
-    // the shared TEL/DTL station. Hide the entire border outside those two
-    // selected lines; do not leave an unrelated blue fragment behind.
+    // Sungei Bedok's complete shared TEL/DTL capsule border follows the
+    // same focus rule as the rest of the map: opaque for either owner,
+    // translucent (never hidden) for unrelated line selections.
     svg.querySelectorAll('[data-station-border="true"][data-station-name="Sungei Bedok"],[data-station-border="true"][data-sungei-bedok-border="true"]').forEach(el=>{
-      const show=!code||code==='TEL'||code==='DTL';
-      el.style.setProperty('display',show?'initial':'none','important');
-      el.style.setProperty('visibility',show?'visible':'hidden','important');
-      el.style.setProperty('opacity',show?'1':'0','important');
-      el.style.setProperty('stroke-opacity',show?'1':'0','important');
-      el.classList.toggle('dimmed',!show);
+      const match=!code||code==='TEL'||code==='DTL';
+      el.style.setProperty('display','initial','important');
+      el.style.setProperty('visibility','visible','important');
+      el.style.setProperty('opacity',match?'1':'.16','important');
+      el.style.setProperty('stroke-opacity',match?'1':'.16','important');
+      el.classList.toggle('dimmed',!!code&&!match);
+      el.classList.toggle('selected-line',!!code&&match);
     });
-    // The two green vector strokes framing the Tanah Merah station label
-    // are a label border, not route geometry. Keep them only on the full map
-    // and when the East-West Line is selected.
+    // Tanah Merah's complete EWL label border stays visible and follows
+    // the same translucent focus treatment as every other unselected item.
     svg.querySelectorAll('[data-tanah-merah-border="true"]').forEach(el=>{
-      const show=!code||code==='EWL';
-      el.style.setProperty('display',show?'initial':'none','important');
-      el.style.setProperty('visibility',show?'visible':'hidden','important');
-      el.style.setProperty('opacity',show?'1':'0','important');
+      const match=!code||code==='EWL';
+      el.style.setProperty('display','initial','important');
+      el.style.setProperty('visibility','visible','important');
+      el.style.setProperty('opacity',match?'1':'.16','important');
+      el.style.setProperty('stroke-opacity',match?'1':'.16','important');
+      el.classList.toggle('dimmed',!!code&&!match);
+      el.classList.toggle('selected-line',!!code&&match);
     });
     // Grey LRT routes (including Bukit Panjang, Sengkang and Punggol)
     // are separate from the six coloured MRT lines. Fade every grey route
