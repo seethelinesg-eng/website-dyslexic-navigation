@@ -1386,9 +1386,14 @@ body, body * {
         // focus styling, even if Illustrator gives them a grey outline.
         const fill=rgbFromCss(style.fill);
         if(fill && Math.max(...fill)<35)return;
-        // Only classify grey-stroked route geometry as LRT.
+        // Only classify unfilled grey strokes as LRT route geometry.
+        // Station-name capsules (notably Sengkang and Punggol) also use grey
+        // outlines, but have a visible fill; fading those outlines makes the
+        // purple/grey station labels look misaligned or split.
+        const fill=rgbFromCss(style.fill);
+        const hasVisibleFill=!!fill && style.fill!=='none' && !style.fill.includes('transparent');
         const stroke=rgbFromCss(style.stroke);
-        const isGrey=!!stroke &&
+        const isGrey=!hasVisibleFill && !!stroke &&
           Math.max(...stroke)-Math.min(...stroke)<32 &&
           Math.max(...stroke)>55 &&
           Math.max(...stroke)<190;
