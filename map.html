@@ -99,7 +99,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .map-touch-hint{font-size:.84rem;line-height:1.5;color:var(--muted);margin:9px 0 0}
 #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
 #mapMount .dimmed,#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:none!important}
-#mapMount [data-line].dimmed{display:initial!important;opacity:.16!important;filter:saturate(.45)!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease}
+#mapMount [data-line].dimmed{display:none!important;visibility:hidden!important;opacity:0!important;filter:none!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
 #mapMount .selected-line{filter:none!important;opacity:1!important;animation:none!important}
 /* Sungei Bedok is a shared TEL/DTL interchange. Apply opacity to the whole
