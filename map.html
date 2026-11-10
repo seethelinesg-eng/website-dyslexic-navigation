@@ -106,8 +106,11 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 /* Sungei Bedok label and border opacity is set by the line-selection handler.
    Avoid a broad CSS rule that can override the individual SVG border state. */
 /* Dedicated interchange state controls both border halves after generic tagging. */
-#mapMount.sungei-bedok-active svg g[data-station-name="Sungei Bedok"] > path[data-sungei-bedok-border="true"]{opacity:1!important;stroke-opacity:1!important;fill-opacity:1!important;}
-#mapMount:not(.sungei-bedok-active) svg g[data-station-name="Sungei Bedok"] > path[data-sungei-bedok-border="true"]{opacity:.16!important;stroke-opacity:.16!important;fill-opacity:.16!important;}
+/* Control opacity on the WHOLE interchange group. This prevents any child
+   border path from being restored to full opacity by generic line styling. */
+#mapMount.sungei-bedok-active svg g[data-station-name="Sungei Bedok"]{opacity:1!important;}
+#mapMount:not(.sungei-bedok-active) svg g[data-station-name="Sungei Bedok"]{opacity:.16!important;}
+#mapMount svg g[data-station-name="Sungei Bedok"] > path[data-sungei-bedok-border="true"]{opacity:1!important;stroke-opacity:1!important;fill-opacity:1!important;}
   /* Keep the orange Circle Line geometry visually fixed: no glow filters, transforms, or animated effects on hover/selection. */
   #mapMount [data-line="CCL"],#mapMount [data-line="CCL"].dimmed,#mapMount [data-line="CCL"].selected-line{transform:none!important;animation:none!important;transition:opacity .16s ease!important}
 #mapMount .station-label-highlight{pointer-events:none}
@@ -2112,7 +2115,9 @@ body, body * {
         sungeiGroup.classList.toggle('selected-line',sungeiOwnerSelected);
         sungeiGroup.style.setProperty('display','inline','important');
         sungeiGroup.style.setProperty('visibility','visible','important');
-        sungeiGroup.style.setProperty('opacity','1','important');
+        // The parent group itself must dim on unrelated lines; fading only
+        // its child paths can be undone by generic selected-line styling.
+        sungeiGroup.style.setProperty('opacity',sungeiOwnerSelected?'1':'.16','important');
         sungeiGroup.style.setProperty('stroke-opacity','1','important');
         sungeiGroup.style.setProperty('fill-opacity','1','important');
         sungeiGroup.style.setProperty('filter','none','important');
