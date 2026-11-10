@@ -1004,6 +1004,30 @@ body, body * {
 
     });
   }
+  function protectBottomLegendFromLineFocus(svg){
+    if(!svg)return;
+    // The black transport legend is artwork, not part of any selectable MRT
+    // route. Its labels include Changi Airport and Sentosa Express. Protect
+    // every SVG object in the bottom legend band by its rendered geometry,
+    // rather than searching for text: Illustrator exports some legend words
+    // as vector outlines and therefore they have no textContent to match.
+    const isBottomLegend=node=>{
+      if(!node||typeof node.getBBox!=='function')return false;
+      try{
+        const box=node.getBBox();
+        return Number.isFinite(box.y)&&box.y>=900&&box.y<1120;
+      }catch(error){return false;}
+    };
+    [...svg.querySelectorAll('*')].forEach(node=>{
+      if(!isBottomLegend(node))return;
+      node.setAttribute('data-bottom-legend-fixed','true');
+      node.removeAttribute('data-line');
+      node.removeAttribute('data-lines');
+      node.removeAttribute('data-gradient-route');
+      node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
+      ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>node.style.removeProperty(prop));
+    });
+  }
   function applyDestinationVisibility(svg,code){
     if(!svg)return;
     const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
@@ -1846,6 +1870,7 @@ body, body * {
       label.style.setProperty('font-family','"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif','important');
     });
     tagMapLines(imported);
+    protectBottomLegendFromLineFocus(imported);
     addMapLineInteractions(imported);
     makeLegendInteractive(imported);
     const counts={};
