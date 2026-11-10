@@ -289,6 +289,20 @@ body, body * {
 
 .map-display-frame{display:block;line-height:0}
 .map-touch-hint{line-height:1.5}
+
+/* Hard protection for the bottom-panel Changi Airport label.
+   This selector intentionally outranks generic focus-mode hiding rules. */
+#mapMount svg g#changi-airport-legend-vector,
+#mapMount svg g#changi-airport-legend-vector *,
+#mapMount svg [data-changi-legend-fixed="true"],
+#mapMount svg [data-changi-legend-fixed="true"] *{
+  display:inline!important;
+  visibility:visible!important;
+  opacity:1!important;
+  fill-opacity:1!important;
+  stroke-opacity:1!important;
+  filter:none!important;
+}
 </style>
 </head>
 <body>
