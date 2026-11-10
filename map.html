@@ -103,13 +103,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #mapMount [data-line].dimmed{display:initial!important;visibility:visible!important;opacity:.16!important;filter:none!important}#mapMount [data-line].selected-line{display:initial!important;visibility:visible!important;opacity:1!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
 #mapMount .selected-line{filter:none!important;opacity:1!important;animation:none!important}
-/* Sungei Bedok is a shared TEL/DTL interchange. Apply opacity to the whole
-   label group only while either owning line is selected. */
-#mapMount.sungei-bedok-active [data-station-name="Sungei Bedok"],
-#mapMount.sungei-bedok-active [data-station-name="Sungei Bedok"] *{
-  display:initial!important;visibility:visible!important;opacity:1!important;
-  fill-opacity:1!important;stroke-opacity:1!important;filter:none!important
-}
+/* Sungei Bedok label and border opacity is set by the line-selection handler.
+   Avoid a broad CSS rule that can override the individual SVG border state. */
   /* Keep the orange Circle Line geometry visually fixed: no glow filters, transforms, or animated effects on hover/selection. */
   #mapMount [data-line="CCL"],#mapMount [data-line="CCL"].dimmed,#mapMount [data-line="CCL"].selected-line{transform:none!important;animation:none!important;transition:opacity .16s ease!important}
 #mapMount .station-label-highlight{pointer-events:none}
@@ -2101,6 +2096,21 @@ body, body * {
           node.style.setProperty('filter','none','important');
         });
       }
+      // Final, explicit targeting of the two blue/brown capsule halves.
+      // These exact border paths are tagged in mrt-map.svg, so colour-based
+      // DTL detection cannot reverse their TEL/DTL shared ownership.
+      svg.querySelectorAll('[data-sungei-bedok-border="true"]').forEach(border=>{
+        border.setAttribute('data-lines','TEL DTL');
+        border.setAttribute('data-line','TEL');
+        border.classList.toggle('dimmed',!sungeiOwnerSelected);
+        border.classList.toggle('selected-line',sungeiOwnerSelected);
+        border.style.setProperty('display','inline','important');
+        border.style.setProperty('visibility','visible','important');
+        border.style.setProperty('opacity',sungeiOwnerSelected?'1':'.16','important');
+        border.style.setProperty('stroke-opacity',sungeiOwnerSelected?'1':'.16','important');
+        border.style.setProperty('fill-opacity',sungeiOwnerSelected?'1':'.16','important');
+        border.style.setProperty('filter','none','important');
+      });
     }
     speak(names[code]);
     status.textContent=names[code]+' selected. Other MRT lines are translucent.';
