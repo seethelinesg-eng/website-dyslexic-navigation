@@ -169,7 +169,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     height:auto;
     min-height:0;
     max-height:none;
-    aspect-ratio:1077.17 / 1075.29;
+    aspect-ratio:1105.51 / 1048.82;
     overflow:hidden;
   }
   #mapMount{
@@ -1579,8 +1579,8 @@ body, body * {
     svg.removeAttribute('width');svg.removeAttribute('height');
     svg.setAttribute('role','img');svg.setAttribute('aria-label','Singapore MRT map');
     const imported=document.importNode(svg,true);
-    const sourceViewBox=(imported.getAttribute('viewBox')||'0 0 1077.17 1075.66').trim().split(/[ ,]+/).map(Number);
-    mobileMapBaseViewBox=sourceViewBox.length===4&&sourceViewBox.every(Number.isFinite)?sourceViewBox:[0,0,1077.17,1075.66];
+    const sourceViewBox=(imported.getAttribute('viewBox')||'0 0 1105.51 1048.82').trim().split(/[ ,]+/).map(Number);
+    mobileMapBaseViewBox=sourceViewBox.length===4&&sourceViewBox.every(Number.isFinite)?sourceViewBox:[0,0,1105.51,1048.82];
     imported.setAttribute('preserveAspectRatio','xMidYMid meet');
     mount.replaceChildren(imported);
     applyMobileMapTransform();
