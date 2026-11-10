@@ -764,19 +764,56 @@ body, body * {
     lastAnnouncement=stationName;
     speakWithBrowserVoice(stationName);
   }
+  // Downtown Line station-name speech cues. These affect spoken audio only;
+  // the visible station labels and the station-name panel keep their canonical spelling.
+  const downtownLineSpeechCues={
+    'Bukit Panjang':'buh-kith pan-jung',
+    'Cashew':'kash-oo',
+    'Hillview':'hill-vyoo',
+    'Hume':'hyoom',
+    'Beauty World':'byoo-tee wurld',
+    'King Albert Park':'king al-burt park',
+    'Sixth Avenue':'siksth av-en-yoo',
+    'Tan Kah Kee':'tahn kah kee',
+    'Botanic Gardens':'bo-tan-ik gar-dunz',
+    'Stevens':'stee-vunz',
+    'Newton':'nyoo-tun',
+    'Little India':'lit-ul in-dee-uh',
+    'Rochor':'roh-choor',
+    'Bugis':'boo-gis',
+    'Promenade':'prom-uh-nahd',
+    'Bayfront':'bay-frunt',
+    'Downtown':'down-toun',
+    'Telok Ayer':'tuh-lok ay-ur',
+    'Chinatown':'chy-nuh-toun',
+    'Fort Canning':'fort kah-ning',
+    'Bencoolen':'ben-koo-lin',
+    'Jalan Besar':'jah-lun buh-sar',
+    'Bendemeer':'ben-duh-meer',
+    'Geylang Bahru':'gay-lang bah-roo',
+    'Mattar':'muh-tar',
+    'MacPherson':'mak-fur-sun',
+    'Ubi':'oo-bee',
+    'Kaki Bukit':'kah-kee boo-kit',
+    'Bedok North':'buh-dok north',
+    'Bedok Reservoir':'buh-dok rez-er-vwahr',
+    'Tampines West':'tam-pih-nees west',
+    'Tampines':'tam-pih-nees',
+    'Tampines East':'tam-pih-nees eest',
+    'Upper Changi':'up-ur chang-ee',
+    'Expo':'eks-poh'
+  };
   function speakWithBrowserVoice(text){
     if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){
       status.textContent='Audio is not supported by this browser. Please try Safari with speech enabled.';
       return;
     }
-    // Send the real station name to Safari. Phonetic spellings such as
-    // "PAH-seer" or all-caps syllables can be mistaken for individual letters.
     const spokenName=canonicalStationSpokenName(text);
-    // TTS pronunciation hint: render the station name normally, but guide
-    // browser speech to say "Sungei" as "Sung-eye".
-    const speechText=spokenName.toLocaleLowerCase('en')==='sungei bedok'
+    const cue=downtownLineSpeechCues[spokenName];
+    // Keep the existing Sungei Bedok guide for the future DTL/TEL interchange.
+    const speechText=cue || (spokenName.toLocaleLowerCase('en')==='sungei bedok'
       ? 'Sung-eye Bedok'
-      : spokenName;
+      : spokenName);
     const utterance=new SpeechSynthesisUtterance(speechText);
     utterance.lang='en-SG';
     utterance.rate=0.88;
