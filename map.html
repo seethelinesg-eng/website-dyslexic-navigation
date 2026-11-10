@@ -1991,7 +1991,11 @@ body, body * {
     // The interactive map itself ends above the legend band. Consequently no
     // map line-selection filter can reach or visually alter the separate panel.
     const mapHeight=Math.max(1,legendTop-viewY);
-    imported.setAttribute('viewBox',[viewX,viewY,viewWidth,mapHeight].join(' '));
+    // Keep the zoom/pan controller on the cropped map bounds; otherwise its
+    // next update would restore the original full-height viewBox and reattach
+    // the legend visually to the map.
+    mobileMapBaseViewBox=[viewX,viewY,viewWidth,mapHeight];
+    imported.setAttribute('viewBox',mobileMapBaseViewBox.join(' '));
     imported.setAttribute('preserveAspectRatio','xMidYMid meet');
     mount.replaceChildren(imported);
     applyMobileMapTransform();
