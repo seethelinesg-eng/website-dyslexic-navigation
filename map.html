@@ -1065,6 +1065,33 @@ body, body * {
     });
 
     });
+
+    // Preserve every coloured piece of a transfer-station name border.
+    // Illustrator exports these as separate route-coloured vector shapes,
+    // which would normally fade when their owning line is not selected.
+    const transferLabels=[...svg.querySelectorAll('text[data-lines]')]
+      .filter(label=>(label.getAttribute('data-lines')||'').trim().split(/\\s+/).length>1);
+    const toRootBox=node=>{
+      try{
+        const box=node.getBBox(),matrix=node.getCTM();
+        if(!matrix)return {left:box.x,top:box.y,right:box.x+box.width,bottom:box.y+box.height};
+        const points=[[box.x,box.y],[box.x+box.width,box.y],[box.x,box.y+box.height],[box.x+box.width,box.y+box.height]]
+          .map(([x,y])=>({x:matrix.a*x+matrix.c*y+matrix.e,y:matrix.b*x+matrix.d*y+matrix.f}));
+        return {left:Math.min(...points.map(p=>p.x)),right:Math.max(...points.map(p=>p.x)),
+          top:Math.min(...points.map(p=>p.y)),bottom:Math.max(...points.map(p=>p.y))};
+      }catch(_){return null;}
+    };
+    const labelBoxes=transferLabels.map(toRootBox).filter(Boolean);
+    shapes.forEach(shape=>{
+      if(!shape.hasAttribute('data-line')||isFixedBottomLegendNode(shape))return;
+      const box=toRootBox(shape);
+      if(!box||(box.right-box.left)>150||(box.bottom-box.top)>70)return;
+      const nearLabel=labelBoxes.some(label=>
+        box.right>=label.left-10&&box.left<=label.right+10&&
+        box.bottom>=label.top-10&&box.top<=label.bottom+10
+      );
+      if(nearLabel)shape.setAttribute('data-transfer-border','true');
+    });
   }
   function protectChangiAirportLegend(svg){
     if(!svg)return;
@@ -1772,7 +1799,7 @@ body, body * {
   }
   function applyLineEmphasis(svg,code){
     svg.querySelectorAll('[data-line]').forEach(el=>{
-      if(isFixedBottomLegendNode(el))return;
+      if(isFixedBottomLegendNode(el)||el.hasAttribute('data-transfer-border'))return;
       const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       const match=!!code&&owners.includes(code);
       el.classList.toggle('dimmed',!!code&&!match);
@@ -2385,7 +2412,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261110-legend-centered-v8')
+  fetch('./mrt-map.svg?v=20261110-transfer-borders-v1')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
