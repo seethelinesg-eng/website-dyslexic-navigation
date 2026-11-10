@@ -923,7 +923,9 @@ body, body * {
     svg.querySelectorAll('path').forEach(el=>{
       const d=(el.getAttribute('d')||'').replace(/\s+/g,'');
       if(d.startsWith('M964.75,506.92v14.89') ||
-         d.startsWith('M964.68,511.43v13.77')){
+         d.startsWith('M964.68,511.43v13.77') ||
+         d.startsWith('M947.13,492.93v14.91') ||
+         d.startsWith('M947.06,497.44v13.79')){
         el.setAttribute('data-lines','EWL');
         el.setAttribute('data-line','EWL');
         el.classList.remove('dimmed','selected-line');
