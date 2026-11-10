@@ -1006,16 +1006,24 @@ body, body * {
   }
   function protectBottomLegendFromLineFocus(svg){
     if(!svg)return;
-    // The black transport legend is artwork, not part of any selectable MRT
-    // route. Its labels include Changi Airport and Sentosa Express. Protect
-    // every SVG object in the bottom legend band by its rendered geometry,
-    // rather than searching for text: Illustrator exports some legend words
-    // as vector outlines and therefore they have no textContent to match.
+    // Protect the complete black "Other Transport Modes" legend from every
+    // line-focus filter. getBBox() is local to nested Illustrator groups,
+    // so transform its corners into root-SVG coordinates before testing.
     const isBottomLegend=node=>{
       if(!node||typeof node.getBBox!=='function')return false;
       try{
         const box=node.getBBox();
-        return Number.isFinite(box.y)&&box.y>=900&&box.y<1120;
+        const matrix=node.getCTM();
+        if(!matrix)return box.y>=900&&box.y<1120;
+        const corners=[
+          matrix.transformPoint(new DOMPoint(box.x,box.y)),
+          matrix.transformPoint(new DOMPoint(box.x+box.width,box.y)),
+          matrix.transformPoint(new DOMPoint(box.x,box.y+box.height)),
+          matrix.transformPoint(new DOMPoint(box.x+box.width,box.y+box.height))
+        ];
+        const minY=Math.min(...corners.map(point=>point.y));
+        const maxY=Math.max(...corners.map(point=>point.y));
+        return maxY>=900&&minY<1120;
       }catch(error){return false;}
     };
     [...svg.querySelectorAll('*')].forEach(node=>{
@@ -1471,6 +1479,8 @@ body, body * {
     // colour-only filter would otherwise leave them visible. Keep the bottom
     // legend intact so its interactive transport icons remain available.
     mount.querySelectorAll('path,line,polyline,polygon,rect,circle,ellipse').forEach(el=>{
+      // Never apply route/LRT hiding rules to the bottom transport legend.
+      if(el.hasAttribute('data-bottom-legend-fixed')||el.closest('[data-bottom-legend-fixed]'))return;
       if(el.closest('#interactiveLegendTargets'))return;
       // Preserve the pale white Singapore island silhouette in every line-focus view.
       if(el.classList.contains('island-background')){el.classList.remove('focus-shape-hidden');return;}
