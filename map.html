@@ -98,8 +98,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .map-zoom-controls #mapZoomReset{grid-column:1 / -1;font-size:.82rem}
 .map-touch-hint{font-size:.84rem;line-height:1.5;color:var(--muted);margin:9px 0 0}
 #mapMount svg text,#mapMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
-#mapMount .dimmed,#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:none!important}
-#mapMount [data-line].dimmed{display:none!important;visibility:hidden!important;opacity:0!important;filter:none!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease}
+#mapMount .dimmed{display:initial!important;visibility:visible!important;opacity:.16!important;filter:none!important}
+#mapMount .focus-text-hidden,#mapMount .focus-shape-hidden{display:none!important}
+#mapMount [data-line].dimmed{display:initial!important;visibility:visible!important;opacity:.16!important;filter:none!important}#mapMount [data-line].selected-line{display:initial!important;visibility:visible!important;opacity:1!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
 #mapMount .selected-line{filter:none!important;opacity:1!important;animation:none!important}
 /* Sungei Bedok is a shared TEL/DTL interchange. Apply opacity to the whole
@@ -1699,11 +1700,13 @@ body, body * {
         Math.max(...rgb)<195
       );
       if(isGreyLrtGeometry){
-        el.classList.add('focus-shape-hidden');
-        el.style.setProperty('display','none','important');
-        el.style.setProperty('opacity','0','important');
-        el.style.setProperty('stroke-opacity','0','important');
-        el.style.setProperty('fill-opacity','0','important');
+        el.classList.remove('focus-shape-hidden');
+        el.classList.add('dimmed');
+        el.style.setProperty('display','initial','important');
+        el.style.setProperty('visibility','visible','important');
+        el.style.setProperty('opacity','.16','important');
+        el.style.setProperty('stroke-opacity','.16','important');
+        el.style.setProperty('fill-opacity','.16','important');
         return;
       }
       // Gradient outlines belong only to the MRT lines represented by
@@ -1714,11 +1717,11 @@ body, body * {
         const show=owners.includes(code);
         el.classList.toggle('dimmed',!show);
         el.classList.remove('focus-shape-hidden');
-        el.style.setProperty('display',show?'initial':'none','important');
-        el.style.setProperty('visibility',show?'visible':'hidden','important');
-        el.style.setProperty('opacity',show?'1':'0','important');
-        el.style.setProperty('stroke-opacity',show?'1':'0','important');
-        el.style.setProperty('fill-opacity',show?'1':'0','important');
+        el.style.setProperty('display','initial','important');
+        el.style.setProperty('visibility','visible','important');
+        el.style.setProperty('opacity',show?'1':'.16','important');
+        el.style.setProperty('stroke-opacity',show?'1':'.16','important');
+        el.style.setProperty('fill-opacity',show?'1':'.16','important');
         return;
       }
       if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
@@ -1754,11 +1757,11 @@ body, body * {
       const show=owners.includes(code);
       el.classList.toggle('dimmed',!show);
       el.classList.remove('focus-shape-hidden');
-      el.style.setProperty('display',show?'initial':'none','important');
-      el.style.setProperty('visibility',show?'visible':'hidden','important');
-      el.style.setProperty('opacity',show?'1':'0','important');
-      el.style.setProperty('stroke-opacity',show?'1':'0','important');
-      el.style.setProperty('fill-opacity',show?'1':'0','important');
+      el.style.setProperty('display','initial','important');
+      el.style.setProperty('visibility','visible','important');
+      el.style.setProperty('opacity',show?'1':'.16','important');
+      el.style.setProperty('stroke-opacity',show?'1':'.16','important');
+      el.style.setProperty('fill-opacity',show?'1':'.16','important');
     });
     applyDestinationVisibility(mount.querySelector('svg'),code);
     // Set the dedicated interchange state last, after ALL generic line and
