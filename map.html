@@ -162,29 +162,33 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   .help{font-size:.88rem;margin-top:12px}
   button:hover{transform:none}
 }
-/* Keep the entire square MRT artwork visible on narrow screens, including the far-right QR legend items. */
+/* Keep the complete SVG map and the bottom legend in normal document flow on phones.
+   The SVG determines the container height, so the map cannot be clipped by a guessed ratio. */
 @media(max-width:700px){
   .map-shell{
+    position:relative;
     width:100%;
     height:auto;
     min-height:0;
     max-height:none;
-    aspect-ratio:1105.51 / 1120;
-    overflow:hidden;
+    aspect-ratio:auto;
+    overflow:visible;
   }
   #mapMount{
-    position:absolute;
-    inset:0;
+    position:relative;
+    inset:auto;
     width:100%;
-    height:100%;
-    overflow:hidden;
+    height:auto;
+    overflow:visible;
   }
   #mapMount svg{
+    position:static;
+    display:block;
     width:100%;
-    height:100%;
-    max-width:none;
+    height:auto;
+    max-width:100%;
     max-height:none;
-    object-fit:contain;
+    object-fit:initial;
   }
 }
 @media(max-width:380px){
@@ -1209,7 +1213,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-full-height-fix-v2');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-full-map-flow-v3');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -1885,7 +1889,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261110-full-height-fix-v2')
+  fetch('./mrt-map.svg?v=20261110-full-map-flow-v3')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
