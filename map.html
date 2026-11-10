@@ -910,22 +910,30 @@ body, body * {
         });
       }
     }
-    // The current mrt-map.svg contains a single visible "Pier" text object
-    // at translate(812.02 882.08); the old five-fragment coordinates belonged
-    // to an earlier SVG export and therefore tagged nothing. Tag the live
-    // artwork object directly so it can be clicked and highlighted as NS28.
-    svg.querySelectorAll('text').forEach(el=>{
-      const transform=el.getAttribute('transform')||'';
-      if(transform.includes('translate(812.02 882.08)')&&normalise(el.textContent)==='pier'){
-        el.setAttribute('data-lines','NSL');
-        el.setAttribute('data-line','NSL');
-        el.setAttribute('data-station-label','true');
-        el.setAttribute('data-station-name','Marina South Pier');
-        el.setAttribute('data-station-code','NS28');
-        el.setAttribute('data-destination-label','marina-south-pier');
-        el.classList.remove('focus-text-hidden','dimmed');
-        el.style.removeProperty('display');
-      }
+    // Marina South Pier is split across five separate Illustrator text objects:
+    // "Ma" + "rina" + " So" + "uth" + "Pier". Tag every fragment so line
+    // dimming, map clicks, and the combined station highlight cover the full name.
+    const marinaSouthPierFragments=[
+      ['748.87 881.92','ma'],
+      ['762.24 881.92','rina'],
+      ['779.59 881.92','so'],
+      ['794.42 881.92','uth'],
+      ['812.02 882.08','pier']
+    ];
+    marinaSouthPierFragments.forEach(([position,expectedText])=>{
+      svg.querySelectorAll('text').forEach(el=>{
+        const transform=el.getAttribute('transform')||'';
+        if(transform.includes('translate('+position+')')&&normalise(el.textContent)===expectedText){
+          el.setAttribute('data-lines','NSL');
+          el.setAttribute('data-line','NSL');
+          el.setAttribute('data-station-label','true');
+          el.setAttribute('data-station-name','Marina South Pier');
+          el.setAttribute('data-station-code','NS28');
+          el.setAttribute('data-destination-label','marina-south-pier');
+          el.classList.remove('focus-text-hidden','dimmed');
+          el.style.removeProperty('display');
+        }
+      });
     });
     // These two Circle Line names are split into Illustrator text fragments
     // whose nested groups interrupt the normal adjacent-fragment matcher.
