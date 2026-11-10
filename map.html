@@ -875,7 +875,7 @@ body, body * {
     // Prefer the longest complete station name/code: "Bedok" is also a
     // standalone EWL station name, but "Bedok North" belongs to the DTL.
     const textFragments=[...svg.querySelectorAll('text')];
-    const maxLabelLength=Math.max(0,...labelOwners.keys().map(label=>label.length));
+    const maxLabelLength=Math.max(0,...[...labelOwners.keys()].map(label=>label.length));
     for(let start=0;start<textFragments.length;start++){
       let combined='';
       const run=[];
