@@ -1458,6 +1458,9 @@ body, body * {
     // explanatory words on the map background. Keep only station labels
     // assigned to the selected line (including shared interchange labels).
     mount.querySelectorAll('text').forEach(el=>{
+      // Changi Airport is static bottom-legend artwork: do not run any
+      // station ownership or focus-hiding logic against these fragments.
+      if(el.hasAttribute('data-changi-legend-fixed')||el.closest('[data-changi-legend-fixed]'))return;
       const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       const childOwners=[...el.querySelectorAll('tspan[data-lines],tspan[data-line]')]
         .flatMap(span=>(span.getAttribute('data-lines')||span.getAttribute('data-line')||'').split(/\s+/));
