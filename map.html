@@ -1006,24 +1006,39 @@ body, body * {
   }
   function protectBottomLegendFromLineFocus(svg){
     if(!svg)return;
-    // Protect the complete black "Other Transport Modes" legend from every
-    // line-focus filter. getBBox() is local to nested Illustrator groups,
-    // so transform its corners into root-SVG coordinates before testing.
+    // The bottom transport legend is fixed artwork, not part of any MRT line.
+    // SVGMatrix in Safari does not consistently expose transformPoint(), so
+    // transform each getBBox corner with the matrix coefficients directly.
+    // Protect only nodes wholly inside the bottom legend band; this avoids
+    // accidentally untagging a large parent group that also contains routes.
     const isBottomLegend=node=>{
       if(!node||typeof node.getBBox!=='function')return false;
       try{
         const box=node.getBBox();
         const matrix=node.getCTM();
-        if(!matrix)return box.y>=900&&box.y<1120;
-        const corners=[
-          matrix.transformPoint(new DOMPoint(box.x,box.y)),
-          matrix.transformPoint(new DOMPoint(box.x+box.width,box.y)),
-          matrix.transformPoint(new DOMPoint(box.x,box.y+box.height)),
-          matrix.transformPoint(new DOMPoint(box.x+box.width,box.y+box.height))
-        ];
+        let corners;
+        if(!matrix){
+          corners=[
+            {x:box.x,y:box.y},
+            {x:box.x+box.width,y:box.y},
+            {x:box.x,y:box.y+box.height},
+            {x:box.x+box.width,y:box.y+box.height}
+          ];
+        }else{
+          const point=(x,y)=>({
+            x:matrix.a*x+matrix.c*y+matrix.e,
+            y:matrix.b*x+matrix.d*y+matrix.f
+          });
+          corners=[
+            point(box.x,box.y),
+            point(box.x+box.width,box.y),
+            point(box.x,box.y+box.height),
+            point(box.x+box.width,box.y+box.height)
+          ];
+        }
         const minY=Math.min(...corners.map(point=>point.y));
         const maxY=Math.max(...corners.map(point=>point.y));
-        return maxY>=900&&minY<1120;
+        return minY>=900&&maxY<=1120;
       }catch(error){return false;}
     };
     [...svg.querySelectorAll('*')].forEach(node=>{
