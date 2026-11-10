@@ -1808,6 +1808,14 @@ body, body * {
         node.style.setProperty('fill-opacity','1','important');
         node.style.setProperty('stroke-opacity','1','important');
         node.style.setProperty('filter','none','important');
+        // The Illustrator classes on these two legend labels set letter
+        // spacing but do not set a white text fill. SVG's default black fill
+        // disappears against the black legend panel. Set white on the actual
+        // text glyphs (including Bionicized tspans), not on the transport icons.
+        if(node.matches('text,tspan')){
+          node.style.setProperty('fill','#ffffff','important');
+          node.style.setProperty('color','#ffffff','important');
+        }
       });
     });
   }
