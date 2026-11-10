@@ -105,6 +105,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #mapMount .selected-line{filter:none!important;opacity:1!important;animation:none!important}
 /* Sungei Bedok label and border opacity is set by the line-selection handler.
    Avoid a broad CSS rule that can override the individual SVG border state. */
+/* Dedicated interchange state controls both border halves after generic tagging. */
+#mapMount.sungei-bedok-active svg g[data-station-name="Sungei Bedok"] > path[data-sungei-bedok-border="true"]{opacity:1!important;stroke-opacity:1!important;fill-opacity:1!important;}
+#mapMount:not(.sungei-bedok-active) svg g[data-station-name="Sungei Bedok"] > path[data-sungei-bedok-border="true"]{opacity:.16!important;stroke-opacity:.16!important;fill-opacity:.16!important;}
   /* Keep the orange Circle Line geometry visually fixed: no glow filters, transforms, or animated effects on hover/selection. */
   #mapMount [data-line="CCL"],#mapMount [data-line="CCL"].dimmed,#mapMount [data-line="CCL"].selected-line{transform:none!important;animation:none!important;transition:opacity .16s ease!important}
 #mapMount .station-label-highlight{pointer-events:none}
@@ -2124,9 +2127,10 @@ body, body * {
         border.classList.toggle('selected-line',sungeiOwnerSelected);
         border.style.setProperty('display','inline','important');
         border.style.setProperty('visibility','visible','important');
-        border.style.setProperty('opacity',sungeiOwnerSelected?'1':'.16','important');
-        border.style.setProperty('stroke-opacity',sungeiOwnerSelected?'1':'.16','important');
-        border.style.setProperty('fill-opacity',sungeiOwnerSelected?'1':'.16','important');
+        // Let the dedicated map-state CSS control opacity; clear stale inline overrides.
+        border.style.removeProperty('opacity');
+        border.style.removeProperty('stroke-opacity');
+        border.style.removeProperty('fill-opacity');
         border.style.setProperty('filter','none','important');
       });
     }
