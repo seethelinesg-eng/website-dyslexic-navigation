@@ -1790,9 +1790,26 @@ body, body * {
   }
   function restoreBottomLegendTransportLabels(svg){
     if(!svg)return;
-    // Restore only the dedicated bottom-panel Changi Airport vector group.
-    // The separate map-side Changi label is deliberately not selected here.
+    // Re-run protection AFTER every focus/destination filter. Both bottom
+    // transport labels must survive the final pass, not just the initial SVG
+    // import. The map-side Sentosa destination is outside these exact groups.
+    protectBottomLegendFromLineFocus(svg);
     protectChangiAirportLegend(svg);
+    ['#changi-airport-legend-vector','#sentosa-express-legend-vector'].forEach(selector=>{
+      const group=svg.querySelector(selector);
+      if(!group)return;
+      [group,...group.querySelectorAll('*')].forEach(node=>{
+        node.removeAttribute('data-line');
+        node.removeAttribute('data-lines');
+        node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
+        node.style.setProperty('display','inline','important');
+        node.style.setProperty('visibility','visible','important');
+        node.style.setProperty('opacity','1','important');
+        node.style.setProperty('fill-opacity','1','important');
+        node.style.setProperty('stroke-opacity','1','important');
+        node.style.setProperty('filter','none','important');
+      });
+    });
   }
   function selectLineOnFullMap(code){
     if(!names[code]||!fullMapRaw)return;
