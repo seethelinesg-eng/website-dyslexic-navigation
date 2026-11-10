@@ -1214,7 +1214,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-station-panel-side-by-side-v1');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-sungei-bedok-tel-visible-v1');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -1247,6 +1247,23 @@ body, body * {
     // Punggol Cove is split across four adjacent SVG text elements. Restore
     // the complete label after focus filtering so no earlier classification
     // or inherited dimming can make it disappear on the North-East Line.
+    // Sungei Bedok is grouped at the TE31 end of the Brown Line artwork.
+    // Restore the whole labelled group in TEL focus mode because its text
+    // elements inherit their line ownership from the parent SVG group.
+    if(code==='TEL'){
+      mount.querySelectorAll('[data-station-name="Sungei Bedok"]').forEach(group=>{
+        group.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+        group.style.setProperty('display','inline','important');
+        group.style.setProperty('visibility','visible','important');
+        group.style.setProperty('opacity','1','important');
+        group.querySelectorAll('text,tspan').forEach(part=>{
+          part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+          part.style.setProperty('display','inline','important');
+          part.style.setProperty('visibility','visible','important');
+          part.style.setProperty('opacity','1','important');
+        });
+      });
+    }
     if(code==='NEL'){
       const normaliseLabel=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
       mount.querySelectorAll('g').forEach(group=>{
