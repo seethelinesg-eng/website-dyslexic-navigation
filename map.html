@@ -1267,6 +1267,9 @@ body, body * {
       const match=owners.includes(code);
       el.classList.toggle('dimmed',!match);el.classList.toggle('selected-line',match);
     });
+    // Reassert the complete Sungei Bedok interchange after all generic
+    // focus classes have been applied to the imported line artwork.
+    if(code==='TEL'||code==='DTL')restoreSungeiBedokLabel(mount.querySelector('svg'));
     // Hide every other SVG text label in focus mode, including white
     // explanatory words on the map background. Keep only station labels
     // assigned to the selected line (including shared interchange labels).
