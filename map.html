@@ -82,6 +82,13 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 #mapMount [data-line].dimmed{display:initial!important;opacity:.16!important;filter:saturate(.45)!important}#mapMount [data-line].selected-line{display:initial!important;opacity:1!important}#mapMount [data-line]{cursor:pointer;transition:opacity .16s ease}
 #mapMount .island-background{display:block!important;visibility:visible!important;opacity:1!important;fill:#fff!important}
 #mapMount .selected-line{filter:none!important;opacity:1!important;animation:none!important}
+/* Sungei Bedok is a shared TEL/DTL interchange. Apply opacity to the whole
+   label group only while either owning line is selected. */
+#mapMount.sungei-bedok-active [data-station-name="Sungei Bedok"],
+#mapMount.sungei-bedok-active [data-station-name="Sungei Bedok"] *{
+  display:initial!important;visibility:visible!important;opacity:1!important;
+  fill-opacity:1!important;stroke-opacity:1!important;filter:none!important
+}
   /* Keep the orange Circle Line geometry visually fixed: no glow filters, transforms, or animated effects on hover/selection. */
   #mapMount [data-line="CCL"],#mapMount [data-line="CCL"].dimmed,#mapMount [data-line="CCL"].selected-line{transform:none!important;animation:none!important;transition:opacity .16s ease!important}
 #mapMount .station-label-highlight{pointer-events:none}
@@ -1343,13 +1350,17 @@ body, body * {
     // Hide interchange gradient boxes and unrelated LRT corner labels.
     mount.querySelectorAll('[data-gradient-route],[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
     applyDestinationVisibility(mount.querySelector('svg'),code);
+    // Set the dedicated interchange state last, after ALL generic line and
+    // destination visibility rules have finished modifying the SVG.
+    mount.classList.toggle('sungei-bedok-active',code==='TEL'||code==='DTL');
+    if(code==='TEL'||code==='DTL')restoreSungeiBedokLabel(mount.querySelector('svg'));
     speak(names[code]+' selected');
   }
   function showAll(){
     selected=null;
     resetMobileMapView();
     stationPanel.classList.remove('visible');
-    mount.classList.remove('zoomed');
+    mount.classList.remove('zoomed','sungei-bedok-active');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed','false'));
     if(fullMapRaw)installMap(fullMapRaw);
     speak('Full MRT map shown');
@@ -1469,6 +1480,7 @@ body, body * {
     if(svg){
       applyLineEmphasis(svg,code);
       applyDestinationVisibility(svg,code);
+      mount.classList.toggle('sungei-bedok-active',code==='TEL'||code==='DTL');
       if(code==='TEL'||code==='DTL')restoreSungeiBedokLabel(svg);
     }
     speak(names[code]);
