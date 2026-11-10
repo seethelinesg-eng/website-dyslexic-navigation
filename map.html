@@ -1082,7 +1082,9 @@ body, body * {
     };
     const labelBoxes=stationLabels.map(label=>({label,box:toRootBox(label)})).filter(item=>item.box);
     shapes.forEach(shape=>{
-      if(!shape.hasAttribute('data-line')||isFixedBottomLegendNode(shape))return;
+      // Include neutral/grey station-outline fragments too. They do not
+      // carry an MRT route colour, but they are still part of the station.
+      if(isFixedBottomLegendNode(shape))return;
       const box=toRootBox(shape);
       if(!box||(box.right-box.left)>150||(box.bottom-box.top)>70)return;
       const matchingLabel=labelBoxes
@@ -2433,7 +2435,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261110-station-border-is-station-v2')
+  fetch('./mrt-map.svg?v=20261110-grey-station-borders-v3')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
