@@ -1387,12 +1387,26 @@ body, body * {
       const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       const childOwners=[...el.querySelectorAll('tspan[data-lines],tspan[data-line]')]
         .flatMap(span=>(span.getAttribute('data-lines')||span.getAttribute('data-line')||'').split(/\s+/));
-      // Keep the Changi Airport legend label visible in every focused
-      // line view, even though it is not part of an MRT route.
+      // Keep the Changi Airport and Sentosa Express words in the black
+      // bottom legend completely untouched in every single-line focus view.
+      // Labels may be split across several SVG text fragments, so inspect
+      // their parent groups as well as each individual text node.
       const legendLabel=el.textContent.replace(/\s+/g,'').toLowerCase();
-      const keep=owners.includes(code)||childOwners.includes(code)||
-        legendLabel==='changi'||legendLabel==='airport'||legendLabel==='changiairport';
+      const parentLegendLabel=(el.closest('g')?.textContent||'').replace(/\s+/g,'').toLowerCase();
+      const isTransportLegendLabel=
+        ['changi','airport','changiairport','sentosa','express','sentosaexpress'].includes(legendLabel)||
+        parentLegendLabel.includes('changiairport')||
+        parentLegendLabel.includes('sentosaexpress');
+      const keep=owners.includes(code)||childOwners.includes(code)||isTransportLegendLabel;
       el.classList.toggle('focus-text-hidden',!keep);
+      if(isTransportLegendLabel){
+        el.classList.remove('dimmed','focus-text-hidden');
+        el.style.setProperty('display','inline','important');
+        el.style.setProperty('visibility','visible','important');
+        el.style.setProperty('opacity','1','important');
+        el.style.setProperty('fill-opacity','1','important');
+        el.style.setProperty('stroke-opacity','1','important');
+      }
     });
     // Punggol Cove is split across four adjacent SVG text elements. Restore
     // the complete label after focus filtering so no earlier classification
