@@ -1505,9 +1505,28 @@ body, body * {
         return;
       }
       if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
-      let box;
-      try{box=el.getBBox();}catch(_){return;}
-      const inLegend=box.y>=930 || (box.y+box.height)>=1015;
+      let box,inLegend=false;
+      try{
+        box=el.getBBox();
+        // getBBox() is in the element's LOCAL coordinates. Illustrator nests
+        // bottom-legend icons and lettering inside translated groups, so the
+        // old box.y check classified Changi Airport as ordinary map artwork.
+        // Convert all four corners into the root SVG coordinate space first.
+        const matrix=el.getCTM();
+        if(matrix){
+          const corners=[
+            matrix.transformPoint(new DOMPoint(box.x,box.y)),
+            matrix.transformPoint(new DOMPoint(box.x+box.width,box.y)),
+            matrix.transformPoint(new DOMPoint(box.x,box.y+box.height)),
+            matrix.transformPoint(new DOMPoint(box.x+box.width,box.y+box.height))
+          ];
+          const minY=Math.min(...corners.map(point=>point.y));
+          const maxY=Math.max(...corners.map(point=>point.y));
+          inLegend=minY>=930 || maxY>=1015;
+        }else{
+          inLegend=box.y>=930 || (box.y+box.height)>=1015;
+        }
+      }catch(_){return;}
       el.classList.toggle('focus-shape-hidden',!inLegend);
     });
     // Keep all-colour transfer-station borders visible; only fade unrelated
