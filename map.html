@@ -1439,7 +1439,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-changi-legend-fix-v1');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-changi-legend-final-v4');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -1621,7 +1621,8 @@ body, body * {
     // Final pass: single-line selection loads a separate SVG and applies
     // several independent text/shape filters. Restore the Changi Airport
     // legend label and its Illustrator ancestors only AFTER all those filters.
-    protectChangiAirportLegend(mount.querySelector('svg'));\n    restoreBottomLegendTransportLabels(mount.querySelector('svg'));
+    protectChangiAirportLegend(mount.querySelector('svg'));
+    restoreBottomLegendTransportLabels(mount.querySelector('svg'));
     speak(names[code]+' selected');
   }
   function showAll(){
@@ -2251,7 +2252,7 @@ body, body * {
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!legendGuide.hidden)closeLegendGuidePanel();
   });
-  fetch('./mrt-map.svg?v=20261110-sungei-bedok-label-fragments-v4')
+  fetch('./mrt-map.svg?v=20261110-changi-legend-final-v4')
     .then(r=>{if(!r.ok)throw new Error('Map file not found');return r.text()})
     .then(raw=>{
       status.textContent='MRT map downloaded. Preparing the map…';
