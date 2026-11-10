@@ -968,9 +968,17 @@ body, body * {
     // textContent matches: Illustrator split Marina South Pier across objects.
     svg.querySelectorAll('[data-destination-label="marina-south-pier"]').forEach(el=>{
       const show=!code||code==='NSL';
-      el.style.setProperty('display',show?'inline':'none','important');
-      el.style.setProperty('visibility',show?'visible':'hidden','important');
-      el.style.setProperty('opacity',show?'1':'0','important');
+      // Keep all five Illustrator text fragments present. In non-NSL focus
+      // they must use the same translucent opacity as other unselected labels,
+      // not stay opaque because a fragment escaped the line-focus class pass.
+      el.classList.toggle('dimmed',!!code&&!show);
+      el.classList.toggle('selected-line',!!code&&show);
+      el.style.setProperty('display','inline','important');
+      el.style.setProperty('visibility','visible','important');
+      el.style.setProperty('opacity',show?'1':'.16','important');
+      el.style.setProperty('fill-opacity',show?'1':'.16','important');
+      el.style.setProperty('stroke-opacity',show?'1':'.16','important');
+      el.style.setProperty('filter','none','important');
     });
     // Keep these destination labels only on the corridors they belong to.
     const rules=[
