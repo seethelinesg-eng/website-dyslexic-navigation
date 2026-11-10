@@ -1444,14 +1444,34 @@ body, body * {
         el.style.setProperty('fill-opacity','0','important');
         return;
       }
+      // Multicolour gradient outlines are the transfer-station borders.
+      // Keep every route colour visible at these stations in every focus mode.
+      if(el.hasAttribute('data-gradient-route')){
+        el.classList.remove('dimmed','focus-shape-hidden');
+        el.style.setProperty('display','initial','important');
+        el.style.setProperty('visibility','visible','important');
+        el.style.setProperty('opacity','1','important');
+        el.style.setProperty('stroke-opacity','1','important');
+        el.style.setProperty('fill-opacity','1','important');
+        return;
+      }
       if(el.hasAttribute('data-line')){el.classList.remove('focus-shape-hidden');return;}
       let box;
       try{box=el.getBBox();}catch(_){return;}
       const inLegend=box.y>=930 || (box.y+box.height)>=1015;
       el.classList.toggle('focus-shape-hidden',!inLegend);
     });
-    // Hide interchange gradient boxes and unrelated LRT corner labels.
-    mount.querySelectorAll('[data-gradient-route],[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
+    // Keep all-colour transfer-station borders visible; only fade unrelated
+    // LRT corner labels during single-line focus.
+    mount.querySelectorAll('[data-unrelated-label]').forEach(el=>el.classList.add('dimmed'));
+    mount.querySelectorAll('[data-gradient-route]').forEach(el=>{
+      el.classList.remove('dimmed','focus-shape-hidden');
+      el.style.setProperty('display','initial','important');
+      el.style.setProperty('visibility','visible','important');
+      el.style.setProperty('opacity','1','important');
+      el.style.setProperty('stroke-opacity','1','important');
+      el.style.setProperty('fill-opacity','1','important');
+    });
     applyDestinationVisibility(mount.querySelector('svg'),code);
     // Set the dedicated interchange state last, after ALL generic line and
     // destination visibility rules have finished modifying the SVG.
