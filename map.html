@@ -89,21 +89,11 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .map-heading{display:flex;justify-content:space-between;align-items:end;gap:14px;margin:0 0 12px}
 .map-heading h2{font-size:1.35rem;letter-spacing:-.035em;margin:0}
 .map-heading span{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.map-shell{position:relative;width:100%;height:min(82vh,900px);min-height:560px;background:var(--white);border:1px solid var(--rule);padding:0;box-shadow:8px 8px 0 #19191912;box-sizing:border-box;overflow:hidden}
-#mapMount{position:absolute;inset:0;width:100%;height:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden}
-/* Keep the artwork visible even if the interactive SVG script fails to initialise. */
-#mapMount:empty::before{
-  content:"";
-  display:block;
-  width:100%;
-  height:100%;
-  background-image:url("./mrt-map.svg?v=20261110-map-visible-fallback-v1");
-  background-position:center;
-  background-repeat:no-repeat;
-  background-size:contain;
-}
+.map-display-frame{width:100%;overflow:hidden;background:#080808;border:1px solid #191919;box-shadow:8px 8px 0 #19191912}
+.map-shell{position:relative;width:100%;height:min(82vh,900px);min-height:560px;background:var(--white);border:0;padding:0;box-shadow:none;box-sizing:border-box;overflow:hidden}
+#mapMount{position:absolute;inset:0;width:100%;height:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;background:var(--white)}
 #mapMount svg{display:block;width:100%;max-width:100%;height:100%;max-height:100%;margin:0 auto;box-sizing:border-box;object-fit:contain}
-#standaloneLegendMount{position:relative;width:100%;margin:14px 0 0;background:#080808;border:1px solid #191919;box-shadow:8px 8px 0 #19191912;overflow:hidden}
+#standaloneLegendMount{position:relative;width:100%;margin:0;background:#080808;border:0;box-shadow:none;overflow:hidden;line-height:0}
 #standaloneLegendMount svg{display:block;width:100%;height:auto;max-width:100%;margin:0 auto;overflow:hidden}
 #standaloneLegendMount svg text,#standaloneLegendMount svg tspan{font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Arial,sans-serif!important}
 .map-zoom-controls{position:absolute;z-index:5;top:12px;right:12px;display:grid;grid-template-columns:48px 48px;gap:7px}
@@ -337,15 +327,17 @@ body, body * {
       </section>
       <section class="map-column" aria-label="Interactive MRT map">
         <div class="map-heading"><h2>Singapore MRT network</h2><span>Interactive map</span></div>
-        <div class="map-shell" id="mapViewport" aria-label="Map viewing area">
-          <div class="map-zoom-controls" aria-label="Map zoom controls">
-            <button type="button" id="mapZoomIn" aria-label="Zoom in">+</button>
-            <button type="button" id="mapZoomOut" aria-label="Zoom out">−</button>
-            <button type="button" id="mapZoomReset" aria-label="Reset map view">Reset</button>
+        <div class="map-display-frame">
+          <div class="map-shell" id="mapViewport" aria-label="Map viewing area">
+            <div class="map-zoom-controls" aria-label="Map zoom controls">
+              <button type="button" id="mapZoomIn" aria-label="Zoom in">+</button>
+              <button type="button" id="mapZoomOut" aria-label="Zoom out">−</button>
+              <button type="button" id="mapZoomReset" aria-label="Reset map view">Reset</button>
+            </div>
+            <div id="mapMount"></div>
           </div>
-          <div id="mapMount"></div>
+          <div id="standaloneLegendMount" aria-label="Independent transport legend panel"></div>
         </div>
-        <div id="standaloneLegendMount" aria-label="Independent transport legend panel"></div>
         <p class="map-touch-hint">On a laptop: use + and − to zoom, then drag the map to move around. On a phone: pinch to zoom and drag to move. Tap a station or coloured line to interact.</p>
         <p class="help">Choose a coloured line button to show only that route and reveal its station list. Select a station to hear its name.</p>
       </section>
@@ -1972,7 +1964,9 @@ body, body * {
     const sourceViewBox=(imported.getAttribute('viewBox')||'0 0 1105.51 1120').trim().split(/[ ,]+/).map(Number);
     mobileMapBaseViewBox=sourceViewBox.length===4&&sourceViewBox.every(Number.isFinite)?sourceViewBox:[0,0,1105.51,1048.82];
     const [viewX,viewY,viewWidth,viewHeight]=mobileMapBaseViewBox;
-    const legendTop=Math.min(viewY+900,viewY+viewHeight);
+    // The map artwork ends at y=920; begin the detached legend below it
+    // so no strip of the legend is left visible in the interactive viewport.
+    const legendTop=Math.min(viewY+920,viewY+viewHeight);
     const legendHeight=Math.max(1,viewY+viewHeight-legendTop);
     // Make a separate, unfiltered copy of the bottom artwork. It lives outside
     // #mapMount, has its own SVG viewport and its own interaction layer.
@@ -1988,8 +1982,9 @@ body, body * {
     });
     legendMount.replaceChildren(independentLegend);
     makeLegendInteractive(independentLegend);
-    // The interactive map itself ends above the legend band. Consequently no
-    // map line-selection filter can reach or visually alter the separate panel.
+    // The interactive map ends at the exact seam above the legend band.
+    // Both SVGs sit inside one continuous frame, but only the detached copy
+    // is rendered below this boundary and is never touched by line filters.
     const mapHeight=Math.max(1,legendTop-viewY);
     // Keep the zoom/pan controller on the cropped map bounds; otherwise its
     // next update would restore the original full-height viewBox and reattach
