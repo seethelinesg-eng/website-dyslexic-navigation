@@ -1013,9 +1013,27 @@ body, body * {
       el.style.setProperty('opacity',rule.visible?'1':'0','important');
     });
   }
-  function highlightStation(stationName,code){
+  function restoreSungeiBedokLabel(svg){
+    if(!svg)return;
+    // Sungei Bedok is the shared TE31 (TEL/Brown) and DT37 (DTL/Blue)
+    // interchange. Keep the complete station name opaque on either line.
+    svg.querySelectorAll('[data-station-name="Sungei Bedok"]').forEach(group=>{
+      group.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+      group.style.setProperty('display','inline','important');
+      group.style.setProperty('visibility','visible','important');
+      group.style.setProperty('opacity','1','important');
+      group.querySelectorAll('text,tspan').forEach(part=>{
+        part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+        part.style.setProperty('display','inline','important');
+        part.style.setProperty('visibility','visible','important');
+        part.style.setProperty('opacity','1','important');
+      });
+    });
+  }
+  function normaliseStationName(value){return String(value||'').replace(/\\s+/g,'').toLocaleLowerCase();}\n  function highlightStation(stationName,code){
     const svg=mount.querySelector('svg');
     if(!svg)return;
+    if(normaliseStationName(stationName)==='sungeibedok')restoreSungeiBedokLabel(svg);
     svg.querySelectorAll('.station-label-highlight').forEach(el=>el.remove());
     const normalise=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
     // Accept the Illustrator spelling used for this TEL station label.
@@ -1264,23 +1282,8 @@ body, body * {
     // Punggol Cove is split across four adjacent SVG text elements. Restore
     // the complete label after focus filtering so no earlier classification
     // or inherited dimming can make it disappear on the North-East Line.
-    // Sungei Bedok is grouped at the TE31 end of the Brown Line artwork.
-    // Restore the whole labelled group in TEL focus mode because its text
-    // elements inherit their line ownership from the parent SVG group.
-    if(code==='TEL'){
-      mount.querySelectorAll('[data-station-name="Sungei Bedok"]').forEach(group=>{
-        group.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
-        group.style.setProperty('display','inline','important');
-        group.style.setProperty('visibility','visible','important');
-        group.style.setProperty('opacity','1','important');
-        group.querySelectorAll('text,tspan').forEach(part=>{
-          part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
-          part.style.setProperty('display','inline','important');
-          part.style.setProperty('visibility','visible','important');
-          part.style.setProperty('opacity','1','important');
-        });
-      });
-    }
+    // Sungei Bedok is a shared Brown/Blue interchange (TE31/DT37).
+    if(code==='TEL'||code==='DTL')restoreSungeiBedokLabel(mount.querySelector('svg'));
     if(code==='NEL'){
       const normaliseLabel=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
       mount.querySelectorAll('g').forEach(group=>{
