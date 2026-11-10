@@ -1313,5 +1313,5 @@
   <g class="st27">
     <text class="st32" transform="translate(326.76 526.77) scale(1.03 1)"><tspan x="0" y="0">levard</tspan></text>
   </g>
-  <g class="st27 selected-line" data-line="TEL" data-lines="TEL" data-station-label="true" data-station-name="Sungei Bedok"><text class="station-label-original-semibold selected-line" data-line="TEL" data-lines="TEL" data-station-label="true" transform="translate(980 570) scale(1.03 1)"><tspan data-line="TEL" data-lines="TEL" x="0" y="0">Sungei Bedok</tspan></text></g>
+  <g class="st27 selected-line" data-line="TEL" data-lines="TEL DTL" data-station-label="true" data-station-name="Sungei Bedok"><text class="station-label-original-semibold selected-line" data-line="TEL" data-lines="TEL DTL" data-station-label="true" transform="translate(980 570) scale(1.03 1)"><tspan data-line="TEL" data-lines="TEL DTL" x="0" y="0">Sungei Bedok</tspan></text></g>
 </svg>
