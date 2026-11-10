@@ -585,10 +585,10 @@
   </g>
   <g class="st26">
     <g class="st26">
-      <text class="st45" transform="translate(780.52 992.37) scale(1.03 1)"><tspan x="0" y="0">Changi</tspan></text>
+      
     </g>
     <g class="st26">
-      <text class="st42" transform="translate(780.2002 1001.9703) scale(1.03 1)"><tspan x="0" y="0">Airport</tspan></text>
+      
     </g>
   </g>
   <g class="st26">
@@ -1294,4 +1294,8 @@
   <ellipse class="st50" cx="438.52" cy="886.31" rx=".92" ry=".89"/>
   <rect class="st50" x="437.17" y="877.09" width="2.69" height="6.29" rx=".98" ry=".98"/>
   <ellipse class="st50" cx="438.52" cy="874.54" rx=".92" ry=".89"/>
+<g id="changi-airport-legend-vector" data-bottom-legend-fixed="true" aria-label="Changi Airport">
+  <text class="st45" transform="translate(780.52 992.37) scale(1.03 1)"><tspan x="0" y="0">Changi</tspan></text>
+  <text class="st42" transform="translate(780.2002 1001.9703) scale(1.03 1)"><tspan x="0" y="0">Airport</tspan></text>
+</g>
 </svg>
