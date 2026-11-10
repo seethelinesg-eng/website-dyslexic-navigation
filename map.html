@@ -292,6 +292,8 @@ body, body * {
 
 /* Hard protection for the bottom-panel Changi Airport label.
    This selector intentionally outranks generic focus-mode hiding rules. */
+#mapMount svg [data-bottom-legend-fixed="true"],
+#mapMount svg [data-bottom-legend-fixed="true"] *,
 #mapMount svg g#changi-airport-legend-vector,
 #mapMount svg g#changi-airport-legend-vector *,
 #mapMount svg [data-changi-legend-fixed="true"],
@@ -1119,8 +1121,7 @@ body, body * {
     // Keep these destination labels only on the corridors they belong to.
     const rules=[
       {key:'marinasouthpier',visible:!code||code==='NSL'},
-      {key:'bedoksouth',visible:!code||code==='TEL'},
-      {key:'sentosa',visible:!code||code==='NEL'||code==='CCL'}
+      {key:'bedoksouth',visible:!code||code==='TEL'}
     ];
     const matches=label=>rules.find(rule=>label.includes(rule.key));
     // Hide only a group whose own text is exactly the destination label;
@@ -1129,10 +1130,22 @@ body, body * {
       if(isFixedBottomLegendNode(group))return;
       const groupLabel=normalise(group.textContent);
       const rule=rules.find(item=>groupLabel===item.key);
-      if(!rule)return;
-      group.style.setProperty('display',rule.visible?'inline':'none','important');
-      group.style.setProperty('visibility',rule.visible?'visible':'hidden','important');
-      group.style.setProperty('opacity',rule.visible?'1':'0','important');
+      if(rule){
+        group.style.setProperty('display',rule.visible?'inline':'none','important');
+        group.style.setProperty('visibility',rule.visible?'visible':'hidden','important');
+        group.style.setProperty('opacity',rule.visible?'1':'0','important');
+        return;
+      }
+      // The bottom-panel "Sentosa Express" contains the word Sentosa.
+      // Do not let destination filtering mistake it for the map-side
+      // Sentosa destination label. Only a group whose complete label is
+      // exactly "Sentosa" is governed by the destination visibility rule.
+      if(groupLabel==='sentosa'){
+        const visible=!code||code==='NEL'||code==='CCL';
+        group.style.setProperty('display',visible?'inline':'none','important');
+        group.style.setProperty('visibility',visible?'visible':'hidden','important');
+        group.style.setProperty('opacity',visible?'1':'0','important');
+      }
     });
     // Illustrator can split one name across adjacent <text> elements.
     // Match concatenated runs so every fragment receives the same visibility.
