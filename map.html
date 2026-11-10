@@ -1162,6 +1162,14 @@ body, body * {
     // Treat every station name and its complete coloured outline as one
     // station unit, not just interchange labels. Every nearby border segment
     // inherits the station's full set of line owners.
+    // Bionicized Sungei Bedok text is split into fragments; some fragments
+    // inherit nearby route colours (including EWL). Normalize every fragment
+    // before matching the station's outline so no border piece is mis-tagged.
+    svg.querySelectorAll('text[data-station-name="Sungei Bedok"]').forEach(label=>{
+      label.setAttribute('data-lines','TEL DTL');
+      label.setAttribute('data-line','TEL');
+      label.setAttribute('data-station-label','true');
+    });
     const stationLabels=[...svg.querySelectorAll('text[data-station-label="true"][data-lines]')];
     const toRootBox=node=>{
       try{
@@ -1205,6 +1213,8 @@ body, body * {
         // colour of the individual SVG fragment.
         shape.setAttribute('data-station-border','true');
         shape.setAttribute('data-station-label','true');
+        const stationName=matchingLabel.label.getAttribute('data-station-name');
+        if(stationName)shape.setAttribute('data-station-name',stationName);
         shape.setAttribute('data-lines',owners);
         shape.setAttribute('data-line',owners.trim().split(/\s+/)[0]);
         shape.classList.remove('dimmed','focus-shape-hidden');
