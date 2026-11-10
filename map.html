@@ -1703,6 +1703,12 @@ body, body * {
         });
       });
     }
+    // Final route-emphasis pass: the separately loaded line artwork and the
+    // full-network artwork must use the same ownership/opacity rules. This is
+    // especially important for the Downtown Line's blue route strokes: after
+    // text and destination filtering, reassert DTL as fully opaque and every
+    // non-selected MRT route as translucent.
+    applyLineEmphasis(mount.querySelector('svg'),code);
     // Final pass: single-line selection loads a separate SVG and applies
     // several independent text/shape filters. Restore the Changi Airport
     // legend label and its Illustrator ancestors only AFTER all those filters.
