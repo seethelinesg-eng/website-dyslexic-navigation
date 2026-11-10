@@ -1408,7 +1408,7 @@ body, body * {
     mount.classList.add('zoomed');
     document.querySelectorAll('[data-select-line]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLine===code)));
     try{
-      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-sungei-bedok-opacity-v3');
+      const response=await fetch('./'+encodeURIComponent(lineSvgFiles[code])+'?v=20261110-changi-legend-fix-v1');
       if(!response.ok)throw new Error('Corrected line SVG not found');
       const raw=await response.text();
       if(selected!==code)return;
@@ -1706,23 +1706,28 @@ body, body * {
   }
   function restoreBottomLegendTransportLabels(svg){
     if(!svg)return;
-    // The line-specific SVGs contain the bottom transport legend too.
-    // Restore both Changi text fragments and every enclosing Illustrator
-    // group AFTER line-focus filtering, because an ancestor can hide them.
-    const targets=[...svg.querySelectorAll('text')].filter(el=>{
+    // Changi Airport is fixed artwork in the bottom legend, not an MRT label.
+    // Restore the actual text fragments, their tspans, and every wrapper group
+    // after all line-selection filters have run. Explicitly clear both CSS
+    // classes and inline hiding so this works with every Illustrator export.
+    const targets=[...svg.querySelectorAll('text,tspan')].filter(el=>{
       const label=String(el.textContent||'').replace(/\s+/g,'').toLowerCase();
       return label==='changi'||label==='airport';
     });
+    const restore=new Set();
     targets.forEach(label=>{
       let node=label;
       while(node&&node!==svg){
-        node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
-        ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
-          const value=prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1';
-          node.style.setProperty(prop,value,'important');
-        });
+        restore.add(node);
         node=node.parentElement;
       }
+    });
+    restore.forEach(node=>{
+      node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
+      ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
+        const value=prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1';
+        node.style.setProperty(prop,value,'important');
+      });
     });
   }
   function selectLineOnFullMap(code){
