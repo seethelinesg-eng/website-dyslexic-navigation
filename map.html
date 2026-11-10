@@ -1930,6 +1930,11 @@ body, body * {
   function namespaceLegendSvgIds(svg){
     const prefix='transport-legend-';
     const ids=new Map();
+    if(svg.hasAttribute('id')){
+      const rootId=svg.getAttribute('id');
+      ids.set(rootId,prefix+rootId);
+      svg.setAttribute('id',prefix+rootId);
+    }
     svg.querySelectorAll('[id]').forEach(el=>{
       const oldId=el.getAttribute('id');
       const newId=prefix+oldId;
