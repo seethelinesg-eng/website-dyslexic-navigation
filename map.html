@@ -799,13 +799,51 @@ body, body * {
     'Upper Changi':'up-ur chang-ee',
     'Expo':'eks-poh'
   };
+  // East West Line and Changi Airport branch speech cues.
+  const eastWestLineSpeechCues={
+    'Pasir Ris':'pah-seer rees',
+    'Tampines':'tam-pih-nees',
+    'Simei':'sih-may',
+    'Tanah Merah':'tah-nah meh-rah',
+    'Bedok':'buh-dok',
+    'Kembangan':'kum-bahng-ahn',
+    'Eunos':'yoo-nos',
+    'Paya Lebar':'py-yah luh-bar',
+    'Aljunied':'al-joo-nid',
+    'Kallang':'kah-lahng',
+    'Lavender':'lav-un-dur',
+    'Bugis':'boo-gis',
+    'City Hall':'sit-ee hawl',
+    'Raffles Place':'raf-ulz plays',
+    'Tanjong Pagar':'tahn-jong pah-gar',
+    'Outram Park':'ow-trum park',
+    'Tiong Bahru':'tee-ong bar-oo',
+    'Redhill':'red-hil',
+    'Queenstown':'kwinz-town',
+    'Commonwealth':'kom-un-welth',
+    'Buona Vista':'bwon-ah vees-tah',
+    'Dover':'doh-vur',
+    'Clementi':'kluh-men-tee',
+    'Jurong East':'joo-rong eest',
+    'Chinese Garden':'chy-neez gar-dun',
+    'Lakeside':'layk-syd',
+    'Boon Lay':'boon lay',
+    'Pioneer':'py-uh-neer',
+    'Joo Koon':'joo koon',
+    'Gul Circle':'gool sur-kul',
+    'Tuas Crescent':'too-ahs krez-unt',
+    'Tuas West Road':'too-ahs west rohd',
+    'Tuas Link':'too-ahs lingk',
+    'Expo':'eks-poh',
+    'Changi Airport':'chahng-ee ayr-port'
+  };
   function speakWithBrowserVoice(text){
     if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){
       status.textContent='Audio is not supported by this browser. Please try Safari with speech enabled.';
       return;
     }
     const spokenName=canonicalStationSpokenName(text);
-    const cue=downtownLineSpeechCues[spokenName];
+    const cue=downtownLineSpeechCues[spokenName] || eastWestLineSpeechCues[spokenName];
     // Keep the existing Sungei Bedok guide for the future DTL/TEL interchange.
     const speechText=cue || (spokenName.toLocaleLowerCase('en')==='sungei bedok'
       ? 'Sung-eye Bedok'
