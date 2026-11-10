@@ -2081,6 +2081,26 @@ body, body * {
       restoreBottomLegendTransportLabels(svg);
       mount.classList.toggle('sungei-bedok-active',code==='TEL'||code==='DTL');
       if(code==='TEL'||code==='DTL')restoreSungeiBedokLabel(svg);
+      // Full-map toolbar override: both halves of the Sungei Bedok border
+      // belong to the shared TEL/DTL interchange, never to EWL.
+      const sungeiOwnerSelected=code==='TEL'||code==='DTL';
+      const sungeiGroup=svg.querySelector('g[data-station-name="Sungei Bedok"]');
+      if(sungeiGroup){
+        [sungeiGroup,...sungeiGroup.querySelectorAll('*')].forEach(node=>{
+          if(node.matches('path,rect,polygon,polyline,line')){
+            node.setAttribute('data-lines','TEL DTL');
+            node.setAttribute('data-line','TEL');
+            node.classList.toggle('dimmed',!sungeiOwnerSelected);
+            node.classList.toggle('selected-line',sungeiOwnerSelected);
+          }
+          node.style.setProperty('display','inline','important');
+          node.style.setProperty('visibility','visible','important');
+          node.style.setProperty('opacity',sungeiOwnerSelected?'1':'.16','important');
+          node.style.setProperty('stroke-opacity',sungeiOwnerSelected?'1':'.16','important');
+          node.style.setProperty('fill-opacity',sungeiOwnerSelected?'1':'.16','important');
+          node.style.setProperty('filter','none','important');
+        });
+      }
     }
     speak(names[code]);
     status.textContent=names[code]+' selected. Other MRT lines are translucent.';
