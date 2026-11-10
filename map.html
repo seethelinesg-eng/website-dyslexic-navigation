@@ -1392,11 +1392,22 @@ body, body * {
       // Labels may be split across several SVG text fragments, so inspect
       // their parent groups as well as each individual text node.
       const legendLabel=el.textContent.replace(/\s+/g,'').toLowerCase();
-      const parentLegendLabel=(el.closest('g')?.textContent||'').replace(/\s+/g,'').toLowerCase();
-      const isTransportLegendLabel=
-        ['changi','airport','changiairport','sentosa','express','sentosaexpress'].includes(legendLabel)||
-        parentLegendLabel.includes('changiairport')||
-        parentLegendLabel.includes('sentosaexpress');
+      // The Illustrator export nests "Changi" and "Airport" in separate
+      // child groups. Walk ALL ancestor groups; closest('g') sees only one
+      // word and therefore fails to protect the two-line label.
+      let ancestor=el.parentElement;
+      let isTransportLegendLabel=
+        ['changi','airport','changiairport','sentosa','express','sentosaexpress'].includes(legendLabel);
+      while(ancestor && ancestor!==mount.querySelector('svg')){
+        if(ancestor.tagName?.toLowerCase()==='g'){
+          const groupLabel=(ancestor.textContent||'').replace(/\s+/g,'').toLowerCase();
+          if(groupLabel.includes('changiairport')||groupLabel.includes('sentosaexpress')){
+            isTransportLegendLabel=true;
+            break;
+          }
+        }
+        ancestor=ancestor.parentElement;
+      }
       const keep=owners.includes(code)||childOwners.includes(code)||isTransportLegendLabel;
       el.classList.toggle('focus-text-hidden',!keep);
       if(isTransportLegendLabel){
