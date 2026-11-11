@@ -2085,6 +2085,19 @@ body, body * {
       el.classList.toggle('dimmed',!!code&&!match);
       el.classList.toggle('selected-line',match);
       el.classList.remove('line-hover');
+      if(el.matches('text[data-station-label="true"]')){
+        const stationOwners=(el.getAttribute('data-station-lines')||
+          el.getAttribute('data-lines')||el.getAttribute('data-line')||'')
+          .split(/\s+/).filter(Boolean);
+        const enlargeCclStop=code==='CCL'&&match&&stationOwners.length===1&&stationOwners[0]==='CCL';
+        if(enlargeCclStop){
+          el.style.setProperty('font-size','12px','important');
+          el.style.setProperty('font-weight','800','important');
+        }else{
+          el.style.removeProperty('font-size');
+          el.style.removeProperty('font-weight');
+        }
+      }
       if(el.getAttribute('data-line')==='CCL'&&el.matches('path,line,polyline,polygon')){
         if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
