@@ -2172,6 +2172,56 @@ body, body * {
       }
     });
   }
+  function restoreSelectedStationLabels(svg,code){
+    if(!svg||!code||!stations[code])return;
+    const normaliseLabel=value=>String(value||'').replace(/\s+/g,'').toLocaleLowerCase();
+    const allNames=[...new Set(Object.values(stations).flat().map(([,name])=>normaliseLabel(name)))];
+    const ownersByName=new Map();
+    Object.entries(stations).forEach(([line,list])=>{
+      list.forEach(([,name])=>{
+        const key=normaliseLabel(name);
+        if(!ownersByName.has(key))ownersByName.set(key,new Set());
+        ownersByName.get(key).add(line);
+      });
+    });
+    stations[code].forEach(([,stationName])=>{
+      const key=normaliseLabel(stationName);
+      const owners=ownersByName.get(key)||new Set([code]);
+      if(!owners.has(code))return;
+      const exact=[...svg.querySelectorAll('text')].filter(node=>
+        !isFixedBottomLegendNode(node)&&normaliseLabel(node.textContent)===key
+      );
+      let labels=exact;
+      if(!labels.length){
+        const candidates=[...svg.querySelectorAll('g')].filter(node=>{
+          if(isFixedBottomLegendNode(node)||containsFixedBottomLegend(node))return false;
+          const text=normaliseLabel(node.textContent);
+          if(!text.includes(key)||allNames.some(other=>other!==key&&text.includes(other)))return false;
+          try{
+            const box=node.getBBox();
+            return box.width>0&&box.height>0&&box.width<=120&&box.height<=40;
+          }catch(_){return false;}
+        }).sort((a,b)=>{
+          const boxA=a.getBBox(),boxB=b.getBBox();
+          return boxA.width*boxA.height-boxB.width*boxB.height;
+        });
+        if(candidates.length)labels=[...candidates[0].querySelectorAll('text')];
+      }
+      labels.forEach(label=>{
+        label.setAttribute('data-lines',[...owners].join(' '));
+        label.setAttribute('data-line',[...owners][0]);
+        label.setAttribute('data-station-label','true');
+        label.setAttribute('data-station-name',stationName);
+        label.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+        label.style.setProperty('display','inline','important');
+        label.style.setProperty('visibility','visible','important');
+        label.style.setProperty('opacity','1','important');
+        label.style.setProperty('fill-opacity','1','important');
+        label.style.setProperty('stroke-opacity','1','important');
+        label.style.setProperty('filter','none','important');
+      });
+    });
+  }
   function restoreBottomLegendTransportLabels(svg){
     if(!svg)return;
     // Re-run protection AFTER every focus/destination filter. Both bottom
@@ -2261,6 +2311,7 @@ body, body * {
       }
 
     }
+    restoreSelectedStationLabels(svg,code);
     speak(names[code]);
     status.textContent=names[code]+' selected. Other MRT lines are translucent.';
   }
