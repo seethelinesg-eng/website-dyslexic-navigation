@@ -1293,6 +1293,7 @@ body, body * {
     plane.setAttribute('transform','translate(801 958) scale(.9)');
     plane.setAttribute('fill','#fffdf8');
     plane.setAttribute('aria-hidden','true');
+    plane.setAttribute('data-changi-airport-plane','true');
     group.appendChild(plane);
     const trainBody=document.createElementNS(ns,'rect');
     trainBody.setAttribute('x','800');trainBody.setAttribute('y','1020');
@@ -1326,6 +1327,13 @@ body, body * {
     addCaption('Changi','Airport',992);
     addCaption('Sentosa','Express',1052);
     svg.appendChild(group);
+  }
+  function updateTransportLegendFocus(svg,code){
+    const plane=svg&&svg.querySelector('#transport-legend-contrast-fix [data-changi-airport-plane]');
+    if(!plane)return;
+    const isEwlSelected=code==='EWL';
+    plane.style.setProperty('opacity',isEwlSelected?'1':'.16','important');
+    plane.style.setProperty('fill-opacity',isEwlSelected?'1':'.16','important');
   }
   function protectBottomLegendFromLineFocus(svg){
     if(!svg)return;
@@ -2177,6 +2185,7 @@ body, body * {
     if(svg){
       applyLineEmphasis(svg,code);
       applyDestinationVisibility(svg,code);
+      updateTransportLegendFocus(svg,code);
       // The toolbar uses selectLineOnFullMap() and the composite mrt-map.svg,
       // not selectLine() and the standalone line SVGs. Force the actual
       // Expo–Changi EWL green stroke and its white outline to follow EWL here,
