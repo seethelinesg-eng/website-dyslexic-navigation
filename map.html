@@ -912,6 +912,13 @@ body, body * {
       (typeof node.closest==='function' && node.closest('#changi-airport-legend-vector,#sentosa-express-legend-vector,[data-bottom-legend-fixed="true"]'))
     ));
   }
+  function containsFixedBottomLegend(node){
+    // Some Illustrator wrapper groups contain both a bottom-legend item and
+    // other artwork. Never apply group opacity to such a wrapper: that would
+    // dim Changi Airport / Sentosa Express through inherited SVG opacity.
+    return !!(node && typeof node.querySelector==='function' &&
+      node.querySelector('[data-bottom-legend-fixed="true"]'));
+  }
   function tagMapLines(svg){
     // Class names in Illustrator exports are not reliable route identifiers:
     // many coloured route segments use separate classes. Read the actual SVG
@@ -1358,7 +1365,7 @@ body, body * {
     // Hide only a group whose own text is exactly the destination label;
     // never hide a larger parent group containing the whole map.
     svg.querySelectorAll('g').forEach(group=>{
-      if(isFixedBottomLegendNode(group))return;
+      if(isFixedBottomLegendNode(group)||containsFixedBottomLegend(group))return;
       const groupLabel=normalise(group.textContent);
       const rule=rules.find(item=>groupLabel===item.key);
       if(rule){
@@ -1989,7 +1996,7 @@ body, body * {
   }
   function applyLineEmphasis(svg,code){
     svg.querySelectorAll('[data-line]').forEach(el=>{
-      if(isFixedBottomLegendNode(el))return;
+      if(isFixedBottomLegendNode(el)||containsFixedBottomLegend(el))return;
       const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       const match=!!code&&owners.includes(code);
       el.classList.toggle('dimmed',!!code&&!match);
