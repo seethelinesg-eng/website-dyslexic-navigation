@@ -1333,7 +1333,15 @@ body, body * {
       node.removeAttribute('data-lines');
       node.removeAttribute('data-gradient-route');
       node.classList.remove('dimmed','selected-line','focus-text-hidden','focus-shape-hidden','line-hover');
-      ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>node.style.removeProperty(prop));
+      // Force the bottom transport legend's actual vector artwork to full
+      // visibility. Removing inline styles is insufficient when a dimming
+      // rule is inherited from another selector or wrapper in Safari.
+      node.style.setProperty('display','inline','important');
+      node.style.setProperty('visibility','visible','important');
+      node.style.setProperty('opacity','1','important');
+      node.style.setProperty('fill-opacity','1','important');
+      node.style.setProperty('stroke-opacity','1','important');
+      node.style.setProperty('filter','none','important');
     });
   }
   function applyDestinationVisibility(svg,code){
