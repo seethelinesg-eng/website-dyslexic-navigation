@@ -1292,14 +1292,13 @@ body, body * {
     planeIcon.setAttribute('data-changi-airport-plane','true');
     planeIcon.setAttribute('aria-hidden','true');
     const planeTile=document.createElementNS(ns,'rect');
-    planeTile.setAttribute('x','799');planeTile.setAttribute('y','956');
-    planeTile.setAttribute('width','26');planeTile.setAttribute('height','26');
-    planeTile.setAttribute('rx','2');planeTile.setAttribute('fill','#fffdf8');
+    planeTile.setAttribute('x','798.32');planeTile.setAttribute('y','949.57');
+    planeTile.setAttribute('width','29.83');planeTile.setAttribute('height','28.31');
+    planeTile.setAttribute('rx','4.77');planeTile.setAttribute('fill','#fff');
     planeIcon.appendChild(planeTile);
     const plane=document.createElementNS(ns,'path');
-    plane.setAttribute('d','M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z');
-    plane.setAttribute('transform','translate(801 958) scale(.9)');
-    plane.setAttribute('fill','#34332f');
+    plane.setAttribute('d','M810.96,964.27l-9.64,2.35v-1.41l9.64-5.86v-3.29c-.1-1.76,1.02-2.96,1.84-2.96s1.9,1.21,1.8,2.96c.05,1.08.11,2.17.16,3.25l9.51,5.86v1.45l-9.68-2.43-.33,6.18,2.93,3.09-.12.74-3.58-1.37v.82c.03.41-.34.73-.68.7-.33-.03-.61-.35-.55-.74-.03-.27-.05-.55-.08-.82l-3.46,1.41-.12-.82,2.97-2.78-.58-6.33h-.02,0Z');
+    plane.setAttribute('fill','#231f20');
     plane.setAttribute('aria-hidden','true');
     planeIcon.appendChild(plane);
     group.appendChild(planeIcon);
@@ -1335,13 +1334,6 @@ body, body * {
     addCaption('Changi','Airport',992);
     addCaption('Sentosa','Express',1052);
     svg.appendChild(group);
-  }
-  function updateTransportLegendFocus(svg,code){
-    const plane=svg&&svg.querySelector('#transport-legend-contrast-fix [data-changi-airport-plane]');
-    if(!plane)return;
-    const isEwlSelected=code==='EWL';
-    plane.style.setProperty('opacity',isEwlSelected?'1':'.16','important');
-    plane.style.setProperty('fill-opacity',isEwlSelected?'1':'.16','important');
   }
   function protectBottomLegendFromLineFocus(svg){
     if(!svg)return;
@@ -2193,7 +2185,6 @@ body, body * {
     if(svg){
       applyLineEmphasis(svg,code);
       applyDestinationVisibility(svg,code);
-      updateTransportLegendFocus(svg,code);
       // The toolbar uses selectLineOnFullMap() and the composite mrt-map.svg,
       // not selectLine() and the standalone line SVGs. Force the actual
       // Expo–Changi EWL green stroke and its white outline to follow EWL here,
