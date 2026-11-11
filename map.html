@@ -1238,6 +1238,7 @@ body, body * {
         const segmentOwner=shape.getAttribute('data-line');
         const borderOwners=segmentOwner&&stationOwners.includes(segmentOwner)?segmentOwner:owners;
         shape.setAttribute('data-station-border','true');
+        shape.setAttribute('data-station-lines',owners);
         shape.setAttribute('data-station-label','true');
         const stationName=matchingLabel.label.getAttribute('data-station-name');
         if(stationName)shape.setAttribute('data-station-name',stationName);
@@ -2080,18 +2081,35 @@ body, body * {
     });
     // Route colours are assigned from the SVG's actual stroke colours above.
     // Do not force every path sharing an Illustrator class to one MRT line.
-    // Sungei Bedok's complete shared TEL/DTL capsule border follows the
-    // same focus rule as the rest of the map: opaque for either owner,
-    // translucent (never hidden) for unrelated line selections.
-    svg.querySelectorAll('[data-station-border="true"][data-station-name="Sungei Bedok"],[data-station-border="true"][data-sungei-bedok-border="true"]').forEach(el=>{
-      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
-      const match=!code||owners.includes(code);
-      el.style.setProperty('display','initial','important');
-      el.style.setProperty('visibility','visible','important');
-      el.style.setProperty('opacity',match?'1':'.16','important');
-      el.style.setProperty('stroke-opacity',match?'1':'.16','important');
-      el.classList.toggle('dimmed',!!code&&!match);
-      el.classList.toggle('selected-line',!!code&&match);
+    // Keep each complete interchange capsule intact. Its colored pieces
+    // all use the station's full set of MRT owners, so the whole border dims
+    // together only when the selected line does not serve that station.
+    const stationBorders=new Map();
+    svg.querySelectorAll('[data-station-border="true"][data-station-name]').forEach(el=>{
+      const name=el.getAttribute('data-station-name');
+      if(!stationBorders.has(name))stationBorders.set(name,[]);
+      stationBorders.get(name).push(el);
+    });
+    stationBorders.forEach((borders)=>{
+      const owners=new Set();
+      borders.forEach(border=>{
+        (border.getAttribute('data-station-lines')||
+          border.getAttribute('data-lines')||
+          border.getAttribute('data-line')||'')
+          .split(/\s+/).filter(Boolean).forEach(owner=>owners.add(owner));
+      });
+      const match=!code||owners.has(code);
+      borders.forEach(border=>{
+        border.classList.toggle('dimmed',!!code&&!match);
+        border.classList.toggle('selected-line',!!code&&match);
+        border.classList.remove('focus-shape-hidden');
+        border.style.setProperty('display','initial','important');
+        border.style.setProperty('visibility','visible','important');
+        border.style.setProperty('opacity',match?'1':'.16','important');
+        border.style.setProperty('stroke-opacity',match?'1':'.16','important');
+        border.style.setProperty('fill-opacity',match?'1':'.16','important');
+        border.style.setProperty('filter','none','important');
+      });
     });
     // Tanah Merah's complete EWL label border stays visible and follows
     // the same translucent focus treatment as every other unselected item.
@@ -2231,20 +2249,7 @@ body, body * {
         sungeiGroup.style.setProperty('fill-opacity','1','important');
         sungeiGroup.style.setProperty('filter','none','important');
       }
-      svg.querySelectorAll('[data-station-border="true"][data-station-name="Sungei Bedok"],[data-sungei-bedok-border="true"]').forEach(border=>{
-        const owner=border.getAttribute('data-line');
-        if(owner!=='DTL'&&owner!=='TEL')return;
-        border.setAttribute('data-lines',owner);
-        const isSelected=code===owner;
-        border.classList.toggle('dimmed',!isSelected);
-        border.classList.toggle('selected-line',isSelected);
-        border.style.setProperty('display','inline','important');
-        border.style.setProperty('visibility','visible','important');
-        border.style.setProperty('opacity',isSelected?'1':'.16','important');
-        border.style.setProperty('stroke-opacity',isSelected?'1':'.16','important');
-        border.style.setProperty('fill-opacity',isSelected?'1':'.16','important');
-        border.style.setProperty('filter','none','important');
-      });
+
     }
     speak(names[code]);
     status.textContent=names[code]+' selected. Other MRT lines are translucent.';
