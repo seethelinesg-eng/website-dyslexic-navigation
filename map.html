@@ -1111,20 +1111,23 @@ body, body * {
     // whose nested groups interrupt the normal adjacent-fragment matcher.
     // Tag the exact artwork fragments so they remain visible in CCL focus mode.
     const circleLabelFragments=[
-      ['770.57 733.28','780.48 733.28'], // Promenade
-      ['736.7 778.55','747.99 778.55']  // Bayfront
+      ['770.57 733.28','Promenade'],['780.48 733.28','Promenade'],
+      ['736.7 778.55','Bayfront'],['747.99 778.55','Bayfront']
     ];
-    circleLabelFragments.flat().forEach(position=>{
+    circleLabelFragments.forEach(([position,stationName])=>{
+      const owners=stationOwners.get(normalise(stationName))||new Set(['CCL']);
+      const ownerList=[...owners];
       svg.querySelectorAll('text').forEach(el=>{
         const transform=el.getAttribute('transform')||'';
         if(transform.includes('translate('+position+')')){
-          el.setAttribute('data-lines','CCL');
-          el.setAttribute('data-line','CCL');
+          el.setAttribute('data-lines',ownerList.join(' '));
+          el.setAttribute('data-line',ownerList[0]);
           el.setAttribute('data-station-label','true');
           el.classList.remove('focus-text-hidden','dimmed');
           el.style.removeProperty('display');
         }
       });
+    });
     // Boon Keng is split into four Illustrator text objects inside nested
     // groups. Tag its exact fragments as NEL so it fades on every other line.
     ['566.59 475.43','578.36 475.43','592.32 475.43','604.16 475.43'].forEach(position=>{
@@ -1140,9 +1143,7 @@ body, body * {
       });
     });
 
-    });
-
-    // Dhoby Ghaut's three interchange codes are exported as one text object.
+        // Dhoby Ghaut's three interchange codes// Dhoby Ghaut's three interchange codes are exported as one text object.
     // Tag the combined code string with all three line owners so CC1 remains
     // visible in Circle Line focus (and the complete code stays together).
     svg.querySelectorAll('text').forEach(el=>{
@@ -1165,11 +1166,28 @@ body, body * {
     // Bionicized Sungei Bedok text is split into fragments; some fragments
     // inherit nearby route colours (including EWL). Normalize every fragment
     // before matching the station's outline so no border piece is mis-tagged.
-    svg.querySelectorAll('text[data-station-name="Sungei Bedok"]').forEach(label=>{
-      label.setAttribute('data-lines','TEL DTL');
-      label.setAttribute('data-line','TEL');
-      label.setAttribute('data-station-label','true');
-    });
+    // Tag the actual text run (which may be split by Illustrator), leaving
+    // the separately coloured border halves to keep their own line owners.
+    const sungeiName='sungeibedok';
+    const sungeiText=[...svg.querySelectorAll('text')];
+    for(let start=0;start<sungeiText.length;start++){
+      let combined='';
+      const run=[];
+      for(let end=start;end<Math.min(sungeiText.length,start+8);end++){
+        run.push(sungeiText[end]);
+        combined+=normalise(sungeiText[end].textContent);
+        if(combined===sungeiName){
+          run.forEach(label=>{
+            label.setAttribute('data-lines','TEL DTL');
+            label.setAttribute('data-line','TEL');
+            label.setAttribute('data-station-label','true');
+            label.setAttribute('data-station-name','Sungei Bedok');
+          });
+          break;
+        }
+        if(!sungeiName.startsWith(combined))break;
+      }
+    }
     const stationLabels=[...svg.querySelectorAll('text[data-station-label="true"][data-lines]')];
     const toRootBox=node=>{
       try{
@@ -1208,15 +1226,16 @@ body, body * {
         // this interchange. It is therefore shown in full when ANY one of
         // those lines is selected, and hidden for unrelated line selections.
         const owners=matchingLabel.label.getAttribute('data-lines');
-        // Border geometry is a child of the station's selection identity:
-        // it inherits the station's complete line ownership, not the route
-        // colour of the individual SVG fragment.
+        // Keep each coloured interchange border half tied to its own route.
+        const stationOwners=owners.trim().split(/\s+/);
+        const segmentOwner=shape.getAttribute('data-line');
+        const borderOwners=segmentOwner&&stationOwners.includes(segmentOwner)?segmentOwner:owners;
         shape.setAttribute('data-station-border','true');
         shape.setAttribute('data-station-label','true');
         const stationName=matchingLabel.label.getAttribute('data-station-name');
         if(stationName)shape.setAttribute('data-station-name',stationName);
-        shape.setAttribute('data-lines',owners);
-        shape.setAttribute('data-line',owners.trim().split(/\s+/)[0]);
+        shape.setAttribute('data-lines',borderOwners);
+        shape.setAttribute('data-line',borderOwners.trim().split(/\s+/)[0]);
         shape.classList.remove('dimmed','focus-shape-hidden');
         shape.style.removeProperty('display');
       }
@@ -1859,16 +1878,15 @@ body, body * {
     mount.classList.toggle('sungei-bedok-active',sungeiActive);
     const sungeiSvg=mount.querySelector('svg');
     if(sungeiSvg){
-      sungeiSvg.querySelectorAll('[data-station-name="Sungei Bedok"]').forEach(group=>{
-        [group,...group.querySelectorAll('text,tspan')].forEach(part=>{
-          part.setAttribute('data-line','TEL');
-          part.setAttribute('data-lines','TEL DTL');
-          part.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
-          part.style.setProperty('display','inline','important');
-          part.style.setProperty('visibility','visible','important');
-          part.style.setProperty('opacity',sungeiActive?'1':'0.16','important');
-          part.style.setProperty('fill-opacity',sungeiActive?'1':'0.16','important');
-        });
+      sungeiSvg.querySelectorAll('text[data-station-name="Sungei Bedok"]').forEach(label=>{
+        label.setAttribute('data-line','TEL');
+        label.setAttribute('data-lines','TEL DTL');
+        label.classList.toggle('dimmed',!sungeiActive);
+        label.classList.remove('focus-text-hidden','focus-shape-hidden');
+        label.style.setProperty('display','inline','important');
+        label.style.setProperty('visibility','visible','important');
+        label.style.setProperty('opacity',sungeiActive?'1':'.16','important');
+        label.style.setProperty('fill-opacity',sungeiActive?'1':'.16','important');
       });
     }
     // Final route-emphasis pass: the separately loaded line artwork and the
@@ -1906,9 +1924,8 @@ body, body * {
         path.style.setProperty('filter','none','important');
       });
     }
-    // Border opacity is handled by applyLineEmphasis() using the shared
-    // TEL/DTL ownership rule. Do not restore border paths while restoring text.
-    restoreSungeiBedokLabel(focusSvg);
+    // Restore only the Sungei Bedok text for TEL/DTL focus. Border paths
+    // retain their own line ownership and fade independently.
     // Final pass: single-line selection loads a separate SVG and applies
     // several independent text/shape filters. Restore the Changi Airport
     // legend label and its Illustrator ancestors only AFTER all those filters.
@@ -1988,7 +2005,8 @@ body, body * {
     // same focus rule as the rest of the map: opaque for either owner,
     // translucent (never hidden) for unrelated line selections.
     svg.querySelectorAll('[data-station-border="true"][data-station-name="Sungei Bedok"],[data-station-border="true"][data-sungei-bedok-border="true"]').forEach(el=>{
-      const match=!code||code==='TEL'||code==='DTL';
+      const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
+      const match=!code||owners.includes(code);
       el.style.setProperty('display','initial','important');
       el.style.setProperty('visibility','visible','important');
       el.style.setProperty('opacity',match?'1':'.16','important');
@@ -2134,20 +2152,18 @@ body, body * {
         sungeiGroup.style.setProperty('fill-opacity','1','important');
         sungeiGroup.style.setProperty('filter','none','important');
       }
-      svg.querySelectorAll('[data-sungei-bedok-border="true"]').forEach(border=>{
-        // Reassert the individual half ownership AFTER colour-based tagging:
-        // the blue right half is DTL (st44), and the brown left half is TEL.
-        // Both halves share the interchange visibility rule.
-        border.setAttribute('data-line',border.classList.contains('st44')?'DTL':'TEL');
-        border.setAttribute('data-lines','TEL DTL');
-        border.classList.toggle('dimmed',!sungeiOwnerSelected);
-        border.classList.toggle('selected-line',sungeiOwnerSelected);
+      svg.querySelectorAll('[data-station-border="true"][data-station-name="Sungei Bedok"],[data-sungei-bedok-border="true"]').forEach(border=>{
+        const owner=border.getAttribute('data-line');
+        if(owner!=='DTL'&&owner!=='TEL')return;
+        border.setAttribute('data-lines',owner);
+        const isSelected=code===owner;
+        border.classList.toggle('dimmed',!isSelected);
+        border.classList.toggle('selected-line',isSelected);
         border.style.setProperty('display','inline','important');
         border.style.setProperty('visibility','visible','important');
-        // Let the dedicated map-state CSS control opacity; clear stale inline overrides.
-        border.style.removeProperty('opacity');
-        border.style.removeProperty('stroke-opacity');
-        border.style.removeProperty('fill-opacity');
+        border.style.setProperty('opacity',isSelected?'1':'.16','important');
+        border.style.setProperty('stroke-opacity',isSelected?'1':'.16','important');
+        border.style.setProperty('fill-opacity',isSelected?'1':'.16','important');
         border.style.setProperty('filter','none','important');
       });
     }
