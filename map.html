@@ -1309,7 +1309,10 @@ body, body * {
         }
         const minY=Math.min(...corners.map(point=>point.y));
         const maxY=Math.max(...corners.map(point=>point.y));
-        return minY>=900&&maxY<=1120;
+        // SVG glyphs and icon strokes can extend slightly beyond the
+        // viewBox edge. The bottom legend starts at y=900, so only the
+        // lower-bound check is needed to protect its artwork.
+        return minY>=900;
       }catch(error){return false;}
     };
     // Explicitly protect the two bottom-panel labels by stable SVG IDs.
