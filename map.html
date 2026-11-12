@@ -1044,9 +1044,12 @@ body, body * {
     // character per element). Match adjacent fragments as a complete label    // before focus mode hides unrecognised text.
     const labelOwners=new Map();
     const labelNames=new Map();
+    const codeLabels=new Map();
     Object.entries(stations).forEach(([line,list])=>{
       list.forEach(([stationCode,stationName])=>{
-        [normalise(stationName),normalise(stationCode)].forEach(label=>{
+        const codeLabel=normalise(stationCode);
+        codeLabels.set(codeLabel,stationCode);
+        [normalise(stationName),codeLabel].forEach(label=>{
           if(!labelOwners.has(label))labelOwners.set(label,new Set());
           labelOwners.get(label).add(line);
           labelNames.set(label,stationName);
@@ -1088,10 +1091,12 @@ body, body * {
       if(bestOwners){
         const ownerList=[...bestOwners];
         const stationName=labelNames.get(bestLabel);
+        const stationCode=codeLabels.get(bestLabel);
         run.slice(0,bestRunLength).forEach(part=>{
           part.setAttribute('data-lines',ownerList.join(' '));
           part.setAttribute('data-line',ownerList[0]);
           part.setAttribute('data-station-label','true');
+          if(stationCode)part.setAttribute('data-station-code',stationCode);
           part.setAttribute('data-station-lines',ownerList.join(' '));
           if(stationName)part.setAttribute('data-station-name',stationName);
           part.classList.remove('focus-text-hidden','dimmed');
@@ -2081,10 +2086,20 @@ body, body * {
     svg.querySelectorAll('[data-line]').forEach(el=>{
       if(isFixedBottomLegendNode(el)||containsFixedBottomLegend(el))return;
       const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
+      const isStationCode=el.hasAttribute('data-station-code');
       const match=!!code&&owners.includes(code);
-      el.classList.toggle('dimmed',!!code&&!match);
-      el.classList.toggle('selected-line',match);
+      el.classList.toggle('dimmed',!!code&&!match&&!isStationCode);
+      el.classList.toggle('selected-line',match||isStationCode);
       el.classList.remove('line-hover');
+      if(isStationCode){
+        el.classList.remove('focus-text-hidden','focus-shape-hidden');
+        el.style.setProperty('display','inline','important');
+        el.style.setProperty('visibility','visible','important');
+        el.style.setProperty('opacity','1','important');
+        el.style.setProperty('fill-opacity','1','important');
+        el.style.setProperty('stroke-opacity','1','important');
+        el.style.setProperty('filter','none','important');
+      }
       if(el.getAttribute('data-line')==='CCL'&&el.matches('path,line,polyline,polygon')){
         if(el.hasAttribute('data-base-stroke-width'))el.style.removeProperty('stroke-width');
       }
