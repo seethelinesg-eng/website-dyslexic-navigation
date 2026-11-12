@@ -60,7 +60,34 @@ body, body * {
   font-weight: 600 !important;
   letter-spacing: 0.75pt !important;
 }
+
+/* QUEST-inspired visual theme. Interactive controls remain unchanged. */
+:root{--quest-bg:#250033;--quest-panel:#310044;--quest-panel-2:#3a0750;--quest-pink:#ff83c8;--quest-pink-soft:#ffaddb;--quest-cyan:#00d8ff;--quest-yellow:#ffe000;--quest-green:#00f0b5;--quest-ink:#21002d}
+html,body{background:var(--quest-bg)!important;color:#fff0fa!important}
+body :not(button):not(button *){
+  font-family:"Dosis","Atkinson Hyperlegible Next",Arial,sans-serif!important;
+}
+#welcomeScreen{background:radial-gradient(circle at 82% 18%,#4a075d 0,transparent 28%),var(--quest-bg);padding:clamp(18px,4vw,64px)}
+.welcome-card{background:var(--quest-panel);color:#fff0fa;border:3px solid var(--quest-pink);border-radius:28px;box-shadow:0 0 0 5px #ff83c833,0 0 28px #ff83c855;padding:clamp(26px,6vw,84px)}
+.welcome-card:after{border-color:var(--quest-pink);opacity:.9;filter:drop-shadow(0 0 12px #ff83c8)}
+.welcome-card:before{content:"";position:absolute;right:clamp(18px,8vw,110px);top:clamp(18px,5vw,60px);width:clamp(90px,13vw,150px);aspect-ratio:1;border:3px solid var(--quest-cyan);border-radius:22px;transform:rotate(-18deg);box-shadow:0 0 18px #00d8ff66;pointer-events:none}
+.route-stripe{border:1px solid #ffaddb;border-radius:99px;overflow:hidden;box-shadow:0 0 14px #ff83c855}
+.welcome-kicker{color:var(--quest-pink-soft);letter-spacing:.12em}
+#welcomeTitle{color:var(--quest-pink);font-weight:800;letter-spacing:.015em;text-shadow:0 0 18px #ff83c855}
+.welcome-lead{color:#ffe4f4}
+.start-hint{color:#e5c6e4}
+.instructions{border-top:2px solid #ff83c877}
+.instructions h2{color:var(--quest-pink)}
+.instructions li{background:var(--quest-panel-2);border:1px solid #ff83c877;border-radius:14px;color:#fff0fa;box-shadow:0 0 14px #ff83c81c}
+.instructions li::before{background:#4a075d;border:2px solid var(--quest-pink);color:#fff0fa}
+.instructions li p{color:#f0d9ec}
+.instruction-audio{background:#3a0750;border:1px solid #ff83c877;color:#fff0fa}
+.instruction-audio-time,.instruction-audio-status{color:#f0d9ec}
+.instruction-audio-timeline{color:#f0d9ec}
+@media(max-width:700px){.welcome-card{box-shadow:0 0 0 3px #ff83c833,0 0 20px #ff83c855}.welcome-card:before{opacity:.55;right:24px;top:20px}}
+
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Dosis:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <section id="welcomeScreen" aria-labelledby="welcomeTitle">
