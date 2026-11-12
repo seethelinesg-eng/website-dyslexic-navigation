@@ -310,7 +310,47 @@ body, body * {
   stroke-opacity:1!important;
   filter:none!important;
 }
+
+/* QUEST-inspired visual theme. Map SVG, map controls and all buttons are intentionally untouched. */
+:root{--quest-bg:#250033;--quest-panel:#310044;--quest-panel-2:#3a0750;--quest-pink:#ff83c8;--quest-pink-soft:#ffaddb;--quest-cyan:#00d8ff;--quest-yellow:#ffe000;--quest-green:#00f0b5;--quest-ink:#21002d}
+html,body{background:var(--quest-bg)!important;color:#fff0fa!important}
+body :not(button):not(button *){
+  font-family:"Dosis","Atkinson Hyperlegible Next",Arial,sans-serif!important;
+}
+.sitebar{background:#1d0029;color:var(--quest-pink);border-bottom:2px solid var(--quest-pink);box-shadow:0 4px 18px #ff83c822}
+.sitebar-note{color:#ffaddb}
+.page-intro{background:radial-gradient(circle at 90% 20%,#4a075d 0,transparent 26%),var(--quest-bg);border-bottom:2px solid #ff83c877}
+.page-intro:after{border-color:var(--quest-pink);filter:drop-shadow(0 0 12px #ff83c8)}
+.eyebrow,.panel-kicker{color:var(--quest-pink)}
+.page-intro h1{color:var(--quest-pink);text-shadow:0 0 18px #ff83c844;letter-spacing:.005em}
+.page-intro p{color:#ffe4f4}
+main{background:transparent}
+.panel,#stationPanel{background:var(--quest-panel);color:#fff0fa;border:2px solid var(--quest-pink);border-radius:16px;box-shadow:0 0 0 3px #ff83c822,0 0 20px #ff83c822}
+#stationPanel{border-top:8px solid var(--quest-pink)}
+.panel h2,#stationPanel h2,.map-heading h2{color:var(--quest-pink)}
+.panel-copy,.station-panel-heading>p,.map-heading span,.map-touch-hint,.help{color:#f0d9ec}
+.scroll-map-hint{color:var(--quest-yellow)!important}
+.status{background:#3a0750;color:#fff0fa;border-left-color:var(--quest-cyan)}
+/* The map frame and its white SVG canvas retain their existing appearance. */
+.map-display-frame{border:2px solid var(--quest-pink);box-shadow:0 0 0 4px #ff83c822,0 0 22px #00d8ff22}
+.map-shell,#mapMount{background:#fffdf8}
+#legendGuide{background:rgba(20,0,30,.82)}
+.legend-explorer{background:var(--quest-panel);color:#fff0fa;border:2px solid var(--quest-pink);box-shadow:0 0 0 4px #ff83c833,0 0 28px #ff83c855}
+.legend-explorer-header h2,#legendTopicTitle{color:var(--quest-pink)}
+.legend-explorer-header p,#legendTopicDescription,#legendTopicDetails{color:#ffe4f4}
+.legend-topic-list{color:#fff0fa}
+.legend-topic-button{background:#3a0750;border-color:#ff83c877;color:#fff0fa}
+.legend-topic-button[aria-pressed=true]{background:#4b075f;border-color:var(--quest-pink);box-shadow:0 0 12px #ff83c855}
+.legend-topic-number,.legend-zoom-label{color:var(--quest-pink)}
+#legendZoomViewport{background:#fffdf8;border-color:var(--quest-pink)}
+.legend-audio-player{background:#1d0029;border:1px solid #ff83c877}
+#legendTopicHint{color:#f0d9ec}
+@media(max-width:620px){
+  .page-intro{background:radial-gradient(circle at 90% 18%,#4a075d 0,transparent 30%),var(--quest-bg)}
+}
+
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Dosis:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="sitebar"><div class="sitebrand">SeeTheLine SG</div><div class="sitebar-note">Singapore MRT • Accessible wayfinding</div></div>
