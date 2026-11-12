@@ -1303,6 +1303,33 @@ main{background:transparent}
         shape.style.removeProperty('display');
       }
     });
+    // Dhoby Ghaut is split into four separately positioned text objects in
+    // the Illustrator export. Their fixed x positions leave uneven gaps when
+    // rendered as a single station name. Recombine them into one text run.
+    const dhobyFragments=[
+      'translate(477.3 614.08)',
+      'translate(489.37 614.08)',
+      'translate(508.35 614.08)',
+      'translate(520.68 614.08)'
+    ].map(position=>[...svg.querySelectorAll('text')].find(el=>
+      (el.getAttribute('transform')||'').includes(position)
+    ));
+    if(dhobyFragments.every(Boolean)){
+      const [label,...fragments]=dhobyFragments;
+      const tspan=label.querySelector('tspan');
+      if(tspan)tspan.textContent='Dhoby Ghaut';
+      label.setAttribute('data-lines','NSL NEL CCL');
+      label.setAttribute('data-line','NSL');
+      label.setAttribute('data-station-lines','NSL NEL CCL');
+      label.setAttribute('data-station-label','true');
+      label.setAttribute('data-station-name','Dhoby Ghaut');
+      label.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+      label.style.removeProperty('display');
+      fragments.forEach(fragment=>{
+        fragment.classList.remove('focus-text-hidden');
+        fragment.style.setProperty('display','none','important');
+      });
+    }
   }
   function protectChangiAirportLegend(svg){
     if(!svg)return;
