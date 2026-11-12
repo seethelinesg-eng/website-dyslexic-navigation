@@ -1330,6 +1330,46 @@ main{background:transparent}
         fragment.style.setProperty('display','none','important');
       });
     }
+    preserveStationCodeMarkers(svg);
+  }
+  function preserveStationCodeMarkers(svg){
+    if(!svg)return;
+    const rootBounds=element=>{
+      try{
+        const box=element.getBBox();
+        const matrix=element.getCTM();
+        if(!matrix)return null;
+        const corners=[
+          new DOMPoint(box.x,box.y),
+          new DOMPoint(box.x+box.width,box.y),
+          new DOMPoint(box.x,box.y+box.height),
+          new DOMPoint(box.x+box.width,box.y+box.height)
+        ].map(point=>point.matrixTransform(matrix));
+        const xs=corners.map(point=>point.x),ys=corners.map(point=>point.y);
+        return {left:Math.min(...xs),right:Math.max(...xs),top:Math.min(...ys),bottom:Math.max(...ys)};
+      }catch(_){return null;}
+    };
+    const codeLabels=[...svg.querySelectorAll('text[data-station-code]')]
+      .filter(label=>!isFixedBottomLegendNode(label))
+      .map(label=>({label,box:rootBounds(label)}))
+      .filter(item=>item.box&&item.box.right>item.box.left&&item.box.bottom>item.box.top);
+    const routeShapes=[...svg.querySelectorAll('path[data-line],line[data-line],polyline[data-line],polygon[data-line],rect[data-line],circle[data-line],ellipse[data-line]')]
+      .filter(shape=>!isFixedBottomLegendNode(shape))
+      .map(shape=>({shape,box:rootBounds(shape)}))
+      .filter(item=>item.box&&item.box.right>item.box.left&&item.box.bottom>item.box.top);
+    codeLabels.forEach(({label,box})=>{
+      const maxWidth=Math.max(38,(box.right-box.left)*2.5);
+      const maxHeight=Math.max(18,(box.bottom-box.top)*2.5);
+      routeShapes.forEach(({shape,box:shapeBox})=>{
+        if(shapeBox.right-shapeBox.left>maxWidth||shapeBox.bottom-shapeBox.top>maxHeight)return;
+        const overlaps=shapeBox.right>=box.left-1.5&&shapeBox.left<=box.right+1.5&&
+          shapeBox.bottom>=box.top-1.5&&shapeBox.top<=box.bottom+1.5;
+        if(overlaps){
+          shape.setAttribute('data-station-code-marker','true');
+          shape.setAttribute('data-station-code',label.getAttribute('data-station-code'));
+        }
+      });
+    });
   }
   function protectChangiAirportLegend(svg){
     if(!svg)return;
@@ -2252,6 +2292,17 @@ main{background:transparent}
           ['display','visibility','opacity','stroke-opacity','fill-opacity','filter','pointer-events'].forEach(prop=>el.style.removeProperty(prop));
         }
       }
+    });
+    // Keep the small colored capsules behind station codes readable while
+    // unrelated route strokes fade during single-line focus.
+    svg.querySelectorAll('[data-station-code-marker="true"]').forEach(marker=>{
+      marker.classList.remove('dimmed','focus-shape-hidden','selected-line','line-hover');
+      marker.style.setProperty('display','initial','important');
+      marker.style.setProperty('visibility','visible','important');
+      marker.style.setProperty('opacity','1','important');
+      marker.style.setProperty('stroke-opacity','1','important');
+      marker.style.setProperty('fill-opacity','1','important');
+      marker.style.setProperty('filter','none','important');
     });
   }
   function restoreSelectedStationLabels(svg,code){
