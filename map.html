@@ -1333,6 +1333,7 @@ main{background:transparent}
       label.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
       label.style.removeProperty('display');
       fragments.forEach(fragment=>{
+        fragment.setAttribute('data-dhoby-hidden-fragment','true');
         fragment.classList.remove('focus-text-hidden');
         fragment.style.setProperty('display','none','important');
       });
@@ -2386,6 +2387,7 @@ main{background:transparent}
     // Restore every tagged fragment of a selected-line station name. Some
     // Illustrator interchange labels are split into several text nodes.
     svg.querySelectorAll('text[data-station-label],tspan[data-station-label]').forEach(label=>{
+      if(label.hasAttribute('data-dhoby-hidden-fragment'))return;
       const owners=(label.getAttribute('data-lines')||label.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       if(!owners.includes(code))return;
       label.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
