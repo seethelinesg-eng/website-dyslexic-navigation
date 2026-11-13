@@ -1047,6 +1047,13 @@ main{background:transparent}
       const isPunggolCove=label==='punggolcove';
       if(owners||isPunggolCove){
         const lineOwners=isPunggolCove?['NEL']:[...owners];
+        // Keep the complete label wrapper in the same focus state as its
+        // text fragments; otherwise a dimmed parent group hides the words.
+        group.setAttribute('data-lines',lineOwners.join(' '));
+        group.setAttribute('data-line',lineOwners[0]);
+        group.setAttribute('data-station-label','true');
+        group.classList.remove('focus-text-hidden','dimmed');
+        group.style.removeProperty('display');
         group.querySelectorAll('text,tspan').forEach(el=>{
           el.setAttribute('data-lines',lineOwners.join(' '));
           el.setAttribute('data-line',lineOwners[0]);
