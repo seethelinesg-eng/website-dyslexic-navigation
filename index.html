@@ -69,7 +69,9 @@ body :not(button):not(button *){
 }
 #welcomeScreen{background:radial-gradient(circle at 82% 18%,#4a075d 0,transparent 28%),var(--quest-bg);padding:clamp(18px,4vw,64px)}
 .welcome-card{background:var(--quest-panel);color:#fff0fa;border:3px solid var(--quest-pink);border-radius:28px;box-shadow:0 0 0 5px #ff83c833,0 0 28px #ff83c855;padding:clamp(26px,6vw,84px)}
-.welcome-card:after{border-color:var(--quest-pink);opacity:.9;filter:drop-shadow(0 0 12px #ff83c8)}
+.welcome-card:after{z-index:0;border-color:var(--quest-pink);opacity:.9;filter:drop-shadow(0 0 12px #ff83c8)}
+.welcome-card:before{z-index:0}
+.welcome-card>*{position:relative;z-index:1}
 .welcome-card:before{content:"";position:absolute;right:clamp(18px,8vw,110px);top:clamp(18px,5vw,60px);width:clamp(90px,13vw,150px);aspect-ratio:1;border:3px solid var(--quest-cyan);border-radius:22px;transform:rotate(-18deg);box-shadow:0 0 18px #00d8ff66;pointer-events:none}
 .route-stripe{border:1px solid #ffaddb;border-radius:99px;overflow:hidden;box-shadow:0 0 14px #ff83c855}
 .welcome-kicker{color:var(--quest-pink-soft);letter-spacing:.12em}
