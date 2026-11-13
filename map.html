@@ -2194,13 +2194,24 @@ main{background:transparent}
     if(!prefix)return null;
     return ({NS:'NSL',EW:'EWL',NE:'NEL',CC:'CCL',DT:'DTL',TE:'TEL'})[prefix[1].toUpperCase()]||null;
   }
+  function linesForStationCode(value){
+    const normalise=value=>String(value||'').replace(/\s+/g,'').toUpperCase();
+    const wanted=normalise(value);
+    const stationName=Object.values(stations).flat().find(([stationCode])=>normalise(stationCode)===wanted)?.[1];
+    if(!stationName)return [lineForStationCode(value)].filter(Boolean);
+    const name=normalise(stationName),owners=new Set();
+    Object.entries(stations).forEach(([line,list])=>{
+      if(list.some(([,candidate])=>normalise(candidate)===name))owners.add(line);
+    });
+    return [...owners];
+  }
   function applyLineEmphasis(svg,code){
     svg.querySelectorAll('[data-line]').forEach(el=>{
       if(isFixedBottomLegendNode(el)||containsFixedBottomLegend(el))return;
       const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       const isStationCode=el.hasAttribute('data-station-code')&&/^(NS|EW|NE|CC|DT|TE)\s*\d+$/i.test((el.textContent||'').trim());
-      const stationCodeOwner=isStationCode?lineForStationCode(el.getAttribute('data-station-code')):null;
-      const match=isStationCode?(!code||stationCodeOwner===code):!!code&&owners.includes(code);
+      const stationCodeOwners=isStationCode?linesForStationCode(el.getAttribute('data-station-code')):[];
+      const match=isStationCode?(!code||stationCodeOwners.includes(code)):!!code&&owners.includes(code);
       el.classList.toggle('dimmed',!!code&&!match&&!isStationCode);
       el.classList.toggle('selected-line',match||isStationCode);
       el.classList.remove('line-hover');
@@ -2303,8 +2314,8 @@ main{background:transparent}
     // line. Unrelated code capsules follow the same translucent focus state
     // as the route segment they identify.
     svg.querySelectorAll('[data-station-code-marker="true"]').forEach(marker=>{
-      const owner=lineForStationCode(marker.getAttribute('data-station-code-marker-code'));
-      const match=!code||owner===code;
+      const owners=linesForStationCode(marker.getAttribute('data-station-code-marker-code'));
+      const match=!code||owners.includes(code);
       marker.classList.remove('focus-shape-hidden','line-hover');
       marker.classList.toggle('dimmed',!!code&&!match);
       marker.classList.toggle('selected-line',!!code&&match);
