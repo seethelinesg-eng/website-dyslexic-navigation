@@ -1350,7 +1350,7 @@ main{background:transparent}
       }catch(_){return null;}
     };
     const codeLabels=[...svg.querySelectorAll('text[data-station-code]')]
-      .filter(label=>!isFixedBottomLegendNode(label))
+      .filter(label=>!isFixedBottomLegendNode(label)&&lineForStationCode(label.textContent))
       .map(label=>({label,box:rootBounds(label)}))
       .filter(item=>item.box&&item.box.right>item.box.left&&item.box.bottom>item.box.top);
     const routeShapes=[...svg.querySelectorAll('path[data-line],line[data-line],polyline[data-line],polygon[data-line],rect[data-line],circle[data-line],ellipse[data-line]')]
@@ -1366,7 +1366,7 @@ main{background:transparent}
           shapeBox.bottom>=box.top-1.5&&shapeBox.top<=box.bottom+1.5;
         if(overlaps){
           shape.setAttribute('data-station-code-marker','true');
-          shape.setAttribute('data-station-code-marker-code',label.getAttribute('data-station-code'));
+          shape.setAttribute('data-station-code-marker-code',label.textContent.trim());
         }
       });
     });
@@ -2363,6 +2363,17 @@ main{background:transparent}
         label.style.setProperty('fill-opacity','1','important');
         label.style.setProperty('stroke-opacity','1','important');
         label.style.setProperty('filter','none','important');
+      });
+    });
+    // Restore every tagged fragment of a selected-line station name. Some
+    // Illustrator interchange labels are split into several text nodes.
+    svg.querySelectorAll('text[data-station-label],tspan[data-station-label]').forEach(label=>{
+      const owners=(label.getAttribute('data-lines')||label.getAttribute('data-line')||'').split(/\\s+/).filter(Boolean);
+      if(!owners.includes(code))return;
+      label.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
+      ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
+        const value=prop==='display'?'inline':prop==='visibility'?'visible':prop==='filter'?'none':'1';
+        label.style.setProperty(prop,value,'important');
       });
     });
   }
