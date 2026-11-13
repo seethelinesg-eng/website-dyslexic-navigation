@@ -2368,7 +2368,7 @@ main{background:transparent}
     // Restore every tagged fragment of a selected-line station name. Some
     // Illustrator interchange labels are split into several text nodes.
     svg.querySelectorAll('text[data-station-label],tspan[data-station-label]').forEach(label=>{
-      const owners=(label.getAttribute('data-lines')||label.getAttribute('data-line')||'').split(/\\s+/).filter(Boolean);
+      const owners=(label.getAttribute('data-lines')||label.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       if(!owners.includes(code))return;
       label.classList.remove('dimmed','focus-text-hidden','focus-shape-hidden');
       ['display','visibility','opacity','fill-opacity','stroke-opacity','filter'].forEach(prop=>{
