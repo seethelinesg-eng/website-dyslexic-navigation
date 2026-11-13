@@ -353,11 +353,11 @@ main{background:transparent}
 <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="sitebar"><div class="sitebrand">SeeTheLine SG</div><div class="sitebar-note">Singapore MRT • Accessible wayfinding</div></div>
+  <div class="sitebar"><div class="sitebrand">SeeTheLine SG</div><div class="sitebar-note">Singapore MRT map</div></div>
   <section class="page-intro">
-    <p class="eyebrow">Explore the network</p>
-    <h1>Find your line.<br>Follow your journey.</h1>
-    <p>Select an MRT line to focus on its route. Choose a station to hear its name spoken aloud, and use the full-map control whenever you want to see the whole network again.</p>
+    <p class="eyebrow">MRT map</p>
+    <h1>Find your line.<br>Plan your trip.</h1>
+    <p>Choose a line. Tap a station to hear its name.</p>
   </section>
   <div id="mapApp">
     <main>
@@ -375,7 +375,7 @@ main{background:transparent}
       <section class="panel route-selector-panel">
         <p class="panel-kicker">01 / Select a route</p>
         <h2>Choose an MRT line</h2>
-        <p class="panel-copy">Select one line to highlight it on the map.</p>
+        <p class="panel-copy">Pick a line to highlight.</p>
         <div class="controls" id="lineControls" aria-label="MRT lines">
           <button type="button" data-select-line="NSL" aria-pressed="false">North-South Line</button>
           <button type="button" data-select-line="EWL" aria-pressed="false">East-West Line</button>
@@ -384,7 +384,7 @@ main{background:transparent}
           <button type="button" data-select-line="DTL" aria-pressed="false">Downtown Line</button>
           <button type="button" data-select-line="TEL" aria-pressed="false">Thomson-East Coast Line</button>
         </div>
-        <p class="panel-copy line-panel-guidance">Choose a coloured line here. The map and station list stay beside this panel, so you do not need to scroll up and down between them.</p>
+        <p class="panel-copy line-panel-guidance">The map and station list stay here.</p>
       </section>
       <section class="map-column" aria-label="Interactive MRT map">
         <div class="map-heading"><h2>Singapore MRT network</h2><span>Interactive map</span></div>
@@ -399,12 +399,12 @@ main{background:transparent}
           </div>
           
         </div>
-        <p class="map-touch-hint">On a laptop: use + and − to zoom, then drag the map to move around. On a phone: pinch to zoom and drag to move. Tap a station or coloured line to interact.</p>
-        <p class="help">Choose a coloured line button to show only that route and reveal its station list. Select a station to hear its name.</p>
+        <p class="map-touch-hint">Zoom with + / −. Drag to move. On phones, pinch to zoom. Tap a line or station.</p>
+        <p class="help">Pick a line to see its stations. Tap a station to hear its name.</p>
       </section>
         <section id="stationPanel" aria-live="polite" aria-label="Stations on selected line">
           <div class="station-panel-heading">            <div><p class="panel-kicker">02 / Choose a station</p><h2 id="stationHeading">Stations</h2></div>
-            <p>Tap a station button to hear its name spoken aloud.</p>
+            <p>Tap a station to hear its name.</p>
           </div>
           <div id="stationList"><p class="panel-copy">Choose an MRT line below to see its station buttons here.</p></div>
         </section>
@@ -417,8 +417,8 @@ main{background:transparent}
       <div class="legend-explorer-header">
         <div>
           <p class="panel-kicker">EXPLORE THE MAP LEGEND</p>
-          <h2 id="legendGuideTitle">How to read the Singapore MRT map</h2>
-          <p>Choose a topic. The map view will zoom into the matching example and explain what it means.</p>
+          <h2 id="legendGuideTitle">MRT map guide</h2>
+          <p>Pick a topic to see an example.</p>
         </div>
         <button type="button" id="closeLegendGuide" aria-label="Close legend explorer">×</button>
       </div>
@@ -2693,9 +2693,9 @@ main{background:transparent}
   const legendTopics={
     lines:{
       title:'1. Line colours and codes',
-      description:'Each rail line has its own colour and a short code. The letters identify the line, while the station number identifies a stop along that line.',
+      description:'Each line has a colour and code. The number marks a station.',
       viewBox:'12 910 680 165',
-      narration:'MRT lines use different colours and two-letter codes. Red is North-South, NS. Green is East-West, EW. Purple is North-East, NE. Orange is Circle, CC. Blue is Downtown, DT. Brown is Thomson-East Coast, TE. LRT networks use BP for Bukit Panjang, SK for Sengkang and PG for Punggol.',
+      narration:'Line codes: NS red, EW green, NE purple, CC orange, DT blue, TE brown. LRT: BP, SK and PG.',
       lines:[
         ['#eb1d27','North-South Line','NS'],
         ['#279641','East-West Line','EW'],
@@ -2706,14 +2706,14 @@ main{background:transparent}
       ],
       bullets:[
         'LRT routes are shown separately: Bukit Panjang (BP), Sengkang (SK) and Punggol (PG).',
-        'The Circle Line became a complete loop when Circle Line Stage 6 opened on 12 July 2026.'
+        'The Circle Line is a complete loop.'
       ]
     },
     stations:{
       title:'2. Station coding system',
-      description:'A station code combines the line code and a station number. The magnified example below shows how a code is presented in the map legend.',
+      description:'A station code shows its line and stop number.',
       viewBox:'12 940 118 130',
-      narration:'A station code combines the line code and station number. For example, NS24 is the North-South Line code for Dhoby Ghaut. At an interchange, one station can have more than one line code.',
+      narration:'Example: Dhoby Ghaut is NS24. Interchanges have multiple codes.',
       bullets:[
         'Line code: the letters identify the MRT line, such as NS, EW or NE.',
         'Station number: the number identifies the station on that line.',
@@ -2722,9 +2722,9 @@ main{background:transparent}
     },
     transfers:{
       title:'3. Transfer and connection symbols',
-      description:'At an interchange, several line codes can appear together beside one station name. This zoom shows the grouped codes at Dhoby Ghaut.',
+      description:'Interchanges connect two or more lines. Dhoby Ghaut has three.',
       viewBox:'475 625 125 62',
-      narration:'An interchange is a station where you can change between train lines. Dhoby Ghaut is an example: it connects the North-South, North-East and Circle Lines. A standard transfer stays within the paid area. A tap-out transfer requires you to leave one fare-paid area and enter another connected station, following the applicable transfer rules.',
+      narration:'An interchange lets you change lines. Some transfers need you to tap out and back in.',
       bullets:[
         'Standard transfer: follow the interchange signs between lines without tapping out of the paid area.',
         'Tap-out transfer: exit through the fare gates and enter the connected station through its gates. Follow the current fare and transfer conditions.',
@@ -2733,9 +2733,9 @@ main{background:transparent}
     },
     connections:{
       title:'4. Status and other transport modes',
-      description:'The map legend also uses symbols to show connections beyond the MRT network. The zoom below focuses on the transport-symbol section.',
+      description:'Symbols show buses, airports, ferries and other links.',
       viewBox:'700 910 405 165',
-      narration:'The map uses symbols for other transport connections. These include bus interchanges or terminals, Changi Airport, ferry terminals or cruise centres, Sentosa Express and the cable car. U slash C means under construction and identifies a future station or extension where that marking is shown.',
+      narration:'Symbols mark bus, airport, ferry, Sentosa Express and cable car links. U/C means under construction.',
       bullets:[
         'U/C: under construction. It marks a station or rail section that is not yet in service.',
         'Bus interchange or terminal: connect to public bus services.',
