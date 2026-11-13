@@ -2190,7 +2190,7 @@ main{background:transparent}
     speak(item.spoken+' highlighted in the legend.');
   }
   function lineForStationCode(value){
-    const prefix=String(value||'').trim().match(/^(NS|EW|NE|CC|DT|TE)\\s*\\d/i);
+    const prefix=String(value||'').trim().match(/^(NS|EW|NE|CC|DT|TE)\s*\d/i);
     if(!prefix)return null;
     return ({NS:'NSL',EW:'EWL',NE:'NEL',CC:'CCL',DT:'DTL',TE:'TEL'})[prefix[1].toUpperCase()]||null;
   }
