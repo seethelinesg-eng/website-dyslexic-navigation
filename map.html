@@ -2023,7 +2023,7 @@ main{background:transparent}
       // their colour stops. Keep a complete interchange border when one of
       // its own lines is selected; hide it for unrelated lines.
       if(el.hasAttribute('data-gradient-route')){
-        const owners=(el.getAttribute('data-lines')||'').split(/\\s+/).filter(Boolean);
+        const owners=(el.getAttribute('data-lines')||'').split(/\s+/).filter(Boolean);
         const show=owners.includes(code);
         el.classList.toggle('dimmed',!show);
         el.classList.remove('focus-shape-hidden');
