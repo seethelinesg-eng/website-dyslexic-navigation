@@ -1366,7 +1366,7 @@ main{background:transparent}
           shapeBox.bottom>=box.top-1.5&&shapeBox.top<=box.bottom+1.5;
         if(overlaps){
           shape.setAttribute('data-station-code-marker','true');
-          shape.setAttribute('data-station-code',label.getAttribute('data-station-code'));
+          shape.setAttribute('data-station-code-marker-code',label.getAttribute('data-station-code'));
         }
       });
     });
@@ -2189,12 +2189,18 @@ main{background:transparent}
     target.style.filter='drop-shadow(0 0 5px '+item.colour+')';
     speak(item.spoken+' highlighted in the legend.');
   }
+  function lineForStationCode(value){
+    const prefix=String(value||'').trim().match(/^(NS|EW|NE|CC|DT|TE)\\s*\\d/i);
+    if(!prefix)return null;
+    return ({NS:'NSL',EW:'EWL',NE:'NEL',CC:'CCL',DT:'DTL',TE:'TEL'})[prefix[1].toUpperCase()]||null;
+  }
   function applyLineEmphasis(svg,code){
     svg.querySelectorAll('[data-line]').forEach(el=>{
       if(isFixedBottomLegendNode(el)||containsFixedBottomLegend(el))return;
       const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
       const isStationCode=el.hasAttribute('data-station-code');
-      const match=!!code&&owners.includes(code);
+      const stationCodeOwner=isStationCode?lineForStationCode(el.getAttribute('data-station-code')):null;
+      const match=isStationCode?(!code||stationCodeOwner===code):!!code&&owners.includes(code);
       el.classList.toggle('dimmed',!!code&&!match&&!isStationCode);
       el.classList.toggle('selected-line',match||isStationCode);
       el.classList.remove('line-hover');
@@ -2293,15 +2299,20 @@ main{background:transparent}
         }
       }
     });
-    // Keep the small colored capsules behind station codes readable while
-    // unrelated route strokes fade during single-line focus.
+    // Keep a code capsule crisp only when that code belongs to the selected
+    // line. Unrelated code capsules follow the same translucent focus state
+    // as the route segment they identify.
     svg.querySelectorAll('[data-station-code-marker="true"]').forEach(marker=>{
-      marker.classList.remove('dimmed','focus-shape-hidden','selected-line','line-hover');
+      const owner=lineForStationCode(marker.getAttribute('data-station-code-marker-code'));
+      const match=!code||owner===code;
+      marker.classList.remove('focus-shape-hidden','line-hover');
+      marker.classList.toggle('dimmed',!!code&&!match);
+      marker.classList.toggle('selected-line',!!code&&match);
       marker.style.setProperty('display','initial','important');
       marker.style.setProperty('visibility','visible','important');
-      marker.style.setProperty('opacity','1','important');
-      marker.style.setProperty('stroke-opacity','1','important');
-      marker.style.setProperty('fill-opacity','1','important');
+      marker.style.setProperty('opacity',match?'1':'.16','important');
+      marker.style.setProperty('stroke-opacity',match?'1':'.16','important');
+      marker.style.setProperty('fill-opacity',match?'1':'.16','important');
       marker.style.setProperty('filter','none','important');
     });
   }
