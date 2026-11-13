@@ -2198,7 +2198,7 @@ main{background:transparent}
     svg.querySelectorAll('[data-line]').forEach(el=>{
       if(isFixedBottomLegendNode(el)||containsFixedBottomLegend(el))return;
       const owners=(el.getAttribute('data-lines')||el.getAttribute('data-line')||'').split(/\s+/).filter(Boolean);
-      const isStationCode=el.hasAttribute('data-station-code');
+      const isStationCode=el.hasAttribute('data-station-code')&&/^(NS|EW|NE|CC|DT|TE)\\s*\\d+$/i.test((el.textContent||'').trim());
       const stationCodeOwner=isStationCode?lineForStationCode(el.getAttribute('data-station-code')):null;
       const match=isStationCode?(!code||stationCodeOwner===code):!!code&&owners.includes(code);
       el.classList.toggle('dimmed',!!code&&!match&&!isStationCode);
